@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest"
   },
-  "name": "clean-react",
+  "name": "react-boilerplate",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Matheus Roika <matheusroika@hotmail.com>",
