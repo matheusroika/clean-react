@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
+import { mockAuthParams } from '../../domain/mocks'
 
 jest.mock('axios')
 
@@ -15,10 +16,14 @@ const makeSut = (): Sut => {
 }
 
 describe('Axios Http Client', () => {
-  test('Should call axios.post with correct URL', async () => {
+  test('Should call axios.post with correct values', async () => {
     const { sut } = makeSut()
     const postSpy = jest.spyOn(axios, 'post')
-    await sut.post({ url: 'any_url' })
-    expect(postSpy).toHaveBeenCalledWith('any_url')
+    const body = mockAuthParams()
+    await sut.post({
+      url: 'any_url',
+      body
+    })
+    expect(postSpy).toHaveBeenCalledWith('any_url', body)
   })
 })
