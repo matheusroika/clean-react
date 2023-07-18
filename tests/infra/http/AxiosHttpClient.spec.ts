@@ -1,8 +1,19 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
 import { mockAuthParams } from '../../domain/mocks'
+import { HttpStatusCode } from '@/data/protocols/http'
+import type { AxiosResponse } from 'axios'
 
-jest.mock('axios')
+type MyAxiosResponse = Omit<AxiosResponse, 'config' | 'headers' | 'statusText'>
+
+jest.mock('axios', () => ({
+  async post (): Promise<MyAxiosResponse> {
+    return {
+      status: HttpStatusCode.ok,
+      data: {}
+    }
+  }
+}))
 
 type Sut = {
   sut: AxiosHttpClient
@@ -25,5 +36,17 @@ describe('Axios Http Client', () => {
       body
     })
     expect(postSpy).toHaveBeenCalledWith('any_url', body)
+  })
+
+  test('Should return correct values on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.post({
+      url: 'any_url',
+      body: mockAuthParams()
+    })
+    expect(httpResponse).toEqual({
+      statusCode: HttpStatusCode.ok,
+      body: {}
+    })
   })
 })
