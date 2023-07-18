@@ -1,6 +1,6 @@
 import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
 import { HttpStatusCode } from '@/data/protocols/HttpResponse'
-import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import type { Account } from '@/domain/models/Account'
 import type { AuthParams, Authentication } from '@/domain/useCases/Authentication'
 
@@ -16,14 +16,11 @@ export class RemoteAuthentication implements Authentication {
       body: params
     })
 
-    const statusCodes = {
-      [HttpStatusCode.ok]: () => {},
-      [HttpStatusCode.unauthorized]: () => {
-        throw new InvalidCredentialsError()
-      }
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: break
+      case HttpStatusCode.unauthorized: throw new InvalidCredentialsError()
+      default: throw new UnexpectedError()
     }
-
-    statusCodes[httpResponse.statusCode]()
 
     return {
       email: '',
