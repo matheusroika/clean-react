@@ -1,17 +1,12 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
-import { HttpStatusCode } from '@/data/protocols/http'
-import { mockAuthParams } from '../../domain/mocks'
-import type { AxiosResponse } from 'axios'
-
-type MyAxiosResponse = Omit<AxiosResponse, 'config' | 'headers' | 'statusText'>
+import { mockHttpPostParams } from '../../data/mocks'
+import { mockPostAxiosResponse } from '../mocks/mockAxios'
+import type { PostAxiosResponse } from '../mocks/mockAxios'
 
 jest.mock('axios', () => ({
-  async post (): Promise<MyAxiosResponse> {
-    return {
-      status: HttpStatusCode.ok,
-      data: {}
-    }
+  async post (): Promise<PostAxiosResponse> {
+    return mockPostAxiosResponse()
   }
 }))
 
@@ -30,23 +25,17 @@ describe('Axios Http Client', () => {
   test('Should call axios.post with correct values', async () => {
     const { sut } = makeSut()
     const postSpy = jest.spyOn(axios, 'post')
-    const body = mockAuthParams()
-    await sut.post({
-      url: 'any_url',
-      body
-    })
-    expect(postSpy).toHaveBeenCalledWith('any_url', body)
+    const httpPostParams = mockHttpPostParams()
+    await sut.post(httpPostParams)
+    expect(postSpy).toHaveBeenCalledWith(httpPostParams.url, httpPostParams.body)
   })
 
   test('Should return correct values on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.post({
-      url: 'any_url',
-      body: mockAuthParams()
-    })
+    const httpResponse = await sut.post(mockHttpPostParams())
     expect(httpResponse).toEqual({
-      statusCode: HttpStatusCode.ok,
-      body: {}
+      statusCode: mockPostAxiosResponse().status,
+      body: mockPostAxiosResponse().data
     })
   })
 })
