@@ -22,6 +22,6 @@ describe('Remote Authentication', () => {
     const { sut, httpPostClient } = makeSut()
     const postSpy = jest.spyOn(httpPostClient, 'post')
     await sut.auth({ email: '', password: '' })
-    expect(postSpy).toBeCalledWith(url)
+    expect(postSpy).toBeCalledWith({ url })
   })
 })
