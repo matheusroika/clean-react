@@ -5,7 +5,7 @@ import type { AuthParams } from '@/domain/useCases/Authentication'
 
 export class AxiosHttpClient implements HttpPostClient<AuthParams, Account> {
   async post (params: HttpPostParams<AuthParams>): Promise<HttpResponse<Account>> {
-    await axios(params.url)
+    await axios.post(params.url)
 
     return {
       statusCode: 200
