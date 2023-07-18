@@ -6,6 +6,7 @@ import { mockAuthParams } from '@/../tests/domain/mocks/mockAuthentication'
 import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
 import type { AuthParams } from '@/domain/useCases/Authentication'
 import type { Account } from '@/domain/models/Account'
+import { mockAccount } from '@/../tests/domain/mocks/mockAccount'
 
 type Sut = {
   sut: RemoteAuthentication
@@ -62,9 +63,14 @@ describe('Remote Authentication', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should return correct values on success', async () => {
-    const { sut } = makeSut()
+  test('Should return an Account if HttpPostClient returns 200', async () => {
+    const { sut, httpPostClient } = makeSut()
+    const body = mockAccount()
+    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({
+      statusCode: HttpStatusCode.ok,
+      body
+    })
     const account = await sut.auth(mockAuthParams())
-    expect(account)
+    expect(account).toEqual(body)
   })
 })
