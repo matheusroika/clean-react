@@ -4,15 +4,17 @@ import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import { mockHttpPostClient } from '../../mocks'
 import { mockAuthParams } from '@/../tests/domain/mocks/mockAuthentication'
 import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
+import type { AuthParams } from '@/domain/useCases/Authentication'
+import type { Account } from '@/domain/models/Account'
 
 type Sut = {
   sut: RemoteAuthentication
-  httpPostClient: HttpPostClient
+  httpPostClient: HttpPostClient<AuthParams, Account>
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpPostClient = mockHttpPostClient()
+  const httpPostClient = mockHttpPostClient<AuthParams, Account>()
   const sut = new RemoteAuthentication(url, httpPostClient)
   return {
     sut,
@@ -58,5 +60,11 @@ describe('Remote Authentication', () => {
     jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.auth(mockAuthParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('Should return correct values on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.auth(mockAuthParams())
+    expect(account)
   })
 })
