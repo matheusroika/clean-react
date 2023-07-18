@@ -1,6 +1,8 @@
 import { RemoteAuthentication } from '@/data/useCases/authentication/RemoteAuthentication'
 import { mockHttpPostClient } from '../../mocks'
 import { mockAuthParams } from '@/../tests/domain/mocks/mockAuthentication'
+import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
+import { HttpStatusCode } from '@/data/protocols/HttpResponse'
 import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
 
 type Sut = {
@@ -19,7 +21,7 @@ const makeSut = (): Sut => {
 }
 
 describe('Remote Authentication', () => {
-  test('Should call HttpClient with correct values', async () => {
+  test('Should call HttpPostClient with correct values', async () => {
     const { sut, httpPostClient } = makeSut()
     const postSpy = jest.spyOn(httpPostClient, 'post')
     const authParams = mockAuthParams()
@@ -28,5 +30,12 @@ describe('Remote Authentication', () => {
       url,
       body: authParams
     })
+  })
+
+  test('Should throw InvalidCredentialsError if HttpPostClient returns 401', async () => {
+    const { sut, httpPostClient } = makeSut()
+    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.unauthorized })
+    const promise = sut.auth(mockAuthParams())
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
   })
 })
