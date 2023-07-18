@@ -1,5 +1,11 @@
 {
-  "extends": "standard-with-typescript",
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["react"],
+  "extends": ["standard-with-typescript", "plugin:react/recommended"],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
