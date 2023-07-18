@@ -1,6 +1,5 @@
-import { HttpStatusCode } from '@/data/protocols/HttpResponse'
-import type { HttpPostClient, HttpPostParams } from '@/data/protocols/HttpPostClient'
-import type { HttpResponse } from '@/data/protocols/HttpResponse'
+import { HttpStatusCode } from '@/data/protocols/http'
+import type { HttpPostClient, HttpPostParams, HttpResponse } from '@/data/protocols/http'
 
 export const mockHttpPostClient = <T, R>(): HttpPostClient<T, R> => {
   class HttpPostClientStub implements HttpPostClient<T, R> {
