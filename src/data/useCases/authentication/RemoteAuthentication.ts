@@ -22,10 +22,6 @@ export class RemoteAuthentication implements Authentication {
       default: throw new UnexpectedError()
     }
 
-    return {
-      email: '',
-      name: '',
-      accessToken: ''
-    }
+    return httpResponse.body
   }
 }
