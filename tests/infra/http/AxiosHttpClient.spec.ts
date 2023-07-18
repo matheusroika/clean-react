@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
-import { mockAuthParams } from '../../domain/mocks'
 import { HttpStatusCode } from '@/data/protocols/http'
+import { mockAuthParams } from '../../domain/mocks'
 import type { AxiosResponse } from 'axios'
 
 type MyAxiosResponse = Omit<AxiosResponse, 'config' | 'headers' | 'statusText'>
