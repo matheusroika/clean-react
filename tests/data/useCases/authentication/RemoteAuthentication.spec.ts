@@ -1,7 +1,7 @@
-import { RemoteAuthentication } from '../../../../src/data/useCases/authentication/RemoteAuthentication'
+import { RemoteAuthentication } from '@/data/useCases/authentication/RemoteAuthentication'
 import { mockHttpPostClient } from '../../mocks'
-import { mockAuthParams } from '../../../domain/mocks/mockAuthentication'
-import type { HttpPostClient } from '../../../../src/data/protocols/HttpPostClient'
+import { mockAuthParams } from '@/../tests/domain/mocks/mockAuthentication'
+import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
 
 type Sut = {
   sut: RemoteAuthentication

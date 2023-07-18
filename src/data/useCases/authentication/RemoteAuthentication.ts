@@ -1,6 +1,6 @@
-import type { HttpPostClient } from 'data/protocols/HttpPostClient'
-import type { Account } from 'domain/models/Account'
-import type { AuthParams, Authentication } from 'domain/useCases/Authentication'
+import type { HttpPostClient } from '@/data/protocols/HttpPostClient'
+import type { Account } from '@/domain/models/Account'
+import type { AuthParams, Authentication } from '@/domain/useCases/Authentication'
 
 export class RemoteAuthentication implements Authentication {
   constructor (
