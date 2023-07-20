@@ -1,7 +1,9 @@
 import React from 'react'
 import styles from './loaderStyles.scss'
 
-type Props = React.HTMLProps<HTMLDivElement>
+interface Props extends React.HTMLProps<HTMLDivElement> {
+  className?: string
+}
 
 const Spinner: React.FC<Props> = (props) => {
   return (
