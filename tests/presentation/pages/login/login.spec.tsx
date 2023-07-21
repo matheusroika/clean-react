@@ -6,7 +6,7 @@ import type { Validation } from '@/presentation/protocols/validation'
 
 const mockValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: object): string | null {
+    validate (fieldName: string, fieldValue: string): string | null {
       return null
     }
   }
@@ -50,7 +50,7 @@ describe('Login page', () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validateSpy).toHaveBeenCalledWith({ email: 'any_email' })
+    expect(validateSpy).toHaveBeenCalledWith('email', 'any_email')
   })
 
   test('Should call Validation with correct password', () => {
@@ -58,6 +58,6 @@ describe('Login page', () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const passwordInput = sut.getByTestId('password')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validateSpy).toHaveBeenCalledWith({ password: 'any_password' })
+    expect(validateSpy).toHaveBeenCalledWith('password', 'any_password')
   })
 })
