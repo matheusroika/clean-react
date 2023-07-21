@@ -1,18 +1,9 @@
 import React from 'react'
-import { cleanup, fireEvent, render } from '@testing-library/react'
 import Login from '@/presentation/pages/login/login'
+import { cleanup, fireEvent, render } from '@testing-library/react'
+import { mockValidation } from '../../mocks/mockValidation'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
-
-const mockValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (fieldName: string, fieldValue: string): string | null {
-      return null
-    }
-  }
-
-  return new ValidationStub()
-}
 
 type Sut = {
   sut: RenderResult
