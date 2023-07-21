@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './loginStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
@@ -6,6 +6,9 @@ import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 
 const Login: React.FC = () => {
+  const [isLoading] = useState(false)
+  const [message] = useState('')
+
   return (
     <div className={styles.login}>
       <Header />
@@ -18,7 +21,7 @@ const Login: React.FC = () => {
           <span className={styles.link}>
             <a href="">Criar conta</a>
           </span>
-          <FormStatus />
+          <FormStatus isLoading={isLoading} message={message} />
         </form>
       </main>
       <Footer />

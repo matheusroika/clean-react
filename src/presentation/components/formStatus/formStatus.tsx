@@ -2,11 +2,16 @@ import React from 'react'
 import styles from './formStatusStyles.scss'
 import Spinner from '../loader/loader'
 
-const FormStatus: React.FC = () => {
-  return (
-    <div className={styles.modalWrapper}>
-      <Spinner className={styles.loader} />
-      <span className={styles.message}>Erro</span>
+type Props = {
+  isLoading: boolean
+  message: string
+}
+
+const FormStatus: React.FC<Props> = ({ isLoading, message }: Props) => {
+  return (isLoading || message) && (
+    <div data-testid="modalWrapper" className={styles.modalWrapper}>
+      { isLoading && <Spinner className={styles.loader} /> }
+      { message && <span className={styles.message}>{message}</span> }
     </div>
   )
 }
