@@ -13,13 +13,13 @@ type Props = {
 const Login: React.FC<Props> = ({ validation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [emailRequirement] = useState('Campo obrigatório')
-  const [passwordRequirement] = useState('Campo obrigatório')
+  const [emailError, setEmailError] = useState('Campo obrigatório')
+  const [passwordError] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
   const [message] = useState('')
 
   useEffect(() => {
-    validation.validate('email', email)
+    setEmailError(validation.validate('email', email))
   }, [email])
 
   useEffect(() => {
@@ -32,8 +32,8 @@ const Login: React.FC<Props> = ({ validation }) => {
       <main>
         <form className={styles.form}>
           <h2>Login</h2>
-          <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailRequirement} value={email} setValue={setEmail} />
-          <Input type="password" name="password" placeholder="Digite sua senha" title={passwordRequirement} value={password} setValue={setPassword} />
+          <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
+          <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
           <button data-testid="submit" type="submit" disabled>Entrar</button>
           <span className={styles.link}>
             <a href="">Criar conta</a>
