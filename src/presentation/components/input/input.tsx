@@ -6,7 +6,7 @@ interface Props extends React.ComponentPropsWithoutRef<'input'> {}
 const Input: React.FC<Props> = (props) => {
   return (
     <div className={styles.inputWrapper}>
-      <input {...props} />
+      <input data-testid={props.name} {...props} />
       <span data-testid={`${props.name}Status`} title={props.title}>🔴</span>
     </div>
   )
