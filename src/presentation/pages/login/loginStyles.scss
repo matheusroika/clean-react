@@ -76,25 +76,6 @@ a {
       margin-bottom: 1rem;
     }
 
-    .inputWrapper {
-      display: flex;
-      align-items: center;
-      position: relative;
-      margin-top: 1rem;
-
-      input {
-        width: 100%;
-        padding: 0 2.5rem 0 1rem;
-      }
-
-      span {
-        position: absolute;
-        right: .5rem;
-        font-size: .75rem;
-        cursor: help;
-      }
-    }
-
     button {
       margin-top: 1.5rem;
     }

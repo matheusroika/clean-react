@@ -3,6 +3,7 @@ import styles from './loginStyles.scss'
 import Spinner from '@/presentation/components/loader/loader'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
+import Input from '@/presentation/components/input/input'
 
 const Login: React.FC = () => {
   return (
@@ -11,15 +12,8 @@ const Login: React.FC = () => {
       <main>
         <form className={styles.form}>
           <h2>Login</h2>
-          <div className={styles.inputWrapper}>
-            <input type="email" name="email" placeholder="Digite seu e-mail" />
-            <span>🔴</span>
-          </div>
-
-          <div className={styles.inputWrapper}>
-            <input type="password" name="password" placeholder="Digite sua senha" />
-            <span>🔴</span>
-          </div>
+          <Input type="email" name="email" placeholder="Digite seu e-mail" />
+          <Input type="password" name="password" placeholder="Digite sua senha" />
           <button type="submit">Entrar</button>
           <span className={styles.link}><a href="">Criar conta</a></span>
           <div className={styles.modalWrapper}>
