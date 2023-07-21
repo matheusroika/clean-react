@@ -14,7 +14,7 @@ const Login: React.FC<Props> = ({ validation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('Campo obrigatório')
-  const [passwordError] = useState('Campo obrigatório')
+  const [passwordError, setPasswordError] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
   const [message] = useState('')
 
@@ -23,7 +23,7 @@ const Login: React.FC<Props> = ({ validation }) => {
   }, [email])
 
   useEffect(() => {
-    validation.validate('password', password)
+    setPasswordError(validation.validate('password', password))
   }, [password])
 
   return (
