@@ -45,11 +45,19 @@ describe('Login page', () => {
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
-  test('Should call Validation with correct value', () => {
+  test('Should call Validation with correct email', () => {
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
     expect(validateSpy).toHaveBeenCalledWith({ email: 'any_email' })
+  })
+
+  test('Should call Validation with correct password', () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const passwordInput = sut.getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    expect(validateSpy).toHaveBeenCalledWith({ password: 'any_password' })
   })
 })
