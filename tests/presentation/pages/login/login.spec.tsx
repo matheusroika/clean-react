@@ -75,4 +75,14 @@ describe('Login page', () => {
     expect(passwordStatus.title).toBe(message)
     expect(passwordStatus.textContent).toBe('🔴')
   })
+
+  test('Should show correct status if email Validation succeeds', () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+    const emailInput = sut.getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    const emailStatus = sut.getByTestId('emailStatus')
+    expect(emailStatus.title).toBe('Tudo certo!')
+    expect(emailStatus.textContent).toBe('🟢')
+  })
 })
