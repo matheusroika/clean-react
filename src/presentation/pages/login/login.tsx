@@ -12,6 +12,7 @@ type Props = {
 
 const Login: React.FC<Props> = ({ validation }) => {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [emailRequirement] = useState('Campo obrigatório')
   const [passwordRequirement] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
@@ -21,14 +22,18 @@ const Login: React.FC<Props> = ({ validation }) => {
     validation.validate({ email })
   }, [email])
 
+  useEffect(() => {
+    validation.validate({ password })
+  }, [password])
+
   return (
     <div className={styles.login}>
       <Header />
       <main>
         <form className={styles.form}>
           <h2>Login</h2>
-          <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailRequirement} value={email} onChange={(e) => { setEmail(e.target.value) }} />
-          <Input type="password" name="password" placeholder="Digite sua senha" title={passwordRequirement} />
+          <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailRequirement} value={email} setValue={setEmail} />
+          <Input type="password" name="password" placeholder="Digite sua senha" title={passwordRequirement} value={password} setValue={setPassword} />
           <button data-testid="submit" type="submit" disabled>Entrar</button>
           <span className={styles.link}>
             <a href="">Criar conta</a>
