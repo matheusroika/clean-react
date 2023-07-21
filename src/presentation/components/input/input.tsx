@@ -7,7 +7,7 @@ const Input: React.FC<Props> = (props) => {
   return (
     <div className={styles.inputWrapper}>
       <input {...props} />
-      <span>🔴</span>
+      <span data-testid={`${props.name}Status`} title={props.title}>🔴</span>
     </div>
   )
 }

@@ -8,6 +8,8 @@ import FormStatus from '@/presentation/components/formStatus/formStatus'
 const Login: React.FC = () => {
   const [isLoading] = useState(false)
   const [message] = useState('')
+  const [emailRequirement] = useState('Campo obrigatório')
+  const [passwordRequirement] = useState('Campo obrigatório')
 
   return (
     <div className={styles.login}>
@@ -15,8 +17,8 @@ const Login: React.FC = () => {
       <main>
         <form className={styles.form}>
           <h2>Login</h2>
-          <Input type="email" name="email" placeholder="Digite seu e-mail" />
-          <Input type="password" name="password" placeholder="Digite sua senha" />
+          <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailRequirement} />
+          <Input type="password" name="password" placeholder="Digite sua senha" title={passwordRequirement} />
           <button data-testid="submit" type="submit" disabled>Entrar</button>
           <span className={styles.link}>
             <a href="">Criar conta</a>
