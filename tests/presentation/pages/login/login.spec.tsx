@@ -38,17 +38,30 @@ describe('Login page', () => {
 
   test('Should call Validation with correct email', () => {
     const { sut, validationStub } = makeSut()
+    const email = 'any_email'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validateSpy).toHaveBeenCalledWith('email', 'any_email')
+    fireEvent.input(emailInput, { target: { value: email } })
+    expect(validateSpy).toHaveBeenCalledWith('email', email)
   })
 
   test('Should call Validation with correct password', () => {
     const { sut, validationStub } = makeSut()
+    const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const passwordInput = sut.getByTestId('password')
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validateSpy).toHaveBeenCalledWith('password', 'any_password')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    expect(validateSpy).toHaveBeenCalledWith('password', password)
+  })
+
+  test('Should show message with error if email Validation fails', () => {
+    const { sut, validationStub } = makeSut()
+    const message = 'Any Message'
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
+    const emailInput = sut.getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    const emailStatus = sut.getByTestId('emailStatus')
+    expect(emailStatus.title).toBe(message)
+    expect(emailStatus.textContent).toBe('🔴')
   })
 })
