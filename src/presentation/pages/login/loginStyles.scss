@@ -31,6 +31,12 @@
 
     button {
       margin-top: 1.5rem;
+
+      &:disabled {
+        background-color: $disabledBackground;
+        color: $disabled;
+        cursor: not-allowed;
+      }
     }
 
     .link {
