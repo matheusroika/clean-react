@@ -148,7 +148,7 @@ describe('Login page', () => {
 
   test('Should hide loader and add accessToken to localStorage on Authentication success', async () => {
     const { sut } = makeSut()
-    expect(localStorage.getItem('accessToken')).toBeNull()
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
     submitForm(sut)
     const modalWrapper = sut.getByTestId('modalWrapper')
     await waitFor(() => modalWrapper)
@@ -156,6 +156,6 @@ describe('Login page', () => {
     expect(loader).toBeNull()
     const errorMessage = sut.queryByTestId('message')
     expect(errorMessage).toBeNull()
-    expect(localStorage.getItem('accessToken')).toBe('any_token')
+    expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'any_token')
   })
 })
