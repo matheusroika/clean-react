@@ -30,7 +30,7 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
 
   const handleSubmit = async (): Promise<void> => {
     setIsLoading(true)
-    if (isLoading) return
+    if (isLoading || emailError || passwordError) return
     await authentication.auth({
       email,
       password
