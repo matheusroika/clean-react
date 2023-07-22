@@ -26,6 +26,10 @@ const makeSut = (mockMessage?: string): Sut => {
 }
 
 describe('Login page', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   afterEach(cleanup)
 
   test('Should render correctly on initial state', () => {
@@ -140,5 +144,18 @@ describe('Login page', () => {
     const errorMessage = sut.queryByTestId('message')
     expect(errorMessage).toBeTruthy()
     expect(errorMessage.textContent).toBe(error.message)
+  })
+
+  test('Should hide loader and add accessToken to localStorage on Authentication success', async () => {
+    const { sut } = makeSut()
+    expect(localStorage.getItem('accessToken')).toBeNull()
+    submitForm(sut)
+    const modalWrapper = sut.getByTestId('modalWrapper')
+    await waitFor(() => modalWrapper)
+    const loader = sut.queryByTestId('loader')
+    expect(loader).toBeNull()
+    const errorMessage = sut.queryByTestId('message')
+    expect(errorMessage).toBeNull()
+    expect(localStorage.getItem('accessToken')).toBe('any_token')
   })
 })
