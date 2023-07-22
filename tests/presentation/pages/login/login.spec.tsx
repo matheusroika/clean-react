@@ -4,19 +4,37 @@ import { cleanup, fireEvent, render } from '@testing-library/react'
 import { mockValidation } from '../../mocks/mockValidation'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
+import type { AuthParams, Authentication } from '@/domain/useCases/Authentication'
+import type { Account } from '@/domain/models/Account'
+
+const mockAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (params: AuthParams): Promise<Account> {
+      return {
+        accessToken: 'any_token',
+        email: 'any@email.com',
+        name: 'Any Name'
+      }
+    }
+  }
+  return new AuthenticationStub()
+}
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
-  const sut = render(<Login validation={validationStub} />)
+  const authenticationStub = mockAuthentication()
+  const sut = render(<Login validation={validationStub} authentication={authenticationStub} />)
   return {
     sut,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -40,7 +58,7 @@ describe('Login page', () => {
 
   test('Should call Validation with correct email', () => {
     const { sut, validationStub } = makeSut()
-    const email = 'any_email'
+    const email = 'any@email.com'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: email } })
@@ -61,7 +79,7 @@ describe('Login page', () => {
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    fireEvent.input(emailInput, { target: { value: 'any@email.com' } })
     const emailStatus = sut.getByTestId('emailStatus')
     expect(emailStatus.title).toBe(message)
     expect(emailStatus.textContent).toBe('🔴')
@@ -81,7 +99,7 @@ describe('Login page', () => {
   test('Should show correct status if email Validation succeeds', () => {
     const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    fireEvent.input(emailInput, { target: { value: 'any@email.com' } })
     const emailStatus = sut.getByTestId('emailStatus')
     expect(emailStatus.title).toBe('Tudo certo!')
     expect(emailStatus.textContent).toBe('🟢')
@@ -99,7 +117,7 @@ describe('Login page', () => {
   test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    fireEvent.input(emailInput, { target: { value: 'any@email.com' } })
     const passwordInput = sut.getByTestId('password')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } })
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
@@ -109,12 +127,29 @@ describe('Login page', () => {
   test('Should show loader on form submit', () => {
     const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    fireEvent.input(emailInput, { target: { value: 'any@email.com' } })
     const passwordInput = sut.getByTestId('password')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } })
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     fireEvent.click(submitButton)
     const loader = sut.queryByTestId('loader')
     expect(loader).toBeTruthy()
+  })
+
+  test('Should call Authentication with correct values', () => {
+    const { sut, authenticationStub } = makeSut()
+    const email = 'any@email.com'
+    const password = 'any_password'
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    const emailInput = sut.getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: email } })
+    const passwordInput = sut.getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+    fireEvent.click(submitButton)
+    expect(authSpy).toHaveBeenCalledWith({
+      email,
+      password
+    })
   })
 })
