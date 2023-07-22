@@ -1,10 +1,11 @@
 import React from 'react'
 import Login from '@/presentation/pages/login/login'
-import { cleanup, fireEvent, render } from '@testing-library/react'
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm } from '../../mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
+import { InvalidCredentialsError } from '@/domain/errors'
 
 type Sut = {
   sut: RenderResult
@@ -28,14 +29,14 @@ describe('Login page', () => {
   afterEach(cleanup)
 
   test('Should render correctly on initial state', () => {
-    const message = 'Campo obrigatório'
-    const { sut } = makeSut(message)
+    const error = 'Campo obrigatório'
+    const { sut } = makeSut(error)
     const modalWrapper = sut.queryByTestId('modalWrapper')
     expect(modalWrapper).toBeNull()
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(true)
-    expectFieldStatus({ sut, fieldName: 'email', titleContent: message, textContent: '🔴' })
-    expectFieldStatus({ sut, fieldName: 'password', titleContent: message, textContent: '🔴' })
+    expectFieldStatus({ sut, fieldName: 'email', titleContent: error, textContent: '🔴' })
+    expectFieldStatus({ sut, fieldName: 'password', titleContent: error, textContent: '🔴' })
   })
 
   test('Should call Validation with correct email', () => {
@@ -118,13 +119,26 @@ describe('Login page', () => {
   })
 
   test('Should not call Authentication if form is invalid', () => {
-    const message = 'Campo obrigatório'
-    const { sut, authenticationStub } = makeSut(message)
+    const { sut, authenticationStub } = makeSut('Campo obrigatório')
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     fillInput({ sut, inputId: 'email', value: 'any@email.com' })
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     submitButton.disabled = false
     fireEvent.click(submitButton)
     expect(authSpy).toBeCalledTimes(0)
+  })
+
+  test('Should hide loader and show error message if Authentication fails', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
+    submitForm(sut)
+    const modalWrapper = sut.getByTestId('modalWrapper')
+    await waitFor(() => modalWrapper)
+    const loader = sut.queryByTestId('loader')
+    expect(loader).toBeNull()
+    const errorMessage = sut.queryByTestId('message')
+    expect(errorMessage).toBeTruthy()
+    expect(errorMessage.textContent).toBe(error.message)
   })
 })
