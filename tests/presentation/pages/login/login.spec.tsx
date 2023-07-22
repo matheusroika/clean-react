@@ -1,4 +1,5 @@
 import React from 'react'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm } from '../../mocks'
@@ -17,7 +18,15 @@ const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const authenticationStub = mockAuthentication()
-  const sut = render(<Login validation={validationStub} authentication={authenticationStub} />)
+  const sut = render(
+    <MemoryRouter initialEntries={['/login']}>
+      <Routes>
+        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} />} />
+        <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
+      </Routes>
+    </MemoryRouter>
+  )
+
   return {
     sut,
     validationStub,
@@ -157,5 +166,14 @@ describe('Login page', () => {
     const errorMessage = sut.queryByTestId('message')
     expect(errorMessage).toBeNull()
     expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'any_token')
+  })
+
+  test('Should go to SignUp page on link click', async () => {
+    const { sut } = makeSut()
+    const signUpLink = sut.getByTestId('signup')
+    fireEvent.click(signUpLink)
+    await waitFor(() => {
+      expect(sut.getByText('Test Pass Sign Up')).toBeTruthy()
+    })
   })
 })
