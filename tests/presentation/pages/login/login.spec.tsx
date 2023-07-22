@@ -22,6 +22,7 @@ const makeSut = (mockMessage?: string): Sut => {
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
         <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} />} />
+        <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
       </Routes>
     </MemoryRouter>
@@ -155,7 +156,7 @@ describe('Login page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
-  test('Should hide loader and add accessToken to localStorage on Authentication success', async () => {
+  test('Should hide loader, add accessToken to localStorage and go to index on Authentication success', async () => {
     const { sut } = makeSut()
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
     submitForm(sut)
@@ -166,6 +167,9 @@ describe('Login page', () => {
     const errorMessage = sut.queryByTestId('message')
     expect(errorMessage).toBeNull()
     expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'any_token')
+    await waitFor(() => {
+      expect(sut.getByText('Test Pass Index')).toBeTruthy()
+    })
   })
 
   test('Should go to SignUp page on link click', async () => {
