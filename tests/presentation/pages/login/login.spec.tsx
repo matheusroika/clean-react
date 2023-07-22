@@ -106,7 +106,7 @@ describe('Login page', () => {
     expect(submitButton.disabled).toBe(false)
   })
 
-  test('Should should show loader on submit', () => {
+  test('Should show loader on form submit', () => {
     const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
