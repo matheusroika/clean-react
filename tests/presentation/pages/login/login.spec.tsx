@@ -10,8 +10,9 @@ type Sut = {
   validationStub: Validation
 }
 
-const makeSut = (): Sut => {
+const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
+  if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const sut = render(<Login validation={validationStub} />)
   return {
     sut,
@@ -23,16 +24,17 @@ describe('Login page', () => {
   afterEach(cleanup)
 
   test('Should render correctly on initial state', () => {
-    const { sut } = makeSut()
+    const message = 'Campo obrigatório'
+    const { sut } = makeSut(message)
     const modalWrapper = sut.queryByTestId('modalWrapper')
     expect(modalWrapper).toBeNull()
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(true)
     const emailStatus = sut.getByTestId('emailStatus')
-    expect(emailStatus.title).toBe('Campo obrigatório')
+    expect(emailStatus.title).toBe(message)
     expect(emailStatus.textContent).toBe('🔴')
     const passwordStatus = sut.getByTestId('passwordStatus')
-    expect(passwordStatus.title).toBe('Campo obrigatório')
+    expect(passwordStatus.title).toBe(message)
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
@@ -77,8 +79,7 @@ describe('Login page', () => {
   })
 
   test('Should show correct status if email Validation succeeds', () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+    const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
     const emailStatus = sut.getByTestId('emailStatus')
@@ -87,8 +88,7 @@ describe('Login page', () => {
   })
 
   test('Should show correct status if password Validation succeeds', () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+    const { sut } = makeSut()
     const passwordInput = sut.getByTestId('password')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } })
     const passwordStatus = sut.getByTestId('passwordStatus')
@@ -97,12 +97,11 @@ describe('Login page', () => {
   })
 
   test('Should enable submit button if form is valid', () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValue(null)
-    const passwordInput = sut.getByTestId('password')
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    const { sut } = makeSut()
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    const passwordInput = sut.getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(false)
   })

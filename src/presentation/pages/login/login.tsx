@@ -13,8 +13,8 @@ type Props = {
 const Login: React.FC<Props> = ({ validation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('Campo obrigatório')
-  const [passwordError, setPasswordError] = useState('Campo obrigatório')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
   const [isLoading] = useState(false)
   const [message] = useState('')
 
@@ -34,7 +34,7 @@ const Login: React.FC<Props> = ({ validation }) => {
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
-          <button data-testid="submit" type="submit" disabled={!!(emailError || passwordError)}>Entrar</button>
+          <button data-testid="submit" type="submit" disabled={!!passwordError || !!emailError}>Entrar</button>
           <span className={styles.link}>
             <a href="">Criar conta</a>
           </span>
