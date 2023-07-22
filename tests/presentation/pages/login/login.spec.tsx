@@ -1,6 +1,6 @@
 import React from 'react'
 import Login from '@/presentation/pages/login/login'
-import { cleanup, render } from '@testing-library/react'
+import { cleanup, fireEvent, render } from '@testing-library/react'
 import { expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm } from '../../mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
@@ -106,5 +106,14 @@ describe('Login page', () => {
       email,
       password
     })
+  })
+
+  test('Should call Authentication only once even if submit is pressed multiple times', () => {
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    submitForm(sut)
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+    fireEvent.click(submitButton)
+    expect(authSpy).toBeCalledTimes(1)
   })
 })
