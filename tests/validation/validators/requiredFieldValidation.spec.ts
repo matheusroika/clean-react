@@ -6,7 +6,7 @@ type Sut = {
 }
 
 const makeSut = (): Sut => {
-  const sut = new RequiredFieldValidation('email')
+  const sut = new RequiredFieldValidation('any_field')
   return {
     sut
   }
