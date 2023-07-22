@@ -116,4 +116,15 @@ describe('Login page', () => {
     fireEvent.click(submitButton)
     expect(authSpy).toBeCalledTimes(1)
   })
+
+  test('Should not call Authentication if form is invalid', () => {
+    const message = 'Campo obrigatório'
+    const { sut, authenticationStub } = makeSut(message)
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    fillInput({ sut, inputId: 'email', value: 'any@email.com' })
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+    submitButton.disabled = false
+    fireEvent.click(submitButton)
+    expect(authSpy).toBeCalledTimes(0)
+  })
 })
