@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import styles from './loginStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
@@ -55,7 +56,7 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
           <button data-testid="submit" type="submit" disabled={!!passwordError || !!emailError} onClick={handleSubmit}>Entrar</button>
           <span className={styles.link}>
-            <a href="">Criar conta</a>
+            <Link data-testid="signup" to="/signup">Criar conta</Link>
           </span>
           <FormStatus isLoading={isLoading} message={message} />
         </form>
