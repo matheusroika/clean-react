@@ -32,10 +32,12 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
     setIsLoading(true)
     if (isLoading || emailError || passwordError) return
     try {
-      await authentication.auth({
+      const account = await authentication.auth({
         email,
         password
       })
+      localStorage.setItem('accessToken', account.accessToken)
+      setIsLoading(false)
     } catch (error) {
       const errorTyped = error as Error
       setIsLoading(false)
