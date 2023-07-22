@@ -1,24 +1,10 @@
 import React from 'react'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import { mockValidation } from '../../mocks/mockValidation'
+import { mockAuthentication, mockValidation } from '../../mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
-import type { AuthParams, Authentication } from '@/domain/useCases/Authentication'
-import type { Account } from '@/domain/models/Account'
-
-const mockAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (params: AuthParams): Promise<Account> {
-      return {
-        accessToken: 'any_token',
-        email: 'any@email.com',
-        name: 'Any Name'
-      }
-    }
-  }
-  return new AuthenticationStub()
-}
+import type { Authentication } from '@/domain/useCases/Authentication'
 
 type Sut = {
   sut: RenderResult
