@@ -18,7 +18,7 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [message] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     setEmailError(validation.validate('email', email))
@@ -31,10 +31,16 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
   const handleSubmit = async (): Promise<void> => {
     setIsLoading(true)
     if (isLoading || emailError || passwordError) return
-    await authentication.auth({
-      email,
-      password
-    })
+    try {
+      await authentication.auth({
+        email,
+        password
+      })
+    } catch (error) {
+      const errorTyped = error as Error
+      setIsLoading(false)
+      setMessage(errorTyped.message)
+    }
   }
 
   return (
