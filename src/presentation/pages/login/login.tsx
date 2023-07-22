@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './loginStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
@@ -20,6 +20,7 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
   const [passwordError, setPasswordError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     setEmailError(validation.validate('email', email))
@@ -39,6 +40,7 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
       })
       localStorage.setItem('accessToken', account.accessToken)
       setIsLoading(false)
+      navigate('/')
     } catch (error) {
       const errorTyped = error as Error
       setIsLoading(false)
