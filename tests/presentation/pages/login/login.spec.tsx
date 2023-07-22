@@ -2,7 +2,7 @@ import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm } from '../../mocks'
+import { clickSubmitButton, expectButtonDisabledProperty, expectElementToExist, expectElementToNotExist, expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm, submitFormAndWait } from '../../mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
@@ -45,10 +45,8 @@ describe('Login page', () => {
   test('Should render correctly on initial state', () => {
     const error = 'Campo obrigatório'
     const { sut } = makeSut(error)
-    const modalWrapper = sut.queryByTestId('modalWrapper')
-    expect(modalWrapper).toBeNull()
-    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    expect(submitButton.disabled).toBe(true)
+    expectElementToNotExist(sut, 'modalWrapper')
+    expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: true })
     expectFieldStatus({ sut, fieldName: 'email', titleContent: error, textContent: '🔴' })
     expectFieldStatus({ sut, fieldName: 'password', titleContent: error, textContent: '🔴' })
   })
@@ -100,15 +98,13 @@ describe('Login page', () => {
   test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut()
     fillForm(sut)
-    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    expect(submitButton.disabled).toBe(false)
+    expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: false })
   })
 
   test('Should show loader on form submit', () => {
     const { sut } = makeSut()
     submitForm(sut)
-    const loader = sut.queryByTestId('loader')
-    expect(loader).toBeTruthy()
+    expectElementToExist(sut, 'loader')
   })
 
   test('Should call Authentication with correct values', () => {
@@ -127,8 +123,7 @@ describe('Login page', () => {
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     submitForm(sut)
-    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    fireEvent.click(submitButton)
+    clickSubmitButton(sut)
     expect(authSpy).toBeCalledTimes(1)
   })
 
@@ -136,9 +131,7 @@ describe('Login page', () => {
     const { sut, authenticationStub } = makeSut('Campo obrigatório')
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     fillInput({ sut, inputId: 'email', value: 'any@email.com' })
-    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    submitButton.disabled = false
-    fireEvent.click(submitButton)
+    clickSubmitButton(sut, true)
     expect(authSpy).toBeCalledTimes(0)
   })
 
@@ -146,26 +139,18 @@ describe('Login page', () => {
     const { sut, authenticationStub } = makeSut()
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
-    submitForm(sut)
-    const modalWrapper = sut.getByTestId('modalWrapper')
-    await waitFor(() => modalWrapper)
-    const loader = sut.queryByTestId('loader')
-    expect(loader).toBeNull()
-    const errorMessage = sut.queryByTestId('message')
-    expect(errorMessage).toBeTruthy()
+    await submitFormAndWait(sut)
+    expectElementToNotExist(sut, 'loader')
+    const errorMessage = expectElementToExist(sut, 'message')
     expect(errorMessage.textContent).toBe(error.message)
   })
 
   test('Should hide loader, add accessToken to localStorage and go to index on Authentication success', async () => {
     const { sut } = makeSut()
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
-    submitForm(sut)
-    const modalWrapper = sut.getByTestId('modalWrapper')
-    await waitFor(() => modalWrapper)
-    const loader = sut.queryByTestId('loader')
-    expect(loader).toBeNull()
-    const errorMessage = sut.queryByTestId('message')
-    expect(errorMessage).toBeNull()
+    await submitFormAndWait(sut)
+    expectElementToNotExist(sut, 'loader')
+    expectElementToNotExist(sut, 'message')
     expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'any_token')
     await waitFor(() => {
       expect(sut.getByText('Test Pass Index')).toBeTruthy()
