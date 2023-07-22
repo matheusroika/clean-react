@@ -5,12 +5,14 @@ import Footer from '@/presentation/components/footer/footer'
 import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 import type { Validation } from '@/presentation/protocols/validation'
+import type { Authentication } from '@/domain/useCases/Authentication'
 
 type Props = {
   validation: Validation
+  authentication: Authentication
 }
 
-const Login: React.FC<Props> = ({ validation }) => {
+const Login: React.FC<Props> = ({ validation, authentication }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -26,8 +28,12 @@ const Login: React.FC<Props> = ({ validation }) => {
     setPasswordError(validation.validate('password', password))
   }, [password])
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     setIsLoading(true)
+    await authentication.auth({
+      email,
+      password
+    })
   }
 
   return (
