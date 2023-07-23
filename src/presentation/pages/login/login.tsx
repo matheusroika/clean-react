@@ -30,7 +30,8 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
     setPasswordError(validation.validate('password', password))
   }, [password])
 
-  const handleSubmit = async (): Promise<void> => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
+    e.preventDefault()
     setIsLoading(true)
     if (isLoading || emailError || passwordError) return
     try {
