@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom'
-import Login from './pages/login/login'
+import { makeLogin } from '@/main/factories/pages/loginFactory'
 
 const router = createBrowserRouter([
-  { path: '/login', Component: Login }
+  { path: '/login', Component: makeLogin }
 ])
 
 export default router
