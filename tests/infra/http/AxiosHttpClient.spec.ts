@@ -38,4 +38,16 @@ describe('Axios Http Client', () => {
       body: mockPostAxiosResponse().data
     })
   })
+
+  test('Should return correct values on failure', async () => {
+    const { sut } = makeSut()
+    jest.spyOn(axios, 'post').mockRejectedValueOnce({
+      response: mockPostAxiosResponse()
+    })
+    const httpResponse = await sut.post(mockHttpPostParams())
+    expect(httpResponse).toEqual({
+      statusCode: mockPostAxiosResponse().status,
+      body: mockPostAxiosResponse().data
+    })
+  })
 })
