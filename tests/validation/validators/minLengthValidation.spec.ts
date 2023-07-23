@@ -18,4 +18,10 @@ describe('Minimum Length Validation', () => {
     const error = sut.validate('123')
     expect(error).toEqual(new NotMinLengthError('any_field', 5))
   })
+
+  test('Should return null if value length is valid', () => {
+    const { sut } = makeSut()
+    const error = sut.validate('12345')
+    expect(error).toBeNull()
+  })
 })
