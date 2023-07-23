@@ -1,5 +1,5 @@
 import { ValidationBuilder } from '@/validation/validators/validationBuilder'
-import { RequiredFieldValidation } from '@/validation/validators/requiredFieldValidation'
+import { RequiredFieldValidation } from '@/validation/validators'
 
 type Sut = {
   sut: ValidationBuilder

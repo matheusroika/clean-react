@@ -1,4 +1,4 @@
-import { ValidationComposite } from '@/validation/validators/validationComposite'
+import { ValidationComposite } from '@/validation/validators'
 import { mockValidation } from '../mocks/mockValidation'
 import type { FieldValidation } from '../protocols/fieldValidation'
 
