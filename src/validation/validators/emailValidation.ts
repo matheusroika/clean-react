@@ -1,4 +1,4 @@
-import { InvalidFieldError } from '../errors/invalidFieldError'
+import { InvalidFieldError } from '../errors'
 import type { EmailValidator } from '../protocols/emailValidator'
 import type { FieldValidation } from '../protocols/fieldValidation'
 

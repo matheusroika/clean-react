@@ -1,6 +1,6 @@
 import { EmailValidation } from '@/validation/validators/emailValidation'
 import { mockEmailValidator } from '../mocks/mockValidation'
-import { InvalidFieldError } from '@/validation/errors/invalidFieldError'
+import { InvalidFieldError } from '@/validation/errors'
 import type { EmailValidator } from '@/validation/protocols/emailValidator'
 
 type Sut = {
