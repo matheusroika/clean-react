@@ -37,4 +37,10 @@ describe('Email Validation', () => {
     const error = sut.validate('any@email.com')
     expect(error).toBeNull()
   })
+
+  test('Should return null if email is empty', () => {
+    const { sut } = makeSut()
+    const error = sut.validate('')
+    expect(error).toBeNull()
+  })
 })
