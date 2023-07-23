@@ -4,8 +4,8 @@ import type { FieldValidation } from '../protocols/fieldValidation'
 
 export class EmailValidation implements FieldValidation {
   constructor (
-    private readonly emailValidator: EmailValidator,
-    readonly field: string = 'email'
+    readonly field: string,
+    private readonly emailValidator: EmailValidator
   ) {}
 
   validate (value: string): Error {

@@ -10,7 +10,7 @@ type Sut = {
 
 const makeSut = (): Sut => {
   const emailValidatorStub = mockEmailValidator()
-  const sut = new EmailValidation(emailValidatorStub)
+  const sut = new EmailValidation('any_field', emailValidatorStub)
   return {
     sut,
     emailValidatorStub
