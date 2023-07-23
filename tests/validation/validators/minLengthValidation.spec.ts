@@ -16,7 +16,7 @@ describe('Minimum Length Validation', () => {
   test('Should return error if value length is less than required', () => {
     const { sut } = makeSut()
     const error = sut.validate('123')
-    expect(error).toEqual(new NotMinLengthError('any_field', 5))
+    expect(error).toEqual(new NotMinLengthError(5))
   })
 
   test('Should return null if value length is valid', () => {
