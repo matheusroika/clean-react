@@ -23,4 +23,11 @@ describe('Local Save Access Token', () => {
     await sut.save('any_token')
     expect(setSpy).toHaveBeenCalledWith('accessToken', 'any_token')
   })
+
+  test('Should throw if SetStorage throws', async () => {
+    const { sut, setStorageStub } = makeSut()
+    jest.spyOn(setStorageStub, 'set').mockRejectedValueOnce(new Error())
+    const promise = sut.save('any_token')
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
