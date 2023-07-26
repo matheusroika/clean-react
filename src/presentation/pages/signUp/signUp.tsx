@@ -18,7 +18,7 @@ const SignUp: React.FC<Props> = ({ validation }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [nameError, setNameError] = useState('Campo obrigatório')
   const [emailError, setEmailError] = useState('Campo obrigatório')
-  const [passwordError] = useState('Campo obrigatório')
+  const [passwordError, setPasswordError] = useState('Campo obrigatório')
   const [passwordConfirmationError] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
   const [message] = useState('')
@@ -31,6 +31,10 @@ const SignUp: React.FC<Props> = ({ validation }) => {
   useEffect(() => {
     setEmailError(validation.validate('email', email))
   }, [email])
+
+  useEffect(() => {
+    setPasswordError(validation.validate('password', password))
+  }, [password])
 
   return (
     <div className={styles.signUp}>
