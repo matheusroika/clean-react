@@ -2,19 +2,23 @@ import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { cleanup, render } from '@testing-library/react'
-import { expectButtonDisabledProperty, expectElementToNotExist, expectFieldStatus } from '../../mocks'
+import { expectButtonDisabledProperty, expectElementToNotExist, expectFieldStatus, fillInput, mockValidation } from '../../mocks'
 // import { InvalidCredentialsError } from '@/domain/errors'
 import type { RenderResult } from '@testing-library/react'
+import type { Validation } from '@/presentation/protocols/validation'
 
 type Sut = {
   sut: RenderResult
+  validationStub: Validation
 }
 
 const makeSut = (mockMessage?: string): Sut => {
+  const validationStub = mockValidation()
+  if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const sut = render(
     <MemoryRouter initialEntries={['/signup']}>
       <Routes>
-        <Route path='/signup' element={<SignUp />} />
+        <Route path='/signup' element={<SignUp validation={validationStub} />} />
         <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/login' element={<h1>Test Pass Login</h1>} />
       </Routes>
@@ -22,7 +26,8 @@ const makeSut = (mockMessage?: string): Sut => {
   )
 
   return {
-    sut
+    sut,
+    validationStub
   }
 }
 
@@ -38,6 +43,14 @@ describe('Login page', () => {
     expectFieldStatus({ sut, fieldName: 'email', titleContent: error, textContent: '🔴' })
     expectFieldStatus({ sut, fieldName: 'password', titleContent: error, textContent: '🔴' })
     expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: error, textContent: '🔴' })
+  })
+
+  test('Should call Validation with correct name', () => {
+    const { sut, validationStub } = makeSut()
+    const name = 'Any Name'
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    fillInput({ sut, inputId: 'name', value: name })
+    expect(validateSpy).toHaveBeenCalledWith('name', name)
   })
 
   /* test('Should call Validation with correct email', () => {
