@@ -1,23 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './signUpStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
 import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
+import type { Validation } from '@/presentation/protocols/validation'
 
-const SignUp: React.FC = () => {
+type Props = {
+  validation: Validation
+}
+
+const SignUp: React.FC<Props> = ({ validation }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [nameError] = useState('Campo obrigatório')
+  const [nameError, setNameError] = useState('Campo obrigatório')
   const [emailError] = useState('Campo obrigatório')
   const [passwordError] = useState('Campo obrigatório')
   const [passwordConfirmationError] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
   const [message] = useState('')
   const haveError = !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
+
+  useEffect(() => {
+    setNameError(validation.validate('name', name))
+  }, [name])
 
   return (
     <div className={styles.signUp}>
