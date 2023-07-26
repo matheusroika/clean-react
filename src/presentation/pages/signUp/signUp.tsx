@@ -44,6 +44,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
+    if (isLoading || nameError || emailError || passwordError || passwordConfirmationError) return
     setIsLoading(true)
     await addAccount.add({
       name,
