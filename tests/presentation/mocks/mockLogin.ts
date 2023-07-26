@@ -30,7 +30,7 @@ export const submitForm = (sut: RenderResult): void => {
 
 export const submitFormAndWait = async (sut: RenderResult): Promise<void> => {
   submitForm(sut)
-  await waitFor(() => sut.getByTestId('modalWrapper'))
+  await waitFor(() => sut.getByTestId('form'))
 }
 
 type ExpectFieldStatus = {

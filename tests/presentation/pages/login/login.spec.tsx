@@ -155,6 +155,18 @@ describe('Login page', () => {
     })
   })
 
+  test('Should show message with error if SaveAccessToken fails', async () => {
+    const { sut, saveAccessTokenStub } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
+    await submitFormAndWait(sut)
+    await waitFor(() => {
+      expectElementToNotExist(sut, 'loader')
+      const errorMessage = expectElementToExist(sut, 'message')
+      expect(errorMessage.textContent).toBe(error.message)
+    })
+  })
+
   test('Should go to SignUp page on link click', async () => {
     const { sut } = makeSut()
     const signUpLink = sut.getByTestId('signup')
