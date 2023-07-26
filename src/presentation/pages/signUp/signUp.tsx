@@ -16,13 +16,13 @@ const SignUp: React.FC<Props> = ({ validation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [nameError, setNameError] = useState('Campo obrigatório')
-  const [emailError, setEmailError] = useState('Campo obrigatório')
-  const [passwordError, setPasswordError] = useState('Campo obrigatório')
-  const [passwordConfirmationError, setPasswordConfirmationError] = useState('Campo obrigatório')
+  const [nameError, setNameError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordConfirmationError, setPasswordConfirmationError] = useState('')
   const [isLoading] = useState(false)
   const [message] = useState('')
-  const haveError = !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
+  const haveError = (nameError || emailError || passwordError || passwordConfirmationError) !== ('' || null)
 
   useEffect(() => {
     setNameError(validation.validate('name', name))
