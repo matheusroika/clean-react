@@ -165,15 +165,15 @@ describe('Sign page', () => {
     expect(addSpy).toBeCalledTimes(1)
   })
 
-  /* test('Should not call Authentication if form is invalid', () => {
-    const { sut, authenticationStub } = makeSut('Campo obrigatório')
-    const authSpy = jest.spyOn(authenticationStub, 'auth')
-    fillInput({ sut, inputId: 'email', value: 'any@email.com' })
-    clickSubmitButton(sut, true)
+  test('Should not call AddAccount if form is invalid', () => {
+    const { sut, addAccountStub } = makeSut('Campo obrigatório')
+    const authSpy = jest.spyOn(addAccountStub, 'add')
+    testHelper.fillInput({ sut, inputId: 'email', value: 'any@email.com' })
+    testHelper.clickSubmitButton(sut, true)
     expect(authSpy).toBeCalledTimes(0)
   })
 
-  test('Should hide loader and show error message if Authentication fails', async () => {
+  /* test('Should hide loader and show error message if Authentication fails', async () => {
     const { sut, authenticationStub } = makeSut()
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
