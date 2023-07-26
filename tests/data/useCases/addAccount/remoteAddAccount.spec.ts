@@ -1,4 +1,6 @@
 import { RemoteAddAccount } from '@/data/useCases/addAccount/remoteAddAccount'
+import { HttpStatusCode } from '@/data/protocols/http'
+import { EmailInUseError } from '@/domain/errors'
 import { mockHttpPostClient } from '@/../tests/data/mocks'
 import { mockAddAccountParams } from '@/../tests/domain/mocks'
 import type { HttpPostClient } from '@/data/protocols/http'
@@ -32,14 +34,14 @@ describe('Remote Add Account', () => {
     })
   })
 
-  /* test('Should throw InvalidCredentialsError if HttpPostClient returns 401', async () => {
+  test('Should throw EmailInUseError if HttpPostClient returns 403', async () => {
     const { sut, httpPostClient } = makeSut()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.unauthorized })
-    const promise = sut.auth(mockAuthParams())
-    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+    const promise = sut.add(mockAddAccountParams())
+    await expect(promise).rejects.toThrow(new EmailInUseError())
   })
 
-  test('Should throw UnexpectedError if HttpPostClient returns 400', async () => {
+  /* test('Should throw UnexpectedError if HttpPostClient returns 400', async () => {
     const { sut, httpPostClient } = makeSut()
     jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.badRequest })
     const promise = sut.auth(mockAuthParams())
