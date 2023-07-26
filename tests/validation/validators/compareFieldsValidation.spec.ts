@@ -19,9 +19,9 @@ describe('Compare Fields Validation', () => {
     expect(error).toEqual(new InvalidFieldError())
   })
 
-  /* test('Should return null if field is not empty', () => {
+  test('Should return null if fields values are equal', () => {
     const { sut } = makeSut()
     const error = sut.validate('any_value')
     expect(error).toBeNull()
-  }) */
+  })
 })
