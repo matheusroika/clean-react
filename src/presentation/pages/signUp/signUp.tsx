@@ -6,12 +6,14 @@ import Footer from '@/presentation/components/footer/footer'
 import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 import type { Validation } from '@/presentation/protocols/validation'
+import type { AddAccount } from '@/domain/useCases/AddAccount'
 
 type Props = {
   validation: Validation
+  addAccount: AddAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation }) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -43,6 +45,12 @@ const SignUp: React.FC<Props> = ({ validation }) => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
+    await addAccount.add({
+      name,
+      email,
+      password,
+      passwordConfirmation
+    })
   }
 
   return (
