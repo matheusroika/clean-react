@@ -109,19 +109,31 @@ describe('Login page', () => {
     testHelper.expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: message, textContent: '🔴' })
   })
 
-  /* test('Should show correct status if email Validation succeeds', () => {
+  test('Should show correct status if name Validation succeeds', () => {
     const { sut } = makeSut()
-    fillInput({ sut, inputId: 'email', value: 'any@email.com' })
-    expectFieldStatus({ sut, fieldName: 'email', titleContent: 'Tudo certo!', textContent: '🟢' })
+    testHelper.fillInput({ sut, inputId: 'name', value: 'Any Name' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'name', titleContent: 'Tudo certo!', textContent: '🟢' })
+  })
+
+  test('Should show correct status if email Validation succeeds', () => {
+    const { sut } = makeSut()
+    testHelper.fillInput({ sut, inputId: 'email', value: 'any@email.com' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'email', titleContent: 'Tudo certo!', textContent: '🟢' })
   })
 
   test('Should show correct status if password Validation succeeds', () => {
     const { sut } = makeSut()
-    fillInput({ sut, inputId: 'password', value: 'any_password' })
-    expectFieldStatus({ sut, fieldName: 'password', titleContent: 'Tudo certo!', textContent: '🟢' })
+    testHelper.fillInput({ sut, inputId: 'password', value: 'any_password' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'password', titleContent: 'Tudo certo!', textContent: '🟢' })
   })
 
-  test('Should enable submit button if form is valid', () => {
+  test('Should show correct status if passwordConfirmation Validation succeeds', () => {
+    const { sut } = makeSut()
+    testHelper.fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: 'Tudo certo!', textContent: '🟢' })
+  })
+
+  /* test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut()
     fillForm(sut)
     expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: false })
