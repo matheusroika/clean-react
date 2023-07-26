@@ -35,8 +35,8 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
-    setIsLoading(true)
     if (isLoading || emailError || passwordError) return
+    setIsLoading(true)
     try {
       const account = await authentication.auth({
         email,
