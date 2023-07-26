@@ -2,23 +2,27 @@ import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { cleanup, render } from '@testing-library/react'
-import { testHelper, mockValidation } from '../../mocks'
+import { testHelper, mockValidation, mockAddAccount } from '../../mocks'
+import { mockAddAccountParams } from '@/../tests/domain/mocks'
 // import { InvalidCredentialsError } from '@/domain/errors'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
+import type { AddAccount } from '@/domain/useCases/AddAccount'
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
+  addAccountStub: AddAccount
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
+  const addAccountStub = mockAddAccount()
   const sut = render(
     <MemoryRouter initialEntries={['/signup']}>
       <Routes>
-        <Route path='/signup' element={<SignUp validation={validationStub} />} />
+        <Route path='/signup' element={<SignUp validation={validationStub} addAccount={addAccountStub} />} />
         <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/login' element={<h1>Test Pass Login</h1>} />
       </Routes>
@@ -27,7 +31,8 @@ const makeSut = (mockMessage?: string): Sut => {
 
   return {
     sut,
-    validationStub
+    validationStub,
+    addAccountStub
   }
 }
 
@@ -145,19 +150,14 @@ describe('Sign page', () => {
     testHelper.expectElementToExist(sut, 'loader')
   })
 
-  /* test('Should call Authentication with correct values', () => {
-    const { sut, authenticationStub } = makeSut()
-    const email = 'any@email.com'
-    const password = 'any_password'
-    const authSpy = jest.spyOn(authenticationStub, 'auth')
-    submitForm(sut)
-    expect(authSpy).toHaveBeenCalledWith({
-      email,
-      password
-    })
+  test('Should call AddAccount with correct values', () => {
+    const { sut, addAccountStub } = makeSut()
+    const authSpy = jest.spyOn(addAccountStub, 'add')
+    testHelper.submitForm(sut, true)
+    expect(authSpy).toHaveBeenCalledWith(mockAddAccountParams())
   })
 
-  test('Should call Authentication only once even if submit is pressed multiple times', () => {
+  /* test('Should call Authentication only once even if submit is pressed multiple times', () => {
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     submitForm(sut)

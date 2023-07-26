@@ -32,8 +32,8 @@ export const submitForm = (sut: RenderResult, isSignUp?: boolean): void => {
   clickSubmitButton(sut)
 }
 
-export const submitFormAndWait = async (sut: RenderResult): Promise<void> => {
-  submitForm(sut)
+export const submitFormAndWait = async (sut: RenderResult, isSignUp?: boolean): Promise<void> => {
+  submitForm(sut, isSignUp)
   await waitFor(() => sut.getByTestId('form'))
 }
 
