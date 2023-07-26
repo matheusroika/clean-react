@@ -53,7 +53,7 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('name', name)
   })
 
-  /* test('Should call Validation with correct email', () => {
+  test('Should call Validation with correct email', () => {
     const { sut, validationStub } = makeSut()
     const email = 'any@email.com'
     const validateSpy = jest.spyOn(validationStub, 'validate')
@@ -61,7 +61,7 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('email', email)
   })
 
-  test('Should call Validation with correct password', () => {
+  /* test('Should call Validation with correct password', () => {
     const { sut, validationStub } = makeSut()
     const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
