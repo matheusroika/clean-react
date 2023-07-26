@@ -61,7 +61,7 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('email', email)
   })
 
-  /* test('Should call Validation with correct password', () => {
+  test('Should call Validation with correct password', () => {
     const { sut, validationStub } = makeSut()
     const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
@@ -69,7 +69,7 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('password', password)
   })
 
-  test('Should show message with error if email Validation fails', () => {
+  /* test('Should show message with error if email Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
