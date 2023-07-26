@@ -23,6 +23,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const navigate = useNavigate()
+  const haveError = (emailError || passwordError) !== ('' || null)
 
   useEffect(() => {
     setEmailError(validation.validate('email', email))
@@ -59,7 +60,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
-          <button data-testid="submit" type="submit" disabled={!!passwordError || !!emailError} onClick={handleSubmit}>Entrar</button>
+          <button data-testid="submit" type="submit" disabled={haveError} onClick={handleSubmit}>Entrar</button>
           <span className={styles.link}>
             <Link data-testid="signup" to="/signup">Criar conta</Link>
           </span>
