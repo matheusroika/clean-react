@@ -55,7 +55,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
     <div className={styles.login}>
       <Header />
       <main>
-        <form className={styles.form}>
+        <form className={styles.form} data-testid="form">
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
