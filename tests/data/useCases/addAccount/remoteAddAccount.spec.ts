@@ -2,7 +2,7 @@ import { RemoteAddAccount } from '@/data/useCases/addAccount/remoteAddAccount'
 import { HttpStatusCode } from '@/data/protocols/http'
 import { EmailInUseError, UnexpectedError } from '@/domain/errors'
 import { mockHttpPostClient } from '@/../tests/data/mocks'
-import { mockAddAccountParams } from '@/../tests/domain/mocks'
+import { mockAccount, mockAddAccountParams } from '@/../tests/domain/mocks'
 import type { HttpPostClient } from '@/data/protocols/http'
 import type { Account } from '@/domain/models/Account'
 import type { AddAccountParams } from '@/domain/useCases/AddAccount'
@@ -62,14 +62,14 @@ describe('Remote Add Account', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  /* test('Should return an Account if HttpPostClient returns 200', async () => {
+  test('Should return an Account if HttpPostClient returns 200', async () => {
     const { sut, httpPostClient } = makeSut()
     const body = mockAccount()
     jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({
       statusCode: HttpStatusCode.ok,
       body
     })
-    const account = await sut.auth(mockAuthParams())
+    const account = await sut.add(mockAddAccountParams())
     expect(account).toEqual(body)
-  }) */
+  })
 })
