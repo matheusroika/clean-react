@@ -2,7 +2,7 @@ import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { cleanup, render } from '@testing-library/react'
-import { expectButtonDisabledProperty, expectElementToNotExist, expectFieldStatus, fillInput, mockValidation } from '../../mocks'
+import { testHelper, mockValidation } from '../../mocks'
 // import { InvalidCredentialsError } from '@/domain/errors'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
@@ -37,19 +37,19 @@ describe('Login page', () => {
   test('Should render correctly on initial state', () => {
     const error = 'Campo obrigatório'
     const { sut } = makeSut(error)
-    expectElementToNotExist(sut, 'modalWrapper')
-    expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: true })
-    expectFieldStatus({ sut, fieldName: 'name', titleContent: error, textContent: '🔴' })
-    expectFieldStatus({ sut, fieldName: 'email', titleContent: error, textContent: '🔴' })
-    expectFieldStatus({ sut, fieldName: 'password', titleContent: error, textContent: '🔴' })
-    expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: error, textContent: '🔴' })
+    testHelper.expectElementToNotExist(sut, 'modalWrapper')
+    testHelper.expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: true })
+    testHelper.expectFieldStatus({ sut, fieldName: 'name', titleContent: error, textContent: '🔴' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'email', titleContent: error, textContent: '🔴' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'password', titleContent: error, textContent: '🔴' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: error, textContent: '🔴' })
   })
 
   test('Should call Validation with correct name', () => {
     const { sut, validationStub } = makeSut()
     const name = 'Any Name'
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    fillInput({ sut, inputId: 'name', value: name })
+    testHelper.fillInput({ sut, inputId: 'name', value: name })
     expect(validateSpy).toHaveBeenCalledWith('name', name)
   })
 
@@ -57,7 +57,7 @@ describe('Login page', () => {
     const { sut, validationStub } = makeSut()
     const email = 'any@email.com'
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    fillInput({ sut, inputId: 'email', value: email })
+    testHelper.fillInput({ sut, inputId: 'email', value: email })
     expect(validateSpy).toHaveBeenCalledWith('email', email)
   })
 
@@ -65,7 +65,7 @@ describe('Login page', () => {
     const { sut, validationStub } = makeSut()
     const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    fillInput({ sut, inputId: 'password', value: 'any_password' })
+    testHelper.fillInput({ sut, inputId: 'password', value: 'any_password' })
     expect(validateSpy).toHaveBeenCalledWith('password', password)
   })
 
@@ -73,7 +73,7 @@ describe('Login page', () => {
     const { sut, validationStub } = makeSut()
     const passwordConfirmation = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+    testHelper.fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
     expect(validateSpy).toHaveBeenCalledWith('passwordConfirmation', passwordConfirmation)
   })
 
@@ -81,32 +81,32 @@ describe('Login page', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
-    fillInput({ sut, inputId: 'name', value: 'Any Name' })
-    expectFieldStatus({ sut, fieldName: 'name', titleContent: message, textContent: '🔴' })
+    testHelper.fillInput({ sut, inputId: 'name', value: 'Any Name' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'name', titleContent: message, textContent: '🔴' })
   })
 
   test('Should show message with error if email Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
-    fillInput({ sut, inputId: 'email', value: 'any@email.com' })
-    expectFieldStatus({ sut, fieldName: 'email', titleContent: message, textContent: '🔴' })
+    testHelper.fillInput({ sut, inputId: 'email', value: 'any@email.com' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'email', titleContent: message, textContent: '🔴' })
   })
 
   test('Should show message with error if password Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
-    fillInput({ sut, inputId: 'password', value: 'any_password' })
-    expectFieldStatus({ sut, fieldName: 'password', titleContent: message, textContent: '🔴' })
+    testHelper.fillInput({ sut, inputId: 'password', value: 'any_password' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'password', titleContent: message, textContent: '🔴' })
   })
 
   test('Should show message with error if password confirmation Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
-    fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
-    expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: message, textContent: '🔴' })
+    testHelper.fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+    testHelper.expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: message, textContent: '🔴' })
   })
 
   /* test('Should show correct status if email Validation succeeds', () => {

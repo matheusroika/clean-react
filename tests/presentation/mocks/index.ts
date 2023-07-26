@@ -1,4 +1,4 @@
 export * from './mockAuthentication'
 export * from './mockValidation'
-export * from './mockLogin'
+export * as testHelper from './reactTestingHelper'
 export * from './mockSaveAccessToken'
