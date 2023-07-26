@@ -152,20 +152,20 @@ describe('Sign page', () => {
 
   test('Should call AddAccount with correct values', () => {
     const { sut, addAccountStub } = makeSut()
-    const authSpy = jest.spyOn(addAccountStub, 'add')
+    const addSpy = jest.spyOn(addAccountStub, 'add')
     testHelper.submitForm(sut, true)
-    expect(authSpy).toHaveBeenCalledWith(mockAddAccountParams())
+    expect(addSpy).toHaveBeenCalledWith(mockAddAccountParams())
   })
 
-  /* test('Should call Authentication only once even if submit is pressed multiple times', () => {
-    const { sut, authenticationStub } = makeSut()
-    const authSpy = jest.spyOn(authenticationStub, 'auth')
-    submitForm(sut)
-    clickSubmitButton(sut)
-    expect(authSpy).toBeCalledTimes(1)
+  test('Should call AddAccount only once even if submit is pressed multiple times', () => {
+    const { sut, addAccountStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountStub, 'add')
+    testHelper.submitForm(sut, true)
+    testHelper.clickSubmitButton(sut)
+    expect(addSpy).toBeCalledTimes(1)
   })
 
-  test('Should not call Authentication if form is invalid', () => {
+  /* test('Should not call Authentication if form is invalid', () => {
     const { sut, authenticationStub } = makeSut('Campo obrigatório')
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     fillInput({ sut, inputId: 'email', value: 'any@email.com' })
