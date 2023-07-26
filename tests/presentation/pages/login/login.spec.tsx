@@ -2,8 +2,9 @@ import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { testHelper, mockAuthentication, mockSaveAccessToken, mockValidation } from '../../mocks'
 import { InvalidCredentialsError } from '@/domain/errors'
+import { testHelper, mockAuthentication, mockSaveAccessToken, mockValidation } from '../../mocks'
+import { mockAuthParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
@@ -109,14 +110,9 @@ describe('Login page', () => {
 
   test('Should call Authentication with correct values', () => {
     const { sut, authenticationStub } = makeSut()
-    const email = 'any@email.com'
-    const password = 'any_password'
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     testHelper.submitForm(sut)
-    expect(authSpy).toHaveBeenCalledWith({
-      email,
-      password
-    })
+    expect(authSpy).toHaveBeenCalledWith(mockAuthParams())
   })
 
   test('Should call Authentication only once even if submit is pressed multiple times', () => {
