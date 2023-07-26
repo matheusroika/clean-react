@@ -77,7 +77,15 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('passwordConfirmation', passwordConfirmation)
   })
 
-  /* test('Should show message with error if email Validation fails', () => {
+  test('Should show message with error if name Validation fails', () => {
+    const { sut, validationStub } = makeSut()
+    const message = 'Any Message'
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
+    fillInput({ sut, inputId: 'name', value: 'Any Name' })
+    expectFieldStatus({ sut, fieldName: 'name', titleContent: message, textContent: '🔴' })
+  })
+
+  test('Should show message with error if email Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
@@ -93,7 +101,15 @@ describe('Login page', () => {
     expectFieldStatus({ sut, fieldName: 'password', titleContent: message, textContent: '🔴' })
   })
 
-  test('Should show correct status if email Validation succeeds', () => {
+  test('Should show message with error if password confirmation Validation fails', () => {
+    const { sut, validationStub } = makeSut()
+    const message = 'Any Message'
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(message)
+    fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+    expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: message, textContent: '🔴' })
+  })
+
+  /* test('Should show correct status if email Validation succeeds', () => {
     const { sut } = makeSut()
     fillInput({ sut, inputId: 'email', value: 'any@email.com' })
     expectFieldStatus({ sut, fieldName: 'email', titleContent: 'Tudo certo!', textContent: '🟢' })
