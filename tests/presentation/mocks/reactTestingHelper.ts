@@ -27,8 +27,8 @@ export const clickSubmitButton = (sut: RenderResult, forceEnableButton?: boolean
   fireEvent.click(submitButton)
 }
 
-export const submitForm = (sut: RenderResult): void => {
-  fillForm(sut)
+export const submitForm = (sut: RenderResult, isSignUp?: boolean): void => {
+  fillForm(sut, isSignUp)
   clickSubmitButton(sut)
 }
 

@@ -139,13 +139,13 @@ describe('Sign page', () => {
     testHelper.expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: false })
   })
 
-  /* test('Should show loader on form submit', () => {
+  test('Should show loader on form submit', () => {
     const { sut } = makeSut()
-    submitForm(sut)
-    expectElementToExist(sut, 'loader')
+    testHelper.submitForm(sut, true)
+    testHelper.expectElementToExist(sut, 'loader')
   })
 
-  test('Should call Authentication with correct values', () => {
+  /* test('Should call Authentication with correct values', () => {
     const { sut, authenticationStub } = makeSut()
     const email = 'any@email.com'
     const password = 'any_password'
