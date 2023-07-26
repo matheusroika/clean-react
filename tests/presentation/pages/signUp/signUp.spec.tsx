@@ -31,7 +31,7 @@ const makeSut = (mockMessage?: string): Sut => {
   }
 }
 
-describe('Login page', () => {
+describe('Sign page', () => {
   afterEach(cleanup)
 
   test('Should render correctly on initial state', () => {
@@ -133,13 +133,13 @@ describe('Login page', () => {
     testHelper.expectFieldStatus({ sut, fieldName: 'passwordConfirmation', titleContent: 'Tudo certo!', textContent: '🟢' })
   })
 
-  /* test('Should enable submit button if form is valid', () => {
+  test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut()
-    fillForm(sut)
-    expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: false })
+    testHelper.fillForm(sut, true)
+    testHelper.expectButtonDisabledProperty({ sut, buttonId: 'submit', isDisabled: false })
   })
 
-  test('Should show loader on form submit', () => {
+  /* test('Should show loader on form submit', () => {
     const { sut } = makeSut()
     submitForm(sut)
     expectElementToExist(sut, 'loader')

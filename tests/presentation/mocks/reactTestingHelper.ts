@@ -12,9 +12,13 @@ export const fillInput = ({ sut, inputId, value }: FillInput): void => {
   fireEvent.input(input, { target: { value } })
 }
 
-export const fillForm = (sut: RenderResult): void => {
+export const fillForm = (sut: RenderResult, isSignUp?: boolean): void => {
   fillInput({ sut, inputId: 'email', value: 'any@email.com' })
   fillInput({ sut, inputId: 'password', value: 'any_password' })
+  if (isSignUp) {
+    fillInput({ sut, inputId: 'name', value: 'Any Name' })
+    fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+  }
 }
 
 export const clickSubmitButton = (sut: RenderResult, forceEnableButton?: boolean): void => {
