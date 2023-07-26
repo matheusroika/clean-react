@@ -69,6 +69,14 @@ describe('Login page', () => {
     expect(validateSpy).toHaveBeenCalledWith('password', password)
   })
 
+  test('Should call Validation with correct password confirmation', () => {
+    const { sut, validationStub } = makeSut()
+    const passwordConfirmation = 'any_password'
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
+    expect(validateSpy).toHaveBeenCalledWith('passwordConfirmation', passwordConfirmation)
+  })
+
   /* test('Should show message with error if email Validation fails', () => {
     const { sut, validationStub } = makeSut()
     const message = 'Any Message'
