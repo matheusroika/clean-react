@@ -2,26 +2,29 @@ import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { clickSubmitButton, expectButtonDisabledProperty, expectElementToExist, expectElementToNotExist, expectFieldStatus, fillForm, fillInput, mockAuthentication, mockValidation, submitForm, submitFormAndWait } from '../../mocks'
+import { clickSubmitButton, expectButtonDisabledProperty, expectElementToExist, expectElementToNotExist, expectFieldStatus, fillForm, fillInput, mockAuthentication, mockSaveAccessToken, mockValidation, submitForm, submitFormAndWait } from '../../mocks'
+import { InvalidCredentialsError } from '@/domain/errors'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
-import { InvalidCredentialsError } from '@/domain/errors'
+import type { SaveAccessToken } from '@/domain/useCases/SaveAccessToken'
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
   authenticationStub: Authentication
+  saveAccessTokenStub: SaveAccessToken
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const authenticationStub = mockAuthentication()
+  const saveAccessTokenStub = mockSaveAccessToken()
   const sut = render(
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
-        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} />} />
+        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} saveAccessToken={saveAccessTokenStub} />} />
         <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
       </Routes>
@@ -31,15 +34,12 @@ const makeSut = (mockMessage?: string): Sut => {
   return {
     sut,
     validationStub,
-    authenticationStub
+    authenticationStub,
+    saveAccessTokenStub
   }
 }
 
 describe('Login page', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
-
   afterEach(cleanup)
 
   test('Should render correctly on initial state', () => {
@@ -145,13 +145,11 @@ describe('Login page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
-  test('Should hide loader, add accessToken to localStorage and go to index on Authentication success', async () => {
-    const { sut } = makeSut()
-    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
+  test('Should call SaveAccessToken and go to index on Authentication success', async () => {
+    const { sut, saveAccessTokenStub } = makeSut()
+    const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
     await submitFormAndWait(sut)
-    expectElementToNotExist(sut, 'loader')
-    expectElementToNotExist(sut, 'message')
-    expect(setItemSpy).toHaveBeenCalledWith('accessToken', 'any_token')
+    expect(saveSpy).toHaveBeenCalledWith('any_token')
     await waitFor(() => {
       expect(sut.getByText('Test Pass Index')).toBeTruthy()
     })
