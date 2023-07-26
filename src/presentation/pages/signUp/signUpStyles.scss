@@ -1,0 +1,47 @@
+@import "../../styles/colors.scss";
+
+.signUp {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+
+  main {
+    display: flex;
+    justify-content: center;
+  }
+
+  .form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 25rem;
+    padding: 2.5rem;
+    border-radius: .5rem;
+    background-color: $white;
+    box-shadow: 0 1px 3px -1px $black;
+
+    h2 {
+      color: $primaryDark;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+
+      &:disabled {
+        background-color: $disabledBackground;
+        color: $disabled;
+        cursor: not-allowed;
+      }
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+  }
+}
