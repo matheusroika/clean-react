@@ -11,12 +11,13 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [nameError] = useState('')
-  const [emailError] = useState('')
-  const [passwordError] = useState('')
-  const [passwordConfirmationError] = useState('')
+  const [nameError] = useState('Campo obrigatório')
+  const [emailError] = useState('Campo obrigatório')
+  const [passwordError] = useState('Campo obrigatório')
+  const [passwordConfirmationError] = useState('Campo obrigatório')
   const [isLoading] = useState(false)
   const [message] = useState('')
+  const haveError = !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
 
   return (
     <div className={styles.signUp}>
@@ -28,7 +29,7 @@ const SignUp: React.FC = () => {
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
           <Input type="password" name="passwordConfirmation" placeholder="Repita sua senha" title={passwordConfirmationError} value={passwordConfirmation} setValue={setPasswordConfirmation} />
-          <button data-testid="submit" type="submit" disabled={!!passwordError || !!emailError}>Cadastrar</button>
+          <button data-testid="submit" type="submit" disabled={haveError}>Cadastrar</button>
           <span className={styles.link}>
             <Link data-testid="login" to="/login">Fazer login</Link>
           </span>
