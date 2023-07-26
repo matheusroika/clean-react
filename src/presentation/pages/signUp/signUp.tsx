@@ -20,7 +20,7 @@ const SignUp: React.FC<Props> = ({ validation }) => {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('')
-  const [isLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [message] = useState('')
   const haveError = (nameError || emailError || passwordError || passwordConfirmationError) !== ('' || null)
 
@@ -40,6 +40,11 @@ const SignUp: React.FC<Props> = ({ validation }) => {
     setPasswordConfirmationError(validation.validate('passwordConfirmation', passwordConfirmation))
   }, [passwordConfirmation])
 
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
+    e.preventDefault()
+    setIsLoading(true)
+  }
+
   return (
     <div className={styles.signUp}>
       <Header />
@@ -50,7 +55,7 @@ const SignUp: React.FC<Props> = ({ validation }) => {
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
           <Input type="password" name="passwordConfirmation" placeholder="Repita sua senha" title={passwordConfirmationError} value={passwordConfirmation} setValue={setPasswordConfirmation} />
-          <button data-testid="submit" type="submit" disabled={haveError}>Cadastrar</button>
+          <button data-testid="submit" type="submit" disabled={haveError} onClick={handleSubmit}>Cadastrar</button>
           <span className={styles.link}>
             <Link data-testid="login" to="/login">Fazer login</Link>
           </span>
