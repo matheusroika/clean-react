@@ -1,28 +1,31 @@
 import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { cleanup, render } from '@testing-library/react'
+import { cleanup, render, waitFor } from '@testing-library/react'
 import { EmailInUseError } from '@/domain/errors'
-import { testHelper, mockValidation, mockAddAccount } from '../../mocks'
+import { testHelper, mockValidation, mockAddAccount, mockSaveAccessToken } from '../../mocks'
 import { mockAddAccountParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { AddAccount } from '@/domain/useCases/AddAccount'
+import type { SaveAccessToken } from '@/domain/useCases/SaveAccessToken'
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
   addAccountStub: AddAccount
+  saveAccessTokenStub: SaveAccessToken
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const addAccountStub = mockAddAccount()
+  const saveAccessTokenStub = mockSaveAccessToken()
   const sut = render(
     <MemoryRouter initialEntries={['/signup']}>
       <Routes>
-        <Route path='/signup' element={<SignUp validation={validationStub} addAccount={addAccountStub} />} />
+        <Route path='/signup' element={<SignUp validation={validationStub} addAccount={addAccountStub} saveAccessToken={saveAccessTokenStub} />} />
         <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/login' element={<h1>Test Pass Login</h1>} />
       </Routes>
@@ -32,7 +35,8 @@ const makeSut = (mockMessage?: string): Sut => {
   return {
     sut,
     validationStub,
-    addAccountStub
+    addAccountStub,
+    saveAccessTokenStub
   }
 }
 
@@ -183,17 +187,17 @@ describe('Sign page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
-  /* test('Should call SaveAccessToken and go to index on Authentication success', async () => {
+  test('Should call SaveAccessToken and go to index on AddAccount success', async () => {
     const { sut, saveAccessTokenStub } = makeSut()
     const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
-    await submitFormAndWait(sut)
+    await testHelper.submitFormAndWait(sut, true)
     expect(saveSpy).toHaveBeenCalledWith('any_token')
     await waitFor(() => {
       expect(sut.getByText('Test Pass Index')).toBeTruthy()
     })
   })
 
-  test('Should show message with error if SaveAccessToken fails', async () => {
+  /* test('Should show message with error if SaveAccessToken fails', async () => {
     const { sut, saveAccessTokenStub } = makeSut()
     const error = new InvalidCredentialsError()
     jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
