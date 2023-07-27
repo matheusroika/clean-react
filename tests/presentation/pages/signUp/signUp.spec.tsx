@@ -2,9 +2,9 @@ import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { cleanup, render } from '@testing-library/react'
+import { EmailInUseError } from '@/domain/errors'
 import { testHelper, mockValidation, mockAddAccount } from '../../mocks'
 import { mockAddAccountParams } from '@/../tests/domain/mocks'
-// import { InvalidCredentialsError } from '@/domain/errors'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { AddAccount } from '@/domain/useCases/AddAccount'
@@ -173,17 +173,17 @@ describe('Sign page', () => {
     expect(authSpy).toBeCalledTimes(0)
   })
 
-  /* test('Should hide loader and show error message if Authentication fails', async () => {
-    const { sut, authenticationStub } = makeSut()
-    const error = new InvalidCredentialsError()
-    jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
-    await submitFormAndWait(sut)
-    expectElementToNotExist(sut, 'loader')
-    const errorMessage = expectElementToExist(sut, 'message')
+  test('Should hide loader and show error message if AddAccount fails', async () => {
+    const { sut, addAccountStub } = makeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(addAccountStub, 'add').mockRejectedValueOnce(error)
+    await testHelper.submitFormAndWait(sut, true)
+    testHelper.expectElementToNotExist(sut, 'loader')
+    const errorMessage = testHelper.expectElementToExist(sut, 'message')
     expect(errorMessage.textContent).toBe(error.message)
   })
 
-  test('Should call SaveAccessToken and go to index on Authentication success', async () => {
+  /* test('Should call SaveAccessToken and go to index on Authentication success', async () => {
     const { sut, saveAccessTokenStub } = makeSut()
     const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
     await submitFormAndWait(sut)
