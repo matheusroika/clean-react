@@ -26,8 +26,9 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const errors = [nameError, emailError, passwordError, passwordConfirmationError]
+  const haveError = errors.some(error => error !== ('' || null))
   const navigate = useNavigate()
-  const haveError = (nameError || emailError || passwordError || passwordConfirmationError) !== ('' || null)
 
   useEffect(() => {
     setNameError(validation.validate('name', name))
@@ -47,7 +48,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
-    if (isLoading || nameError || emailError || passwordError || passwordConfirmationError) return
+    if (isLoading || haveError) return
     setIsLoading(true)
     try {
       const account = await addAccount.add({

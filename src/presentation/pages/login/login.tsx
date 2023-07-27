@@ -22,8 +22,9 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
   const [passwordError, setPasswordError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const errors = [emailError, passwordError]
+  const haveError = errors.some(error => error !== ('' || null))
   const navigate = useNavigate()
-  const haveError = (emailError || passwordError) !== ('' || null)
 
   useEffect(() => {
     setEmailError(validation.validate('email', email))
@@ -35,7 +36,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
-    if (isLoading || emailError || passwordError) return
+    if (isLoading || haveError) return
     setIsLoading(true)
     try {
       const account = await authentication.auth({
