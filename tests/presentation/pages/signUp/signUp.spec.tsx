@@ -197,19 +197,19 @@ describe('Sign page', () => {
     })
   })
 
-  /* test('Should show message with error if SaveAccessToken fails', async () => {
+  test('Should show message with error if SaveAccessToken fails', async () => {
     const { sut, saveAccessTokenStub } = makeSut()
-    const error = new InvalidCredentialsError()
+    const error = new EmailInUseError()
     jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
-    await submitFormAndWait(sut)
+    await testHelper.submitFormAndWait(sut, true)
     await waitFor(() => {
-      expectElementToNotExist(sut, 'loader')
-      const errorMessage = expectElementToExist(sut, 'message')
+      testHelper.expectElementToNotExist(sut, 'loader')
+      const errorMessage = testHelper.expectElementToExist(sut, 'message')
       expect(errorMessage.textContent).toBe(error.message)
     })
   })
 
-  test('Should go to SignUp page on link click', async () => {
+  /* test('Should go to SignUp page on link click', async () => {
     const { sut } = makeSut()
     const signUpLink = sut.getByTestId('signup')
     fireEvent.click(signUpLink)
