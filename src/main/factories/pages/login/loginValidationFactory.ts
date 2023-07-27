@@ -1,5 +1,5 @@
 import { ValidationBuilder, ValidationComposite } from '@/validation/validators'
-import { makeEmailValidator } from '../validation/emailValidatorFactory'
+import { makeEmailValidator } from '../../validation/emailValidatorFactory'
 import type { Validation } from '@/presentation/protocols/validation'
 
 export const makeLoginValidation = (): Validation => {
