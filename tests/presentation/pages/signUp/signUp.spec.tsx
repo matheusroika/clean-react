@@ -1,7 +1,7 @@
 import React from 'react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { cleanup, render, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { EmailInUseError } from '@/domain/errors'
 import { testHelper, mockValidation, mockAddAccount, mockSaveAccessToken } from '../../mocks'
 import { mockAddAccountParams } from '@/../tests/domain/mocks'
@@ -209,12 +209,12 @@ describe('Sign page', () => {
     })
   })
 
-  /* test('Should go to SignUp page on link click', async () => {
+  test('Should go to Login page on link click', async () => {
     const { sut } = makeSut()
-    const signUpLink = sut.getByTestId('signup')
-    fireEvent.click(signUpLink)
+    const loginLink = sut.getByTestId('login')
+    fireEvent.click(loginLink)
     await waitFor(() => {
-      expect(sut.getByText('Test Pass Sign Up')).toBeTruthy()
+      expect(sut.getByText('Test Pass Login')).toBeTruthy()
     })
-  }) */
+  })
 })
