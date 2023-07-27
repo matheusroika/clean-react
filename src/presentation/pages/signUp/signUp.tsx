@@ -23,7 +23,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
   const [passwordError, setPasswordError] = useState('')
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [message] = useState('')
+  const [message, setMessage] = useState('')
   const haveError = (nameError || emailError || passwordError || passwordConfirmationError) !== ('' || null)
 
   useEffect(() => {
@@ -46,12 +46,18 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
     e.preventDefault()
     if (isLoading || nameError || emailError || passwordError || passwordConfirmationError) return
     setIsLoading(true)
-    await addAccount.add({
-      name,
-      email,
-      password,
-      passwordConfirmation
-    })
+    try {
+      await addAccount.add({
+        name,
+        email,
+        password,
+        passwordConfirmation
+      })
+    } catch (error) {
+      const errorTyped = error as Error
+      setIsLoading(false)
+      setMessage(errorTyped.message)
+    }
   }
 
   return (
