@@ -21,26 +21,34 @@ describe('Email Validation', () => {
   test('Should call EmailValidator with correct email', () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    sut.validate('any@email.com')
+    sut.validate({
+      any_field: 'any@email.com'
+    })
     expect(isValidSpy).toHaveBeenCalledWith('any@email.com')
   })
 
   test('Should return an error if EmailValidator returns false', () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const error = sut.validate('not_email')
+    const error = sut.validate({
+      any_field: 'not_email'
+    })
     expect(error).toEqual(new InvalidFieldError())
   })
 
   test('Should return null if EmailValidator returns true', () => {
     const { sut } = makeSut()
-    const error = sut.validate('any@email.com')
+    const error = sut.validate({
+      any_field: 'any@email.com'
+    })
     expect(error).toBeNull()
   })
 
   test('Should return null if email is empty', () => {
     const { sut } = makeSut()
-    const error = sut.validate('')
+    const error = sut.validate({
+      any_field: ''
+    })
     expect(error).toBeNull()
   })
 })

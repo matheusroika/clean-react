@@ -3,7 +3,7 @@ import SignUp from '@/presentation/pages/signUp/signUp'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { EmailInUseError } from '@/domain/errors'
-import { testHelper, mockValidation, mockAddAccount, mockSaveAccessToken } from '../../mocks'
+import { testHelper, mockValidation, mockAddAccount, mockSaveAccessToken, mockValidateCall } from '../../mocks'
 import { mockAddAccountParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
@@ -59,7 +59,7 @@ describe('Sign page', () => {
     const name = 'Any Name'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'name', value: name })
-    expect(validateSpy).toHaveBeenCalledWith('name', name)
+    expect(validateSpy).toHaveBeenCalledWith('name', mockValidateCall('name', name, true))
   })
 
   test('Should call Validation with correct email', () => {
@@ -67,7 +67,7 @@ describe('Sign page', () => {
     const email = 'any@email.com'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'email', value: email })
-    expect(validateSpy).toHaveBeenCalledWith('email', email)
+    expect(validateSpy).toHaveBeenCalledWith('email', mockValidateCall('email', email, true))
   })
 
   test('Should call Validation with correct password', () => {
@@ -75,7 +75,7 @@ describe('Sign page', () => {
     const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'password', value: 'any_password' })
-    expect(validateSpy).toHaveBeenCalledWith('password', password)
+    expect(validateSpy).toHaveBeenCalledWith('password', mockValidateCall('password', password, true))
   })
 
   test('Should call Validation with correct password confirmation', () => {
@@ -83,7 +83,7 @@ describe('Sign page', () => {
     const passwordConfirmation = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'passwordConfirmation', value: 'any_password' })
-    expect(validateSpy).toHaveBeenCalledWith('passwordConfirmation', passwordConfirmation)
+    expect(validateSpy).toHaveBeenCalledWith('passwordConfirmation', mockValidateCall('passwordConfirmation', passwordConfirmation, true))
   })
 
   test('Should show message with error if name Validation fails', () => {

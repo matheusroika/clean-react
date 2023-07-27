@@ -1,3 +1,5 @@
+import type { InputObject } from '@/validation/protocols/fieldValidation'
+
 export interface Validation {
-  validate: (fieldName: string, fieldValue: string) => string | null
+  validate: (fieldName: string, input: InputObject) => string | null
 }

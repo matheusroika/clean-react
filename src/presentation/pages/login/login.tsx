@@ -16,6 +16,7 @@ type Props = {
 }
 
 const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }) => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -24,14 +25,17 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
   const [message, setMessage] = useState('')
   const errors = [emailError, passwordError]
   const haveError = errors.some(error => error !== ('' || null))
-  const navigate = useNavigate()
+  const formData = {
+    email,
+    password
+  }
 
   useEffect(() => {
-    setEmailError(validation.validate('email', email))
+    setEmailError(validation.validate('email', formData))
   }, [email])
 
   useEffect(() => {
-    setPasswordError(validation.validate('password', password))
+    setPasswordError(validation.validate('password', formData))
   }, [password])
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
@@ -39,10 +43,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken })
     if (isLoading || haveError) return
     setIsLoading(true)
     try {
-      const account = await authentication.auth({
-        email,
-        password
-      })
+      const account = await authentication.auth(formData)
       await saveAccessToken.save(account.accessToken)
       setIsLoading(false)
       navigate('/')

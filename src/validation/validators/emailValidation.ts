@@ -1,6 +1,6 @@
 import { InvalidFieldError } from '../errors'
 import type { EmailValidator } from '../protocols/emailValidator'
-import type { FieldValidation } from '../protocols/fieldValidation'
+import type { FieldValidation, InputObject } from '../protocols/fieldValidation'
 
 export class EmailValidation implements FieldValidation {
   constructor (
@@ -8,8 +8,8 @@ export class EmailValidation implements FieldValidation {
     private readonly emailValidator: EmailValidator
   ) {}
 
-  validate (value: string): Error {
-    const isValid = this.emailValidator.isValid(value)
-    return (isValid || !value) ? null : new InvalidFieldError()
+  validate (input: InputObject): Error {
+    const isValid = this.emailValidator.isValid(input[this.field])
+    return (isValid || !input[this.field]) ? null : new InvalidFieldError()
   }
 }

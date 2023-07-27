@@ -1,5 +1,5 @@
 import { NotMinLengthError } from '../errors'
-import type { FieldValidation } from '../protocols/fieldValidation'
+import type { FieldValidation, InputObject } from '../protocols/fieldValidation'
 
 export class MinLengthValidation implements FieldValidation {
   constructor (
@@ -7,7 +7,7 @@ export class MinLengthValidation implements FieldValidation {
     private readonly minLength: number
   ) {}
 
-  validate (value: string): Error {
-    return value.length >= this.minLength ? null : new NotMinLengthError(this.minLength)
+  validate (input: InputObject): Error {
+    return input[this.field]?.length < this.minLength ? new NotMinLengthError(this.minLength) : null
   }
 }

@@ -3,7 +3,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { testHelper, mockAuthentication, mockSaveAccessToken, mockValidation } from '../../mocks'
+import { testHelper, mockAuthentication, mockSaveAccessToken, mockValidation, mockValidateCall } from '../../mocks'
 import { mockAuthParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
@@ -57,7 +57,7 @@ describe('Login page', () => {
     const email = 'any@email.com'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'email', value: email })
-    expect(validateSpy).toHaveBeenCalledWith('email', email)
+    expect(validateSpy).toHaveBeenCalledWith('email', mockValidateCall('email', email))
   })
 
   test('Should call Validation with correct password', () => {
@@ -65,7 +65,7 @@ describe('Login page', () => {
     const password = 'any_password'
     const validateSpy = jest.spyOn(validationStub, 'validate')
     testHelper.fillInput({ sut, inputId: 'password', value: 'any_password' })
-    expect(validateSpy).toHaveBeenCalledWith('password', password)
+    expect(validateSpy).toHaveBeenCalledWith('password', mockValidateCall('password', password))
   })
 
   test('Should show message with error if email Validation fails', () => {

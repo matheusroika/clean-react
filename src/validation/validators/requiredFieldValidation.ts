@@ -1,12 +1,12 @@
 import { RequiredFieldError } from '../errors'
-import type { FieldValidation } from '../protocols/fieldValidation'
+import type { FieldValidation, InputObject } from '../protocols/fieldValidation'
 
 export class RequiredFieldValidation implements FieldValidation {
   constructor (
     readonly field: string
   ) {}
 
-  validate (value: string): Error {
-    return value ? null : new RequiredFieldError()
+  validate (input: InputObject): Error {
+    return input[this.field] ? null : new RequiredFieldError()
   }
 }

@@ -1,4 +1,8 @@
+export type InputObject = {
+  [key: string]: string
+}
+
 export interface FieldValidation {
   field: string
-  validate: (value: string) => Error
+  validate: (input: InputObject) => Error
 }

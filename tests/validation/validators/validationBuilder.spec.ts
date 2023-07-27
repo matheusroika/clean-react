@@ -1,5 +1,5 @@
 import { ValidationBuilder as sut } from '@/validation/validators/validationBuilder'
-import { EmailValidation, MinLengthValidation, RequiredFieldValidation } from '@/validation/validators'
+import { CompareFieldsValidation, EmailValidation, MinLengthValidation, RequiredFieldValidation } from '@/validation/validators'
 import { mockEmailValidator } from '../mocks/mockValidation'
 
 describe('Validation Builder', () => {
@@ -24,6 +24,14 @@ describe('Validation Builder', () => {
     const validations = sut.field(field).minLength(minLength).build()
     expect(validations.length).toBe(1)
     expect(validations[0]).toEqual(new MinLengthValidation(field, minLength))
+  })
+
+  test('Should return CompareFieldsValidation', () => {
+    const field = 'any_field'
+    const otherField = 'other_field'
+    const validations = sut.field(field).compare(otherField).build()
+    expect(validations.length).toBe(1)
+    expect(validations[0]).toEqual(new CompareFieldsValidation(field, otherField))
   })
 
   test('Should return a list of validations', () => {

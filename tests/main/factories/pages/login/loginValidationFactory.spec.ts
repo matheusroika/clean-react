@@ -1,4 +1,4 @@
-import { makeLoginValidation } from '@/main/factories/pages/loginValidationFactory'
+import { makeLoginValidation } from '@/main/factories/pages/login/loginValidationFactory'
 import { ValidationBuilder, ValidationComposite } from '@/validation/validators'
 import { makeEmailValidator } from '@/main/factories/validation/emailValidatorFactory'
 

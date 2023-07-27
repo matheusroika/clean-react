@@ -16,6 +16,7 @@ type Props = {
 }
 
 const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) => {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,22 +29,27 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
   const [message, setMessage] = useState('')
   const errors = [nameError, emailError, passwordError, passwordConfirmationError]
   const haveError = errors.some(error => error !== ('' || null))
-  const navigate = useNavigate()
+  const formValues = {
+    name,
+    email,
+    password,
+    passwordConfirmation
+  }
 
   useEffect(() => {
-    setNameError(validation.validate('name', name))
+    setNameError(validation.validate('name', formValues))
   }, [name])
 
   useEffect(() => {
-    setEmailError(validation.validate('email', email))
+    setEmailError(validation.validate('email', formValues))
   }, [email])
 
   useEffect(() => {
-    setPasswordError(validation.validate('password', password))
+    setPasswordError(validation.validate('password', formValues))
   }, [password])
 
   useEffect(() => {
-    setPasswordConfirmationError(validation.validate('passwordConfirmation', passwordConfirmation))
+    setPasswordConfirmationError(validation.validate('passwordConfirmation', formValues))
   }, [passwordConfirmation])
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
@@ -51,12 +57,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
     if (isLoading || haveError) return
     setIsLoading(true)
     try {
-      const account = await addAccount.add({
-        name,
-        email,
-        password,
-        passwordConfirmation
-      })
+      const account = await addAccount.add(formValues)
       await saveAccessToken.save(account.accessToken)
       setIsLoading(false)
       navigate('/')
