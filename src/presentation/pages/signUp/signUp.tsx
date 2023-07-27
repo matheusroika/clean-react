@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './signUpStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
@@ -7,13 +7,15 @@ import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { AddAccount } from '@/domain/useCases/AddAccount'
+import type { SaveAccessToken } from '@/domain/useCases/SaveAccessToken'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
+  saveAccessToken: SaveAccessToken
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,6 +26,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
   const haveError = (nameError || emailError || passwordError || passwordConfirmationError) !== ('' || null)
 
   useEffect(() => {
@@ -47,12 +50,15 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
     if (isLoading || nameError || emailError || passwordError || passwordConfirmationError) return
     setIsLoading(true)
     try {
-      await addAccount.add({
+      const account = await addAccount.add({
         name,
         email,
         password,
         passwordConfirmation
       })
+      await saveAccessToken.save(account.accessToken)
+      setIsLoading(false)
+      navigate('/')
     } catch (error) {
       const errorTyped = error as Error
       setIsLoading(false)
