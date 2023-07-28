@@ -8,18 +8,17 @@ interface Props extends React.ComponentPropsWithoutRef<'input'> {
 const Input: React.FC<Props> = (props) => {
   const { setValue } = props
 
-  const getStatus = (): string => {
-    return props.title ? '🔴' : '🟢'
-  }
-
-  const getTitle = (): string => {
-    return props.title || 'Tudo certo!'
-  }
-
   return (
     <div className={styles.inputWrapper}>
-      <input data-testid={props.name} {...props} onChange={(e) => { setValue(e.target.value) }}/>
-      <span data-testid={`${props.name}Status`} title={getTitle()}>{getStatus()}</span>
+      <input
+        {...props}
+        data-testid={props.name}
+        id={props.name}
+        onChange={(e) => { setValue(e.target.value) }}
+        placeholder=""
+      />
+      <label htmlFor={props.name}>{props.placeholder}</label>
+      <span data-testid={`${props.name}Status`} title={props.title || 'Tudo certo!'}>{props.title ? '🔴' : '🟢'}</span>
     </div>
   )
 }

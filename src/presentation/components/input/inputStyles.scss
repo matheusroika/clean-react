@@ -1,17 +1,63 @@
+@import "../../styles/colors.scss";
+
 .inputWrapper {
-  display: flex;
-  align-items: center;
   position: relative;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  border-bottom: 2px dashed $primaryDark;
+  transition: border-color .5s ease-out;
+
+  &:not(:first-of-type) {
+    margin-top: 2.5rem;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: $primaryLight;
+    transition: width .5s ease-out;
+  }
+
+  &:focus-within {
+    border-color: transparent;
+
+    &::after {
+      width: 100%;
+    }
+
+    label {
+      transform: scale(.9) translateY(-1.5rem) translateX(-1.5rem);
+    }
+  }
 
   input {
     width: 100%;
-    padding: 0 2.5rem 0 1rem;
+    padding: 0 2rem 0 .5rem !important;
+    line-height: 2rem !important;
+    border: none !important;
+    outline: none !important;
+
+    &:not(:placeholder-shown) + label {
+      transform: scale(.9) translateY(-1.5rem) translateX(-1.5rem);
+    }
+  }
+
+  label {
+    position: absolute;
+    left: 1rem;
+    bottom: .5rem;
+    color: $disabled;
+    cursor: text;
+    transition: transform .25s ease-out;
   }
 
   span {
     position: absolute;
     right: .5rem;
+    bottom: .5rem;
     font-size: .75rem;
     cursor: help;
   }
