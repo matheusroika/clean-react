@@ -39,9 +39,21 @@ describe('Login', () => {
       .dataTestId('message').should('not.exist')
       .dataTestId('loader').should('not.exist')
       .dataTestId('message').should('have.text', 'Credenciais inválidas')
-    cy.getAllLocalStorage().then((result) => {
-      expect(result).to.deep.equal({})
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
-    cy.url().should('equal', `${baseUrl}/login`)
+  })
+
+  it('Should save accessToken and redirect to index if valid credentials are provided', () => {
+    cy.dataTestId('email').type('test@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('submit').click()
+    cy.dataTestId('modalWrapper').should('exist')
+      .dataTestId('loader').should('exist')
+      .dataTestId('message').should('not.exist')
+      .dataTestId('loader').should('not.exist')
+    cy.url().should('equal', `${baseUrl}/`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('string')
+    })
   })
 })
