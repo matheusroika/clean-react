@@ -2,6 +2,12 @@ const baseUrl: string = Cypress.config().baseUrl
 
 describe('Login', () => {
   beforeEach(() => {
+    cy.intercept({
+      url: '/api/login',
+      middleware: true
+    }, req => {
+      req.on('response', res => { res.setDelay(1000) })
+    })
     cy.visit('login')
   })
 
@@ -30,7 +36,33 @@ describe('Login', () => {
     cy.dataTestId('modalWrapper').should('not.exist')
   })
 
-  it('Should present error modal if invalid credentials are used', () => {
+  it('Should present error modal with UnexpectedError if unexpected error happens', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 500,
+      body: {
+        error: 'Unexpected error'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('any@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('submit').click()
+    cy.dataTestId('modalWrapper').should('exist')
+      .dataTestId('loader').should('exist')
+      .dataTestId('message').should('not.exist')
+      .dataTestId('loader').should('not.exist')
+      .dataTestId('message').should('have.text', 'Algo de errado aconteceu. Tente novamente')
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
+    })
+  })
+
+  it('Should present error modal with InvalidCredentialsError if invalid credentials are provided', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 401,
+      body: {
+        error: 'Invalid credentials'
+      }
+    }).as('login')
     cy.dataTestId('email').type('any@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
@@ -44,16 +76,23 @@ describe('Login', () => {
     })
   })
 
-  it('Should save accessToken and redirect to index if valid credentials are provided', () => {
-    cy.dataTestId('email').type('test@email.com')
+  it('Should present error modal with UnexpectedError if response has an invalid body', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        notAccessToken: 'invalid'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('any@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
     cy.dataTestId('modalWrapper').should('exist')
       .dataTestId('loader').should('exist')
       .dataTestId('message').should('not.exist')
       .dataTestId('loader').should('not.exist')
-    cy.url().should('equal', `${baseUrl}/`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('string')
+      .dataTestId('message').should('have.text', 'Algo de errado aconteceu. Tente novamente')
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
   })
 })
