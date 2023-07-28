@@ -3,3 +3,4 @@ node_modules
 coverage
 public/js
 env
+tests/main/cypress/downloads
