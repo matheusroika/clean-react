@@ -18,4 +18,13 @@ describe('Login', () => {
     cy.dataTestId('submit').should('have.attr', 'disabled')
     cy.dataTestId('modalWrapper').should('not.exist')
   })
+
+  it('Should present ok message if form is valid', () => {
+    cy.dataTestId('email').type('any@email.com')
+    cy.dataTestId('emailStatus').should('have.attr', 'title', 'Tudo certo!').should('have.text', '🟢')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('passwordStatus').should('have.attr', 'title', 'Tudo certo!').should('have.text', '🟢')
+    cy.dataTestId('submit').should('not.have.attr', 'disabled')
+    cy.dataTestId('modalWrapper').should('not.exist')
+  })
 })
