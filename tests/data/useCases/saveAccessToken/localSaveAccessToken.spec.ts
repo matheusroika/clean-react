@@ -1,4 +1,5 @@
 import { LocalSaveAccessToken } from '@/data/useCases/saveAccessToken/localSaveAccessToken'
+import { UnexpectedError } from '@/domain/errors'
 import { mockSetStorage } from '../../mocks/mockSetStorage'
 import type { SetStorage } from '@/data/protocols/local/setStorage'
 
@@ -22,6 +23,12 @@ describe('Local Save Access Token', () => {
     const setSpy = jest.spyOn(setStorageStub, 'set')
     await sut.save('any_token')
     expect(setSpy).toHaveBeenCalledWith('accessToken', 'any_token')
+  })
+
+  test('Should throw if accessToken is falsy', async () => {
+    const { sut } = makeSut()
+    const promise = sut.save(undefined)
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
   test('Should throw if SetStorage throws', async () => {
