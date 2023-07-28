@@ -1,3 +1,5 @@
+const baseUrl: string = Cypress.config().baseUrl
+
 describe('Login', () => {
   beforeEach(() => {
     cy.visit('login')
@@ -26,5 +28,20 @@ describe('Login', () => {
     cy.dataTestId('passwordStatus').should('have.attr', 'title', 'Tudo certo!').should('have.text', '🟢')
     cy.dataTestId('submit').should('not.have.attr', 'disabled')
     cy.dataTestId('modalWrapper').should('not.exist')
+  })
+
+  it('Should present error modal if invalid credentials are used', () => {
+    cy.dataTestId('email').type('any@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('submit').click()
+    cy.dataTestId('modalWrapper').should('exist')
+      .dataTestId('loader').should('exist')
+      .dataTestId('message').should('not.exist')
+      .dataTestId('loader').should('not.exist')
+      .dataTestId('message').should('have.text', 'Credenciais inválidas')
+    cy.getAllLocalStorage().then((result) => {
+      expect(result).to.deep.equal({})
+    })
+    cy.url().should('equal', `${baseUrl}/login`)
   })
 })
