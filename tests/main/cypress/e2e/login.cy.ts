@@ -95,4 +95,25 @@ describe('Login', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
   })
+
+  it('Should save accessToken and redirect to index if valid credentials are provided', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        name: 'Test Name',
+        accessToken: 'test_token',
+        email: 'test@email.com'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('test@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('submit').click()
+    cy.dataTestId('modalWrapper').should('exist')
+      .dataTestId('loader').should('exist')
+      .dataTestId('message').should('not.exist')
+      .dataTestId('loader').should('not.exist')
+    cy.url().should('equal', `${baseUrl}/`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('string')
+    })
+  })
 })
