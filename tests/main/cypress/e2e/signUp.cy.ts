@@ -1,5 +1,22 @@
+import * as http from '../support/signUpMocks'
+
+const submitValidForm = (withEnter?: boolean): void => {
+  const password = withEnter ? '12345{enter}' : '12345'
+  cy.dataTestId('name').type('Any Name')
+  cy.dataTestId('email').type('test@email.com')
+  cy.dataTestId('password').type('12345')
+  cy.dataTestId('passwordConfirmation').type(password)
+  if (!withEnter) cy.dataTestId('submit').click()
+}
+
 describe('Sign Up', () => {
   beforeEach(() => {
+    cy.intercept({
+      url: /signup/,
+      middleware: true
+    }, req => {
+      req.on('response', res => { res.setDelay(1000) })
+    })
     cy.visit('signup')
   })
 
@@ -35,5 +52,12 @@ describe('Sign Up', () => {
     cy.dataTestId('passwordConfirmationStatus').should('have.attr', 'title', 'Tudo certo!').should('have.text', '🟢')
     cy.dataTestId('submit').should('not.have.attr', 'disabled')
     cy.dataTestId('modalWrapper').should('not.exist')
+  })
+
+  it('Should prevent multiple submits', () => {
+    http.mockOkResponse()
+    submitValidForm()
+    cy.dataTestId('submit').click()
+    cy.get('@signUp.all').should('have.length', 1)
   })
 })
