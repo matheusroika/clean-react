@@ -89,4 +89,13 @@ describe('Sign Up', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
   })
+
+  it('Should not submit if form is invalid', () => {
+    http.mockOkResponse()
+    cy.dataTestId('name').type('Test Name')
+    cy.dataTestId('email').type('test@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('passwordConfirmation').type('123456{enter}')
+    cy.get('@signUp.all').should('have.length', 0)
+  })
 })
