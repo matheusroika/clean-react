@@ -1,4 +1,6 @@
 import { RemoteLoadSurveys } from '@/data/useCases/loadSurveys/remoteLoadSurveys'
+import { HttpStatusCode } from '@/data/protocols/http'
+import { UnexpectedError } from '@/domain/errors'
 import { mockHttpGetClient } from '../../mocks/mockHttpGetClient'
 import type { HttpGetClient } from '@/data/protocols/http'
 import type { Survey } from '@/domain/models/Survey'
@@ -24,5 +26,12 @@ describe('Remote Load Surveys', () => {
     const getSpy = jest.spyOn(httpGetClient, 'get')
     await sut.loadAll()
     expect(getSpy).toBeCalledWith({ url })
+  })
+
+  test('Should throw UnexpectedError if HttpGetClient returns 403', async () => {
+    const { sut, httpGetClient } = makeSut()
+    jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+    const promise = sut.loadAll()
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
