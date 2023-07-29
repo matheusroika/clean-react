@@ -23,7 +23,8 @@ export class AxiosHttpClient implements HttpPostClient<any, any, any>, HttpGetCl
     await axios.get(url)
 
     return {
-      statusCode: 200
+      statusCode: 200,
+      body: {}
     }
   }
 }
