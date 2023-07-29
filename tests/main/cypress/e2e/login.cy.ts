@@ -148,4 +148,18 @@ describe('Login', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
   })
+
+  it('Should not submit if form is invalid', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        name: 'Test Name',
+        accessToken: 'test_token',
+        email: 'test@email.com'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('test')
+    cy.dataTestId('password').type('12345{enter}')
+    cy.get('@login.all').should('have.length', 0)
+  })
 })
