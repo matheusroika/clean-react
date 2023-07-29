@@ -1,6 +1,6 @@
 import { LocalSaveAccessToken } from '@/data/useCases/saveAccessToken/localSaveAccessToken'
 import { UnexpectedError } from '@/domain/errors'
-import { mockSetStorage } from '../../mocks/mockSetStorage'
+import { mockSetStorage } from '../../mocks'
 import type { SetStorage } from '@/data/protocols/local/setStorage'
 
 type Sut = {

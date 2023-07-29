@@ -1,10 +1,10 @@
 import { RemoteLoadSurveys } from '@/data/useCases/loadSurveys/remoteLoadSurveys'
 import { HttpStatusCode } from '@/data/protocols/http'
 import { UnexpectedError } from '@/domain/errors'
-import { mockHttpGetClient } from '../../mocks/mockHttpGetClient'
+import { mockHttpGetClient } from '../../mocks'
+import { mockSurvey } from '@/../tests/domain/mocks'
 import type { HttpGetClient } from '@/data/protocols/http'
 import type { Survey } from '@/domain/models/Survey'
-import { mockSurvey } from '@/../tests/domain/mocks/mockSurvey'
 
 type Sut = {
   sut: RemoteLoadSurveys
