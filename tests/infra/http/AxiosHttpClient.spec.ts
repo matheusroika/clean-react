@@ -1,12 +1,15 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
-import { mockHttpPostParams } from '../../data/mocks'
-import { mockPostAxiosResponse } from '../mocks/mockAxios'
-import type { PostAxiosResponse } from '../mocks/mockAxios'
+import { mockHttpGetParams, mockHttpPostParams } from '../../data/mocks'
+import { mockGetAxiosResponse, mockPostAxiosResponse } from '../mocks/mockAxios'
+import type { GetAxiosResponse, PostAxiosResponse } from '../mocks/mockAxios'
 
 jest.mock('axios', () => ({
   async post (): Promise<PostAxiosResponse> {
     return mockPostAxiosResponse()
+  },
+  async get (): Promise<GetAxiosResponse> {
+    return mockGetAxiosResponse()
   }
 }))
 
@@ -50,6 +53,16 @@ describe('Axios Http Client', () => {
         statusCode: mockPostAxiosResponse().status,
         body: mockPostAxiosResponse().data
       })
+    })
+  })
+
+  describe('GET', () => {
+    test('Should call axios.get with correct values', async () => {
+      const { sut } = makeSut()
+      const getSpy = jest.spyOn(axios, 'get')
+      const httpGetParams = mockHttpGetParams()
+      await sut.get(httpGetParams)
+      expect(getSpy).toHaveBeenCalledWith(httpGetParams.url)
     })
   })
 })
