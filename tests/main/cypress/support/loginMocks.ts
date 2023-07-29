@@ -1,4 +1,4 @@
-import * as httpMocks from '../support/httpMocks'
+import * as httpMocks from './httpMocks'
 
 export const mockInvalidCredentialsError = (): void => { httpMocks.mockInvalidCredentialsError(/login/, 'login') }
 export const mockUnexpectedError = (): void => { httpMocks.mockUnexpectedError(/login/, 'POST', 'login') }

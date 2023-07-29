@@ -1,4 +1,4 @@
-import * as http from './loginMocks'
+import * as http from '../support/loginMocks'
 
 const baseUrl: string = Cypress.config().baseUrl
 
@@ -106,7 +106,8 @@ describe('Login', () => {
 
   it('Should not submit if form is invalid', () => {
     http.mockOkResponse()
-    submitValidForm(true)
+    cy.dataTestId('email').type('test')
+    cy.dataTestId('password').type('12345{enter}')
     cy.get('@login.all').should('have.length', 0)
   })
 })
