@@ -1,21 +1,7 @@
 import * as http from '../support/loginMocks'
+import * as helper from '../support/authHelpers'
 
 const baseUrl: string = Cypress.config().baseUrl
-
-const testModalCycle = (message?: string): void => {
-  cy.dataTestId('modalWrapper').should('exist')
-    .dataTestId('loader').should('exist')
-    .dataTestId('message').should('not.exist')
-    .dataTestId('loader').should('not.exist')
-    .dataTestId('message').should(!message ? 'not.exist' : 'have.text', message)
-}
-
-const submitValidForm = (withEnter?: boolean): void => {
-  const password = withEnter ? '12345{enter}' : '12345'
-  cy.dataTestId('email').type('test@email.com')
-  cy.dataTestId('password').type(password)
-  if (!withEnter) cy.dataTestId('submit').click()
-}
 
 describe('Login', () => {
   beforeEach(() => {
@@ -55,15 +41,15 @@ describe('Login', () => {
 
   it('Should prevent multiple submits', () => {
     http.mockOkResponse()
-    submitValidForm()
+    helper.submitValidForm('login')
     cy.dataTestId('submit').click()
     cy.get('@login.all').should('have.length', 1)
   })
 
   it('Should present error modal with UnexpectedError if unexpected error happens', () => {
     http.mockUnexpectedError()
-    submitValidForm()
-    testModalCycle('Algo de errado aconteceu. Tente novamente')
+    helper.submitValidForm('login')
+    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
@@ -71,8 +57,8 @@ describe('Login', () => {
 
   it('Should present error modal with InvalidCredentialsError if invalid credentials are provided', () => {
     http.mockInvalidCredentialsError()
-    submitValidForm()
-    testModalCycle('Credenciais inválidas')
+    helper.submitValidForm('login')
+    helper.testModalCycle('Credenciais inválidas')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
@@ -80,8 +66,8 @@ describe('Login', () => {
 
   it('Should present error modal with UnexpectedError if response has an invalid body', () => {
     http.mockOkWithInvalidResponse()
-    submitValidForm()
-    testModalCycle('Algo de errado aconteceu. Tente novamente')
+    helper.submitValidForm('login')
+    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
@@ -89,8 +75,8 @@ describe('Login', () => {
 
   it('Should save accessToken and redirect to index if valid credentials are provided', () => {
     http.mockOkResponse()
-    submitValidForm()
-    testModalCycle()
+    helper.submitValidForm('login')
+    helper.testModalCycle()
     cy.url().should('equal', `${baseUrl}/`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
@@ -98,7 +84,7 @@ describe('Login', () => {
 
   it('Should submit with enter', () => {
     http.mockOkResponse()
-    submitValidForm(true)
+    helper.submitValidForm('login', true)
     cy.url().should('equal', `${baseUrl}/`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
