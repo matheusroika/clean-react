@@ -9,12 +9,12 @@ import type { AddAccountParams } from '@/domain/useCases/AddAccount'
 
 type Sut = {
   sut: RemoteAddAccount
-  httpPostClient: HttpPostClient<AddAccountParams, Account>
+  httpPostClient: HttpPostClient<AddAccountParams, any, Account>
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpPostClient = mockHttpPostClient<AddAccountParams, Account>()
+  const httpPostClient = mockHttpPostClient<AddAccountParams, any, Account>()
   const sut = new RemoteAddAccount(url, httpPostClient)
   return {
     sut,

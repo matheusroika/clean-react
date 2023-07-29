@@ -9,12 +9,12 @@ import type { Account } from '@/domain/models/Account'
 
 type Sut = {
   sut: RemoteAuthentication
-  httpPostClient: HttpPostClient<AuthParams, Account>
+  httpPostClient: HttpPostClient<AuthParams, any, Account>
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpPostClient = mockHttpPostClient<AuthParams, Account>()
+  const httpPostClient = mockHttpPostClient<AuthParams, any, Account>()
   const sut = new RemoteAuthentication(url, httpPostClient)
   return {
     sut,

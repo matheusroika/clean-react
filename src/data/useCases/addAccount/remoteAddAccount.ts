@@ -7,7 +7,7 @@ import type { AddAccount, AddAccountParams } from '@/domain/useCases/AddAccount'
 export class RemoteAddAccount implements AddAccount {
   constructor (
     private readonly url: string,
-    private readonly httpPostClient: HttpPostClient<AddAccountParams, Account>
+    private readonly httpPostClient: HttpPostClient<AddAccountParams, any, Account>
   ) {}
 
   async add (params: AddAccountParams): Promise<Account> {
