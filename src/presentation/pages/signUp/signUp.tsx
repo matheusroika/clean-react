@@ -50,7 +50,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
 
   useEffect(() => {
     setPasswordConfirmationError(validation.validate('passwordConfirmation', formValues))
-  }, [passwordConfirmation])
+  }, [password, passwordConfirmation])
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
     e.preventDefault()
