@@ -1,3 +1,5 @@
+import { HttpStatusCode } from '@/data/protocols/http'
+import { UnexpectedError } from '@/domain/errors'
 import type { LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import type { Survey } from '@/domain/models/Survey'
 import type { HttpGetClient } from '@/data/protocols/http'
@@ -9,9 +11,15 @@ export class RemoteLoadSurveys implements LoadSurveys {
   ) {}
 
   async loadAll (): Promise<Survey[]> {
-    await this.httpGetClient.get({
+    const httpResponse = await this.httpGetClient.get({
       url: this.url
     })
+
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: break
+      default: throw new UnexpectedError()
+    }
+
     return []
   }
 }
