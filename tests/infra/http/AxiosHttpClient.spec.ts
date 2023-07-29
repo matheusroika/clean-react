@@ -73,5 +73,17 @@ describe('Axios Http Client', () => {
         body: mockGetAxiosResponse().data
       })
     })
+
+    test('Should return correct response on axios.get failure', async () => {
+      const { sut } = makeSut()
+      jest.spyOn(axios, 'get').mockRejectedValueOnce({
+        response: mockGetAxiosResponse()
+      })
+      const httpResponse = await sut.get(mockHttpGetParams())
+      expect(httpResponse).toEqual({
+        statusCode: mockGetAxiosResponse().status,
+        body: mockGetAxiosResponse().data
+      })
+    })
   })
 })
