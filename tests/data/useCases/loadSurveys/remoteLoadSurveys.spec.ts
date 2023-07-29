@@ -4,6 +4,7 @@ import { UnexpectedError } from '@/domain/errors'
 import { mockHttpGetClient } from '../../mocks/mockHttpGetClient'
 import type { HttpGetClient } from '@/data/protocols/http'
 import type { Survey } from '@/domain/models/Survey'
+import { mockSurvey } from '@/../tests/domain/mocks/mockSurvey'
 
 type Sut = {
   sut: RemoteLoadSurveys
@@ -47,5 +48,16 @@ describe('Remote Load Surveys', () => {
     jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.loadAll()
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('Should return a Survey list if HttpGetClient returns 200', async () => {
+    const { sut, httpGetClient } = makeSut()
+    const body = [mockSurvey()]
+    jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({
+      statusCode: HttpStatusCode.ok,
+      body
+    })
+    const account = await sut.loadAll()
+    expect(account).toEqual(body)
   })
 })
