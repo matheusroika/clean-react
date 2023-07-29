@@ -36,6 +36,22 @@ describe('Login', () => {
     cy.dataTestId('modalWrapper').should('not.exist')
   })
 
+  it('Should prevent multiple submits', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        name: 'Test Name',
+        accessToken: 'test_token',
+        email: 'test@email.com'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('test@email.com')
+    cy.dataTestId('password').type('12345')
+    cy.dataTestId('submit').click()
+    cy.dataTestId('submit').click()
+    cy.get('@login.all').should('have.length', 1)
+  })
+
   it('Should present error modal with UnexpectedError if unexpected error happens', () => {
     cy.intercept('POST', '/api/login', {
       statusCode: 500,
