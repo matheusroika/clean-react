@@ -132,4 +132,20 @@ describe('Login', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
   })
+
+  it('Should submit with enter', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        name: 'Test Name',
+        accessToken: 'test_token',
+        email: 'test@email.com'
+      }
+    }).as('login')
+    cy.dataTestId('email').type('test@email.com')
+    cy.dataTestId('password').type('12345{enter}')
+    cy.url().should('equal', `${baseUrl}/`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('string')
+    })
+  })
 })
