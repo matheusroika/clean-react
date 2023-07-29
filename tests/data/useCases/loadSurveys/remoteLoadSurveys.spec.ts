@@ -60,4 +60,13 @@ describe('Remote Load Surveys', () => {
     const account = await sut.loadAll()
     expect(account).toEqual(body)
   })
+
+  test('Should return an empty Survey list if HttpGetClient returns 204', async () => {
+    const { sut, httpGetClient } = makeSut()
+    jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({
+      statusCode: HttpStatusCode.noContent
+    })
+    const account = await sut.loadAll()
+    expect(account).toEqual([])
+  })
 })
