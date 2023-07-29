@@ -1,5 +1,31 @@
 const baseUrl: string = Cypress.config().baseUrl
 
+type OkResponse = {
+  statusCode: number
+  body: {
+    name: string
+    accessToken: string
+    email: string
+  }
+}
+
+const mockOkResponse = (): OkResponse => ({
+  statusCode: 200,
+  body: {
+    name: 'Test Name',
+    accessToken: 'test_token',
+    email: 'test@email.com'
+  }
+})
+
+const testModalCycle = (message?: string): void => {
+  cy.dataTestId('modalWrapper').should('exist')
+    .dataTestId('loader').should('exist')
+    .dataTestId('message').should('not.exist')
+    .dataTestId('loader').should('not.exist')
+    .dataTestId('message').should(!message ? 'not.exist' : 'have.text', message)
+}
+
 describe('Login', () => {
   beforeEach(() => {
     cy.intercept({
@@ -37,14 +63,7 @@ describe('Login', () => {
   })
 
   it('Should prevent multiple submits', () => {
-    cy.intercept('POST', '/api/login', {
-      statusCode: 200,
-      body: {
-        name: 'Test Name',
-        accessToken: 'test_token',
-        email: 'test@email.com'
-      }
-    }).as('login')
+    cy.intercept('POST', '/api/login').as('login')
     cy.dataTestId('email').type('test@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
@@ -62,11 +81,7 @@ describe('Login', () => {
     cy.dataTestId('email').type('any@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
-    cy.dataTestId('modalWrapper').should('exist')
-      .dataTestId('loader').should('exist')
-      .dataTestId('message').should('not.exist')
-      .dataTestId('loader').should('not.exist')
-      .dataTestId('message').should('have.text', 'Algo de errado aconteceu. Tente novamente')
+    testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
@@ -82,11 +97,7 @@ describe('Login', () => {
     cy.dataTestId('email').type('any@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
-    cy.dataTestId('modalWrapper').should('exist')
-      .dataTestId('loader').should('exist')
-      .dataTestId('message').should('not.exist')
-      .dataTestId('loader').should('not.exist')
-      .dataTestId('message').should('have.text', 'Credenciais inválidas')
+    testModalCycle('Credenciais inválidas')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
@@ -102,46 +113,25 @@ describe('Login', () => {
     cy.dataTestId('email').type('any@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
-    cy.dataTestId('modalWrapper').should('exist')
-      .dataTestId('loader').should('exist')
-      .dataTestId('message').should('not.exist')
-      .dataTestId('loader').should('not.exist')
-      .dataTestId('message').should('have.text', 'Algo de errado aconteceu. Tente novamente')
+    testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
   })
 
   it('Should save accessToken and redirect to index if valid credentials are provided', () => {
-    cy.intercept('POST', '/api/login', {
-      statusCode: 200,
-      body: {
-        name: 'Test Name',
-        accessToken: 'test_token',
-        email: 'test@email.com'
-      }
-    }).as('login')
+    cy.intercept('POST', '/api/login', mockOkResponse()).as('login')
     cy.dataTestId('email').type('test@email.com')
     cy.dataTestId('password').type('12345')
     cy.dataTestId('submit').click()
-    cy.dataTestId('modalWrapper').should('exist')
-      .dataTestId('loader').should('exist')
-      .dataTestId('message').should('not.exist')
-      .dataTestId('loader').should('not.exist')
+    testModalCycle()
     cy.url().should('equal', `${baseUrl}/`).then(() => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
   })
 
   it('Should submit with enter', () => {
-    cy.intercept('POST', '/api/login', {
-      statusCode: 200,
-      body: {
-        name: 'Test Name',
-        accessToken: 'test_token',
-        email: 'test@email.com'
-      }
-    }).as('login')
+    cy.intercept('POST', '/api/login', mockOkResponse()).as('login')
     cy.dataTestId('email').type('test@email.com')
     cy.dataTestId('password').type('12345{enter}')
     cy.url().should('equal', `${baseUrl}/`).then(() => {
@@ -150,14 +140,7 @@ describe('Login', () => {
   })
 
   it('Should not submit if form is invalid', () => {
-    cy.intercept('POST', '/api/login', {
-      statusCode: 200,
-      body: {
-        name: 'Test Name',
-        accessToken: 'test_token',
-        email: 'test@email.com'
-      }
-    }).as('login')
+    cy.intercept('POST', '/api/login', mockOkResponse()).as('login')
     cy.dataTestId('email').type('test')
     cy.dataTestId('password').type('12345{enter}')
     cy.get('@login.all').should('have.length', 0)
