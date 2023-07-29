@@ -72,4 +72,13 @@ describe('Sign Up', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
   })
+
+  it('Should save accessToken and redirect to index if valid form is submitted', () => {
+    http.mockOkResponse()
+    helper.submitValidForm('signup')
+    helper.testModalCycle()
+    cy.url().should('equal', `${baseUrl}/`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('string')
+    })
+  })
 })
