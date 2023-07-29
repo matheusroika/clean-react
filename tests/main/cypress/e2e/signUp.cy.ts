@@ -63,4 +63,13 @@ describe('Sign Up', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('null')
     })
   })
+
+  it('Should present error modal with UnexpectedError if response has an invalid body', () => {
+    http.mockOkWithInvalidResponse()
+    helper.submitValidForm('signup')
+    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
+    cy.url().should('equal', `${baseUrl}/signup`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
+    })
+  })
 })
