@@ -20,6 +20,6 @@ export class RemoteLoadSurveys implements LoadSurveys {
       default: throw new UnexpectedError()
     }
 
-    return []
+    return httpResponse.body
   }
 }
