@@ -1,13 +1,7 @@
 import * as http from '../support/signUpMocks'
+import * as helper from '../support/authHelpers'
 
-const submitValidForm = (withEnter?: boolean): void => {
-  const password = withEnter ? '12345{enter}' : '12345'
-  cy.dataTestId('name').type('Any Name')
-  cy.dataTestId('email').type('test@email.com')
-  cy.dataTestId('password').type('12345')
-  cy.dataTestId('passwordConfirmation').type(password)
-  if (!withEnter) cy.dataTestId('submit').click()
-}
+const baseUrl: string = Cypress.config().baseUrl
 
 describe('Sign Up', () => {
   beforeEach(() => {
@@ -56,8 +50,17 @@ describe('Sign Up', () => {
 
   it('Should prevent multiple submits', () => {
     http.mockOkResponse()
-    submitValidForm()
+    helper.submitValidForm('signup')
     cy.dataTestId('submit').click()
     cy.get('@signUp.all').should('have.length', 1)
+  })
+
+  it('Should present error modal with UnexpectedError if unexpected error happens', () => {
+    http.mockUnexpectedError()
+    helper.submitValidForm('signup')
+    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
+    cy.url().should('equal', `${baseUrl}/signup`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
+    })
   })
 })
