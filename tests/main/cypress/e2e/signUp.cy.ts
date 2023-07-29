@@ -81,4 +81,12 @@ describe('Sign Up', () => {
       expect(localStorage.getItem('accessToken')).to.be.a('string')
     })
   })
+
+  it('Should submit with enter', () => {
+    http.mockOkResponse()
+    helper.submitValidForm('signup', true)
+    cy.url().should('equal', `${baseUrl}/`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('string')
+    })
+  })
 })
