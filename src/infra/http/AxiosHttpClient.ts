@@ -5,16 +5,16 @@ import type { HttpPostClient, HttpPostParams, HttpResponse } from '@/data/protoc
 export class AxiosHttpClient implements HttpPostClient<any, any, any> {
   async post (params: HttpPostParams<any, any>): Promise<HttpResponse<any>> {
     const { url, body } = params
-    let httpResponse: AxiosResponse<any>
+    let axiosResponse: AxiosResponse<any>
     try {
-      httpResponse = await axios.post(url, body)
+      axiosResponse = await axios.post(url, body)
     } catch (error) {
       const typedError = error as AxiosError
-      httpResponse = typedError.response
+      axiosResponse = typedError.response
     }
     return {
-      statusCode: httpResponse.status,
-      body: httpResponse.data
+      statusCode: axiosResponse.status,
+      body: axiosResponse.data
     }
   }
 }
