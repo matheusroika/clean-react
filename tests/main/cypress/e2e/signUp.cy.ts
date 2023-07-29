@@ -64,6 +64,15 @@ describe('Sign Up', () => {
     })
   })
 
+  it('Should present error modal with EmailInUseError if email provided is in use', () => {
+    http.mockEmailInUseError()
+    helper.submitValidForm('signup')
+    helper.testModalCycle('Esse email já está em uso')
+    cy.url().should('equal', `${baseUrl}/signup`).then(() => {
+      expect(localStorage.getItem('accessToken')).to.be.a('null')
+    })
+  })
+
   it('Should present error modal with UnexpectedError if response has an invalid body', () => {
     http.mockOkWithInvalidResponse()
     helper.submitValidForm('signup')
