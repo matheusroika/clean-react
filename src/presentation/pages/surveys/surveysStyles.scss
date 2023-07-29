@@ -1,0 +1,154 @@
+@import "../../styles/colors.scss";
+
+.surveys {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  background-color: $disabledBackground;
+
+  header {
+    display: flex;
+    justify-content: center;
+    background-color: $primary;
+    border-top: 2.5rem solid $primaryDark;
+
+    &>div {
+      display: flex;
+      flex-grow: 1;
+      justify-content: space-between;
+      max-width: 50rem;
+      padding: 1.5rem 2.5rem;
+
+      img {
+        width: 5rem;
+        align-self: center;
+      }
+
+      .profile {
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+
+        span {
+          font-size: 1.1rem;
+          color: $white;
+          margin-bottom: .5rem;
+        }
+
+        button {
+          background: unset;
+          line-height: unset;
+          padding: unset;
+          border-radius: unset;
+        }
+      }
+    }
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-self: center;
+    align-items: flex-start;
+    max-width: 50rem;
+    width: 100%;
+    padding: 2.5rem;
+    
+    h1 {
+      color: $primaryDark;
+      font-size: 2rem;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+
+      li {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 16rem;
+        background-color: $white;
+        border-radius: .5rem;
+        flex-basis: 48%;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px -1px $black;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          background-color: rgba($primaryLight, .25);
+          width: 3.5rem;
+          height: 100%;
+          border-radius: .5rem 0 0 .5rem;
+        }
+
+        &>div {
+          display: flex;
+          flex-grow: 1;
+          justify-content: space-between;
+
+          time {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            align-self: center;
+            align-items: center;
+            justify-content: center;
+            width: 4rem;
+            height: 6rem;
+            background-color: $primaryLight; 
+            color: $white;
+            border-radius: .5rem;
+            margin-left: 1.5rem;
+            z-index: 1;
+
+            .day {
+              font-size: 2.5rem;
+              font-weight: bold;
+              line-height: 2.5rem;
+            }
+            .month {
+              text-transform: lowercase;
+            }
+            .year {
+              font-size: 1.1rem;
+            }
+          }
+
+          p {
+            align-self: center;
+            font-size: 1.1rem;
+            margin: 1.5rem;
+          }
+        }
+
+        footer {
+          font-weight: bold;
+          color: $white;
+          background-color: $primary;
+          padding: 1rem;
+          text-align: center;
+          cursor: pointer;
+          border-radius: 0 0 .5rem .5rem;
+          z-index: 1;
+
+          &:hover {
+            background-color: $primaryDark;
+          }
+        }
+      }
+    }
+  }
+}
