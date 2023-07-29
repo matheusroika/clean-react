@@ -22,32 +22,34 @@ const makeSut = (): Sut => {
 }
 
 describe('Axios Http Client', () => {
-  test('Should call axios.post with correct values', async () => {
-    const { sut } = makeSut()
-    const postSpy = jest.spyOn(axios, 'post')
-    const httpPostParams = mockHttpPostParams()
-    await sut.post(httpPostParams)
-    expect(postSpy).toHaveBeenCalledWith(httpPostParams.url, httpPostParams.body)
-  })
-
-  test('Should return correct values on success', async () => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.post(mockHttpPostParams())
-    expect(httpResponse).toEqual({
-      statusCode: mockPostAxiosResponse().status,
-      body: mockPostAxiosResponse().data
+  describe('POST', () => {
+    test('Should call axios.post with correct values', async () => {
+      const { sut } = makeSut()
+      const postSpy = jest.spyOn(axios, 'post')
+      const httpPostParams = mockHttpPostParams()
+      await sut.post(httpPostParams)
+      expect(postSpy).toHaveBeenCalledWith(httpPostParams.url, httpPostParams.body)
     })
-  })
 
-  test('Should return correct values on failure', async () => {
-    const { sut } = makeSut()
-    jest.spyOn(axios, 'post').mockRejectedValueOnce({
-      response: mockPostAxiosResponse()
+    test('Should return correct response on axios.post success', async () => {
+      const { sut } = makeSut()
+      const httpResponse = await sut.post(mockHttpPostParams())
+      expect(httpResponse).toEqual({
+        statusCode: mockPostAxiosResponse().status,
+        body: mockPostAxiosResponse().data
+      })
     })
-    const httpResponse = await sut.post(mockHttpPostParams())
-    expect(httpResponse).toEqual({
-      statusCode: mockPostAxiosResponse().status,
-      body: mockPostAxiosResponse().data
+
+    test('Should return correct response on axios.post failure', async () => {
+      const { sut } = makeSut()
+      jest.spyOn(axios, 'post').mockRejectedValueOnce({
+        response: mockPostAxiosResponse()
+      })
+      const httpResponse = await sut.post(mockHttpPostParams())
+      expect(httpResponse).toEqual({
+        statusCode: mockPostAxiosResponse().status,
+        body: mockPostAxiosResponse().data
+      })
     })
   })
 })
