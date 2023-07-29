@@ -16,11 +16,9 @@ export class RemoteLoadSurveys implements LoadSurveys {
     })
 
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: break
+      case HttpStatusCode.ok: return httpResponse.body
       case HttpStatusCode.noContent: return []
       default: throw new UnexpectedError()
     }
-
-    return httpResponse.body
   }
 }
