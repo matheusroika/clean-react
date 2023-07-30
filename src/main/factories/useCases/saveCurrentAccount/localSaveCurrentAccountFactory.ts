@@ -1,6 +1,6 @@
 import { LocalSaveCurrentAccount } from '@/data/useCases/saveCurrentAccount/localSaveCurrentAccount'
-import { makeSetStorage } from '../../cache/setStorageFactory'
+import { makeLocalStorageAdapter } from '../../cache/localStorageAdapterFactory'
 
 export const makeLocalSaveCurrentAccount = (): LocalSaveCurrentAccount => {
-  return new LocalSaveCurrentAccount(makeSetStorage())
+  return new LocalSaveCurrentAccount(makeLocalStorageAdapter())
 }
