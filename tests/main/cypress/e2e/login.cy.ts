@@ -9,7 +9,7 @@ describe('Login', () => {
       url: /login/,
       middleware: true
     }, req => {
-      req.on('response', res => { res.setDelay(1000) })
+      req.on('response', res => { res.setDelay(100) })
     })
     cy.visit('login')
   })
