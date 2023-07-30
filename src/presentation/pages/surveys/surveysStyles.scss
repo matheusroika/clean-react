@@ -94,6 +94,7 @@
           }
 
           p {
+            flex-grow: 1;
             align-self: center;
             font-size: 1.1rem;
             margin: 1.5rem;
@@ -113,6 +114,20 @@
           &:hover {
             background-color: $primaryDark;
           }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .surveys {
+    main {
+      ul {
+        flex-direction: column;
+
+        li {
+          flex-basis: unset;
         }
       }
     }
