@@ -16,13 +16,14 @@ const Surveys: React.FC = () => {
               <AnsweredIcon iconName='thumbsDown' className={styles.icon} />
               <time>
                 <span className={styles.day}>22</span>
-                <span className={styles.month}>07</span>
+                <span className={styles.month}>JUL</span>
                 <span className={styles.year}>2023</span>
               </time>
               <p>Qual é seu framework web favorito?</p>
             </div>
             <footer>Ver resultado</footer>
           </li>
+          <li></li>
         </ul>
       </main>
       <Footer />
