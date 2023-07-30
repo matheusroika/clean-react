@@ -1,0 +1,16 @@
+@import "../../styles/colors.scss";
+
+.icon {
+  display: flex;
+  border-radius: 50%;
+  padding: 1rem;
+  box-shadow: 0 1px 3px -1px $black;
+
+  &.notAnswered {
+    background-color: $invalid;
+  }
+
+  &.answered {
+    background-color: $valid;
+  }
+}
