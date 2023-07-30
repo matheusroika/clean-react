@@ -16,18 +16,17 @@ describe('Local Storage Adapter', () => {
     localStorage.clear()
   })
 
-  test('Should call localStorage.setItem with correct values', async () => {
+  test('Should call localStorage.setItem with correct values', () => {
     const { sut } = makeSut()
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
     const [key, value] = ['any_key', 'any_value']
-    await sut.set(key, value)
+    sut.set(key, value)
     expect(setItemSpy).toHaveBeenCalledWith(key, value)
   })
 
-  test('Should throw if localStorage.setItem throws', async () => {
+  test('Should throw if localStorage.setItem throws', () => {
     const { sut } = makeSut()
     jest.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.set('any_key', 'any_value')
-    await expect(promise).rejects.toThrow(new Error())
+    expect(() => { sut.set('any_key', 'any_value') }).toThrow(new Error())
   })
 })

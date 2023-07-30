@@ -1,10 +1,7 @@
 import { UnexpectedError } from '@/domain/errors'
-import type { Account } from '@/domain/models/Account'
 import type { SaveCurrentAccount } from '@/domain/useCases/SaveCurrentAccount'
-
-interface SetStorage {
-  set: (key: string, value: any) => Promise<void>
-}
+import type { SetStorage } from '@/data/protocols/local/setStorage'
+import type { Account } from '@/domain/models/Account'
 
 export class LocalSaveCurrentAccount implements SaveCurrentAccount {
   constructor (
@@ -13,6 +10,6 @@ export class LocalSaveCurrentAccount implements SaveCurrentAccount {
 
   async save (account: Account): Promise<void> {
     if (!account?.accessToken || !account?.name || !account?.email) throw new UnexpectedError()
-    await this.setStorage.set('account', JSON.stringify(account))
+    this.setStorage.set('account', JSON.stringify(account))
   }
 }
