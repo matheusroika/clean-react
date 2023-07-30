@@ -2,11 +2,12 @@
   "scripts": {
     "dev": "webpack-dev-server --open",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
-    "test:verbose": "jest --passWithNoTests",
-    "test:cypress": "cypress open",
     "test:all": "yarn test --watch",
+    "test:verbose": "jest --passWithNoTests",
     "test:staged": "yarn test --findRelatedTests",
-    "test:ci": "yarn test --coverage"
+    "test:ci": "yarn test --coverage",
+    "test:e2e": "cypress run",
+    "cypress": "cypress open --e2e -b chrome"
   },
   "name": "clean-react",
   "version": "0.2.5",

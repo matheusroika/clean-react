@@ -51,7 +51,7 @@ describe('Login', () => {
     helper.submitValidForm('login')
     helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('null')
+      expect(localStorage.getItem('account')).to.be.a('null')
     })
   })
 
@@ -60,7 +60,7 @@ describe('Login', () => {
     helper.submitValidForm('login')
     helper.testModalCycle('Credenciais inválidas')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('null')
+      expect(localStorage.getItem('account')).to.be.a('null')
     })
   })
 
@@ -69,7 +69,7 @@ describe('Login', () => {
     helper.submitValidForm('login')
     helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('null')
+      expect(localStorage.getItem('account')).to.be.a('null')
     })
   })
 
@@ -78,7 +78,8 @@ describe('Login', () => {
     helper.submitValidForm('login')
     helper.testModalCycle()
     cy.url().should('equal', `${baseUrl}/`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('string')
+      const account = JSON.parse(localStorage.getItem('account'))
+      expect(account.name && account.email && account.accessToken).to.be.a('string')
     })
   })
 
@@ -86,7 +87,8 @@ describe('Login', () => {
     http.mockOkResponse()
     helper.submitValidForm('login', true)
     cy.url().should('equal', `${baseUrl}/`).then(() => {
-      expect(localStorage.getItem('accessToken')).to.be.a('string')
+      const account = JSON.parse(localStorage.getItem('account'))
+      expect(account.name && account.email && account.accessToken).to.be.a('string')
     })
   })
 
