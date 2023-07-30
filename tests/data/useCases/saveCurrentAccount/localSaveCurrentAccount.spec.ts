@@ -23,7 +23,7 @@ describe('Local Save Access Token', () => {
     const { sut, setStorageStub } = makeSut()
     const setSpy = jest.spyOn(setStorageStub, 'set')
     await sut.save(mockAccount())
-    expect(setSpy).toHaveBeenCalledWith('accessToken', 'any_token')
+    expect(setSpy).toHaveBeenCalledWith('account', JSON.stringify(mockAccount()))
   })
 
   test('Should throw if accessToken is falsy', async () => {
