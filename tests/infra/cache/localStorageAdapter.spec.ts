@@ -21,7 +21,7 @@ describe('Local Storage Adapter', () => {
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem')
     const [key, value] = ['any_key', 'any_value']
     sut.set(key, value)
-    expect(setItemSpy).toHaveBeenCalledWith(key, value)
+    expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(value))
   })
 
   test('Should throw if localStorage.setItem throws', () => {
