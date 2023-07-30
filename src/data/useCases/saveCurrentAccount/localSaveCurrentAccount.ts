@@ -12,8 +12,7 @@ export class LocalSaveCurrentAccount implements SaveCurrentAccount {
   ) {}
 
   async save (account: Account): Promise<void> {
-    if (!account?.accessToken) throw new UnexpectedError()
-    const { accessToken } = account
-    await this.setStorage.set('accessToken', accessToken)
+    if (!account?.accessToken || !account?.name || !account?.email) throw new UnexpectedError()
+    await this.setStorage.set('account', JSON.stringify(account))
   }
 }
