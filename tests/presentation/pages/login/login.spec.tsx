@@ -3,29 +3,29 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { testHelper, mockAuthentication, mockSaveAccessToken, mockValidation, mockValidateCall } from '../../mocks'
-import { mockAuthParams } from '@/../tests/domain/mocks'
+import { testHelper, mockAuthentication, mockSaveCurrentAccount, mockValidation, mockValidateCall } from '../../mocks'
+import { mockAccount, mockAuthParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
-import type { SaveAccessToken } from '@/domain/useCases/SaveAccessToken'
+import type { SaveCurrentAccount } from '@/domain/useCases/SaveCurrentAccount'
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
   authenticationStub: Authentication
-  saveAccessTokenStub: SaveAccessToken
+  SaveCurrentAccountStub: SaveCurrentAccount
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const authenticationStub = mockAuthentication()
-  const saveAccessTokenStub = mockSaveAccessToken()
+  const SaveCurrentAccountStub = mockSaveCurrentAccount()
   const sut = render(
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
-        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} saveAccessToken={saveAccessTokenStub} />} />
+        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} SaveCurrentAccount={SaveCurrentAccountStub} />} />
         <Route path='/' element={<h1>Test Pass Index</h1>} />
         <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
       </Routes>
@@ -36,7 +36,7 @@ const makeSut = (mockMessage?: string): Sut => {
     sut,
     validationStub,
     authenticationStub,
-    saveAccessTokenStub
+    SaveCurrentAccountStub
   }
 }
 
@@ -141,20 +141,20 @@ describe('Login page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
-  test('Should call SaveAccessToken and go to index on Authentication success', async () => {
-    const { sut, saveAccessTokenStub } = makeSut()
-    const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
+  test('Should call SaveCurrentAccount and go to index on Authentication success', async () => {
+    const { sut, SaveCurrentAccountStub } = makeSut()
+    const saveSpy = jest.spyOn(SaveCurrentAccountStub, 'save')
     await testHelper.submitFormAndWait(sut)
-    expect(saveSpy).toHaveBeenCalledWith('any_token')
+    expect(saveSpy).toHaveBeenCalledWith(mockAccount())
     await waitFor(() => {
       expect(sut.getByText('Test Pass Index')).toBeTruthy()
     })
   })
 
-  test('Should show message with error if SaveAccessToken fails', async () => {
-    const { sut, saveAccessTokenStub } = makeSut()
+  test('Should show message with error if SaveCurrentAccount fails', async () => {
+    const { sut, SaveCurrentAccountStub } = makeSut()
     const error = new InvalidCredentialsError()
-    jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
+    jest.spyOn(SaveCurrentAccountStub, 'save').mockRejectedValueOnce(error)
     await testHelper.submitFormAndWait(sut)
     await waitFor(() => {
       testHelper.expectElementToNotExist(sut, 'loader')

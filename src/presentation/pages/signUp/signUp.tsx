@@ -7,15 +7,15 @@ import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { AddAccount } from '@/domain/useCases/AddAccount'
-import type { SaveAccessToken } from '@/domain/useCases/SaveAccessToken'
+import type { SaveCurrentAccount } from '@/domain/useCases/SaveCurrentAccount'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  saveAccessToken: SaveAccessToken
+  SaveCurrentAccount: SaveCurrentAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, SaveCurrentAccount }) => {
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -58,7 +58,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }) =>
     setIsLoading(true)
     try {
       const account = await addAccount.add(formValues)
-      await saveAccessToken.save(account.accessToken)
+      await SaveCurrentAccount.save(account)
       setIsLoading(false)
       navigate('/')
     } catch (error) {
