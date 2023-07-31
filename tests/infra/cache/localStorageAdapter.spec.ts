@@ -1,4 +1,5 @@
 import { LocalStorageAdapter } from '@/infra/cache/localStorageAdapter'
+import { mockAccount } from '../../domain/mocks'
 
 type Sut = {
   sut: LocalStorageAdapter
@@ -36,5 +37,13 @@ describe('Local Storage Adapter', () => {
     const key = 'any_key'
     sut.get(key)
     expect(getItemSpy).toHaveBeenCalledWith(key)
+  })
+
+  test('Should return correct value on localStorage.getItem call', () => {
+    const { sut } = makeSut()
+    const account = mockAccount()
+    jest.spyOn(Storage.prototype, 'getItem').mockReturnValueOnce(JSON.stringify(account))
+    const result = sut.get('any_key')
+    expect(result).toEqual(account)
   })
 })
