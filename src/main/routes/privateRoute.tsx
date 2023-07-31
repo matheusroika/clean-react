@@ -10,7 +10,6 @@ const PrivateRoute: React.FC<Props> = ({ Page }) => {
   const { getCurrentAccount } = useContext(apiContext)
   const account = getCurrentAccount()
   const isAccountInvalid = !account?.accessToken || !account?.name || !account?.email
-  console.log(`ACCOUNT: ${JSON.stringify(account)}, ${isAccountInvalid.toString()}`)
   return isAccountInvalid ? <Navigate to='/login' /> : <Page />
 }
 
