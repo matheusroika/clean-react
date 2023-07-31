@@ -15,3 +15,11 @@ export const mockSurvey = (): Survey => ({
   date: new Date('2023-07-03T05:52:28.514Z'),
   answered: false
 })
+
+export const mockSurveys = (amount = 1): Survey[] => {
+  const surveys: Survey[] = []
+  for (let i = 0; i < amount; i++) {
+    surveys.push(mockSurvey())
+  }
+  return surveys
+}

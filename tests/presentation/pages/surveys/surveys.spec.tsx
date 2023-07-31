@@ -3,28 +3,29 @@ import { type RenderResult, render } from '@testing-library/react'
 import Surveys from '@/presentation/pages/surveys/surveys'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
-import { mockSurvey } from '@/../tests/domain/mocks'
+import { mockSurvey, mockSurveys } from '@/../tests/domain/mocks'
 
 type Sut = {
   sut: RenderResult
-  loadSurveysStub: LoadSurveys
+  loadAllSpy: jest.SpyInstance<Promise<Survey[]>, [], any>
 }
 
-const mockLoadSurveys = (): LoadSurveys => {
+const mockLoadSurveys = (amount = 1): LoadSurveys => {
   class LoadSurveyStub implements LoadSurveys {
     async loadAll (): Promise<Survey[]> {
-      return [mockSurvey()]
+      return mockSurveys(amount)
     }
   }
   return new LoadSurveyStub()
 }
 
-const makeSut = (): Sut => {
-  const loadSurveysStub = mockLoadSurveys()
+const makeSut = (amount = 1): Sut => {
+  const loadSurveysStub = mockLoadSurveys(amount)
+  const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll')
   const sut = render(<Surveys loadSurveys={loadSurveysStub} />)
   return {
     sut,
-    loadSurveysStub
+    loadAllSpy
   }
 }
 
@@ -36,9 +37,18 @@ describe('Surveys Page', () => {
     expect(surveyList.querySelectorAll('li:empty').length).toBe(4)
   })
 
-  test('Should load a Survey item correctly', async () => {
-    const { sut } = makeSut()
+  test('Should call LoadSurveys and load a Survey item correctly', async () => {
+    const { sut, loadAllSpy } = makeSut()
     const surveyItem = await sut.findByText(mockSurvey().question)
+    expect(loadAllSpy).toHaveBeenCalledTimes(1)
     expect(surveyItem).toBeTruthy()
+  })
+
+  test('Should load multiple Survey items correctly', async () => {
+    const { sut } = makeSut(3)
+    await sut.findAllByText(mockSurvey().question)
+    const surveyList = sut.getByTestId('surveyList')
+    expect(surveyList.querySelectorAll('li').length).toBe(3)
+    expect(surveyList.querySelectorAll('li:not(:empty)').length).toBe(3)
   })
 })
