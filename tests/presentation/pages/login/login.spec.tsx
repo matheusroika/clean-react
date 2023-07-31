@@ -1,42 +1,45 @@
 import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
+import ApiContext from '@/presentation/contexts/apiContext'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { testHelper, mockAuthentication, mockSaveCurrentAccount, mockValidation, mockValidateCall } from '../../mocks'
+import { testHelper, mockAuthentication, mockValidation, mockValidateCall } from '../../mocks'
 import { mockAccount, mockAuthParams } from '@/../tests/domain/mocks'
 import type { RenderResult } from '@testing-library/react'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { Authentication } from '@/domain/useCases/Authentication'
-import type { SaveCurrentAccount } from '@/domain/useCases/SaveCurrentAccount'
+import type { Account } from '@/domain/models/Account'
 
 type Sut = {
   sut: RenderResult
   validationStub: Validation
   authenticationStub: Authentication
-  SaveCurrentAccountStub: SaveCurrentAccount
+  setCurrentAccountStub: (account: Account) => void
 }
 
 const makeSut = (mockMessage?: string): Sut => {
   const validationStub = mockValidation()
   if (mockMessage) jest.spyOn(validationStub, 'validate').mockReturnValue(mockMessage)
   const authenticationStub = mockAuthentication()
-  const SaveCurrentAccountStub = mockSaveCurrentAccount()
+  const setCurrentAccountStub = jest.fn()
   const sut = render(
-    <MemoryRouter initialEntries={['/login']}>
-      <Routes>
-        <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} SaveCurrentAccount={SaveCurrentAccountStub} />} />
-        <Route path='/' element={<h1>Test Pass Index</h1>} />
-        <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
-      </Routes>
-    </MemoryRouter>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountStub }}>
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} />} />
+          <Route path='/' element={<h1>Test Pass Index</h1>} />
+          <Route path='/signup' element={<h1>Test Pass Sign Up</h1>} />
+        </Routes>
+      </MemoryRouter>
+    </ApiContext.Provider>
   )
 
   return {
     sut,
     validationStub,
     authenticationStub,
-    SaveCurrentAccountStub
+    setCurrentAccountStub
   }
 }
 
@@ -142,24 +145,11 @@ describe('Login page', () => {
   })
 
   test('Should call SaveCurrentAccount and go to index on Authentication success', async () => {
-    const { sut, SaveCurrentAccountStub } = makeSut()
-    const saveSpy = jest.spyOn(SaveCurrentAccountStub, 'save')
+    const { sut, setCurrentAccountStub } = makeSut()
     await testHelper.submitFormAndWait(sut)
-    expect(saveSpy).toHaveBeenCalledWith(mockAccount())
+    expect(setCurrentAccountStub).toHaveBeenCalledWith(mockAccount())
     await waitFor(() => {
       expect(sut.getByText('Test Pass Index')).toBeTruthy()
-    })
-  })
-
-  test('Should show message with error if SaveCurrentAccount fails', async () => {
-    const { sut, SaveCurrentAccountStub } = makeSut()
-    const error = new InvalidCredentialsError()
-    jest.spyOn(SaveCurrentAccountStub, 'save').mockRejectedValueOnce(error)
-    await testHelper.submitFormAndWait(sut)
-    await waitFor(() => {
-      testHelper.expectElementToNotExist(sut, 'loader')
-      const errorMessage = testHelper.expectElementToExist(sut, 'message')
-      expect(errorMessage.textContent).toBe(error.message)
     })
   })
 

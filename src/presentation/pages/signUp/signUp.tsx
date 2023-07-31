@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import apiContext from '@/presentation/contexts/apiContext'
 import styles from './signUpStyles.scss'
 import Header from '@/presentation/components/authHeader/authHeader'
 import Footer from '@/presentation/components/footer/footer'
@@ -7,15 +8,14 @@ import Input from '@/presentation/components/input/input'
 import FormStatus from '@/presentation/components/formStatus/formStatus'
 import type { Validation } from '@/presentation/protocols/validation'
 import type { AddAccount } from '@/domain/useCases/AddAccount'
-import type { SaveCurrentAccount } from '@/domain/useCases/SaveCurrentAccount'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  SaveCurrentAccount: SaveCurrentAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, SaveCurrentAccount }) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
+  const { setCurrentAccount } = useContext(apiContext)
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -58,7 +58,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, SaveCurrentAccount })
     setIsLoading(true)
     try {
       const account = await addAccount.add(formValues)
-      await SaveCurrentAccount.save(account)
+      setCurrentAccount(account)
       setIsLoading(false)
       navigate('/')
     } catch (error) {
