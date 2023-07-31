@@ -33,12 +33,9 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       <main>
         <h1>Enquetes</h1>
         {error
-          ? (
-          <SurveysError error={error} />
-            )
-          : (
-          <SurveyList surveys={surveys} />
-            )}
+          ? <SurveysError error={error} />
+          : <SurveyList surveys={surveys} />
+        }
       </main>
       <Footer />
     </div>

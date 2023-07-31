@@ -12,17 +12,14 @@ const SurveyList: React.FC<Props> = ({ surveys }) => {
   return (
     <ul data-testid="surveyList">
     {surveys.length
-      ? surveys.map(survey => (
-        <SurveyItem survey={survey} key={survey.id} />
-      ))
-      : (
-        <>
+      ? surveys.map(survey => <SurveyItem survey={survey} key={survey.id} />)
+      : <>
         <EmptySurveyItem />
         <EmptySurveyItem />
         <EmptySurveyItem />
         <EmptySurveyItem />
         </>
-        )}
+    }
     </ul>
   )
 }
