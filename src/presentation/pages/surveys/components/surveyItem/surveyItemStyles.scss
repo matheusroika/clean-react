@@ -1,0 +1,94 @@
+@import "../../../../styles/colors.scss";
+
+li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 16rem;
+  background-color: $white;
+  border-radius: .5rem;
+  flex-basis: 48%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px -1px $black;
+
+  &:not(:empty)::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba($primaryLight, .25);
+    width: 3.5rem;
+    height: 100%;
+    border-radius: .5rem 0 0 .5rem;
+  }
+
+  &>div {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+
+    .icon {
+      position: absolute;
+      top: -.5rem;
+      right: -.5rem;
+    }
+
+    time {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-self: center;
+      align-items: center;
+      justify-content: center;
+      width: 4rem;
+      height: 6rem;
+      background-color: $primaryLight; 
+      color: $white;
+      border-radius: .5rem;
+      margin-left: 1.5rem;
+      z-index: 1;
+
+      .day {
+        font-size: 2.5rem;
+        font-weight: bold;
+        line-height: 2.5rem;
+      }
+      .month {
+        text-transform: lowercase;
+      }
+      .year {
+        font-size: 1.1rem;
+      }
+    }
+
+    p {
+      flex-grow: 1;
+      align-self: center;
+      font-size: 1.1rem;
+      margin: 1.5rem;
+    }
+  }
+
+  footer {
+    line-height: 3rem;
+    font-weight: bold;
+    color: $white;
+    background-color: $primary;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0 0 .5rem .5rem;
+    z-index: 1;
+
+    &:hover {
+      background-color: $primaryDark;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  li {
+    flex-basis: unset;
+  }
+}
