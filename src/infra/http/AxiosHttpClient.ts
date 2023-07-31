@@ -19,10 +19,10 @@ export class AxiosHttpClient implements HttpPostClient<any, any, any>, HttpGetCl
   }
 
   async get (params: HttpGetParams<any>): Promise<HttpResponse<any>> {
-    const { url } = params
+    const { url, headers } = params
     let axiosResponse: AxiosResponse<any>
     try {
-      axiosResponse = await axios.get(url)
+      axiosResponse = await axios.get(url, { headers })
     } catch (error) {
       const typedError = error as AxiosError
       axiosResponse = typedError.response
