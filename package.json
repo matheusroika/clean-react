@@ -3,7 +3,7 @@
     "dev": "webpack-dev-server --open",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:all": "yarn test --watch",
-    "test:verbose": "jest --passWithNoTests",
+    "test:verbose": "jest --passWithNoTests --runInBand --watch",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage",
     "test:e2e": "cypress run",
