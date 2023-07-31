@@ -15,16 +15,18 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
   const [surveys, setSurveys] = useState<Survey[]>([])
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const loadAndSetSurveys = async (): Promise<void> => {
-      try {
-        const loadedSurveys = await loadSurveys.loadAll()
-        setSurveys(loadedSurveys)
-      } catch (error) {
-        const typedError = error as Error
-        setError(typedError.message)
-      }
+  const loadAndSetSurveys = async (): Promise<void> => {
+    try {
+      const loadedSurveys = await loadSurveys.loadAll()
+      setSurveys(loadedSurveys)
+      setError('')
+    } catch (error) {
+      const typedError = error as Error
+      setError(typedError.message)
     }
+  }
+
+  useEffect(() => {
     void loadAndSetSurveys()
   }, [])
   return (
@@ -33,7 +35,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       <main>
         <h1>Enquetes</h1>
         {error
-          ? <SurveysError error={error} />
+          ? <SurveysError error={error} tryAgainMethod={loadAndSetSurveys} />
           : <SurveyList surveys={surveys} />
         }
       </main>

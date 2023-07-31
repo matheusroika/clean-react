@@ -3,13 +3,14 @@ import './surveysErrorStyles.scss'
 
 type Props = {
   error: string
+  tryAgainMethod: () => Promise<void>
 }
 
-const SurveysError: React.FC<Props> = ({ error }) => {
+const SurveysError: React.FC<Props> = ({ error, tryAgainMethod }) => {
   return (
     <div>
       <span data-testid='error'>{error}</span>
-      <button>Tentar novamente</button>
+      <button data-testid='retry' onClick={tryAgainMethod}>Tentar novamente</button>
     </div>
   )
 }
