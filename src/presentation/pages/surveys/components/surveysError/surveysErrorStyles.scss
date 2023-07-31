@@ -1,0 +1,22 @@
+@import '../../../../styles/colors.scss';
+
+.surveysError {
+  display: flex;
+  flex-direction: column;
+  background-color: $white;
+  width: 100%;
+  padding: 5rem 0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px -1px $black;
+
+  span {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: b;
+  }
+
+  button {
+    margin-top: 2rem;
+    align-self: center;
+  }
+}
