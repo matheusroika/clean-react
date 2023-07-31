@@ -1,11 +1,11 @@
 import React from 'react'
-import './surveyErrorStyles.scss'
+import './surveysErrorStyles.scss'
 
 type Props = {
   error: string
 }
 
-const SurveyError: React.FC<Props> = ({ error }) => {
+const SurveysError: React.FC<Props> = ({ error }) => {
   return (
     <div>
       <span data-testid='error'>{error}</span>
@@ -14,4 +14,4 @@ const SurveyError: React.FC<Props> = ({ error }) => {
   )
 }
 
-export default SurveyError
+export default SurveysError

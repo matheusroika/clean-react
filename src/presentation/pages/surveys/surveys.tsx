@@ -5,7 +5,7 @@ import Footer from '@/presentation/components/footer/footer'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
 import SurveyList from './components/surveyList/surveyList'
-import SurveyError from './components/surveyError/surveyError'
+import SurveysError from './components/surveysError/surveysError'
 
 type Props = {
   loadSurveys: LoadSurveys
@@ -34,7 +34,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
         <h1>Enquetes</h1>
         {error
           ? (
-          <SurveyError error={error} />
+          <SurveysError error={error} />
             )
           : (
           <SurveyList surveys={surveys} />
