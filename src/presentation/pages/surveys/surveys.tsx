@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styles from './surveysStyles.scss'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
-import EmptySurveyItem from './components/emptySurveyItem/emptySurveyItem'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
-import SurveyItem from './components/surveyItem/surveyItem'
+import SurveyList from './components/surveyList/surveyList'
+import SurveyError from './components/surveyError/surveyError'
 
 type Props = {
   loadSurveys: LoadSurveys
@@ -34,26 +34,10 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
         <h1>Enquetes</h1>
         {error
           ? (
-          <div>
-            <span data-testid='error'>{error}</span>
-            <button>Tentar novamente</button>
-          </div>
+          <SurveyError error={error} />
             )
           : (
-          <ul data-testid="surveyList">
-          {surveys.length
-            ? surveys.map(survey => (
-              <SurveyItem survey={survey} key={survey.id} />
-            ))
-            : (
-              <>
-              <EmptySurveyItem />
-              <EmptySurveyItem />
-              <EmptySurveyItem />
-              <EmptySurveyItem />
-              </>
-              )}
-          </ul>
+          <SurveyList surveys={surveys} />
             )}
       </main>
       <Footer />
