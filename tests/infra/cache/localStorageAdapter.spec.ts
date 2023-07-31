@@ -29,4 +29,12 @@ describe('Local Storage Adapter', () => {
     jest.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => { throw new Error() })
     expect(() => { sut.set('any_key', 'any_value') }).toThrow(new Error())
   })
+
+  test('Should call localStorage.getItem with correct values', () => {
+    const { sut } = makeSut()
+    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem')
+    const key = 'any_key'
+    sut.get(key)
+    expect(getItemSpy).toHaveBeenCalledWith(key)
+  })
 })
