@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RenderResult, render } from '@testing-library/react'
+import { type RenderResult, render, fireEvent } from '@testing-library/react'
 import Surveys from '@/presentation/pages/surveys/surveys'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
@@ -64,5 +64,17 @@ describe('Surveys Page', () => {
     expect(sut.queryByTestId('surveyList')).toBeNull()
     expect(sut.queryByTestId('error')).toBeTruthy()
     expect(error).toBeTruthy()
+  })
+
+  test('Should call LoadSurvey on retry button click', async () => {
+    const { sut, loadAllSpy } = makeSut(1, true)
+    const error = await sut.findByText(new UnexpectedError().message)
+    expect(loadAllSpy).toHaveBeenCalledTimes(1)
+    expect(error).toBeTruthy()
+    fireEvent.click(sut.getByTestId('retry'))
+    const surveyItem = await sut.findByText(mockSurvey().question)
+    expect(loadAllSpy).toHaveBeenCalledTimes(2)
+    expect(surveyItem).toBeTruthy()
+    expect(sut.queryByTestId('error')).toBeNull()
   })
 })
