@@ -2,7 +2,6 @@ import React from 'react'
 import styles from './surveysStyles.scss'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
-import SurveyItem from './components/surveyItem/surveyItem'
 import EmptySurveyItem from './components/emptySurveyItem/emptySurveyItem'
 
 const Surveys: React.FC = () => {
@@ -11,8 +10,10 @@ const Surveys: React.FC = () => {
       <Header />
       <main>
         <h1>Enquetes</h1>
-        <ul>
-          <SurveyItem />
+        <ul data-testid="surveyList">
+          <EmptySurveyItem />
+          <EmptySurveyItem />
+          <EmptySurveyItem />
           <EmptySurveyItem />
         </ul>
       </main>
