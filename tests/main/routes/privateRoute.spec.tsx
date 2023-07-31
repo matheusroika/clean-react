@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RenderResult, render, waitFor, cleanup } from '@testing-library/react'
+import { type RenderResult, render, waitFor } from '@testing-library/react'
 import PrivateRoute from '@/main/routes/privateRoute'
 import MockPage from '../../presentation/mocks/mockPage'
 import ApiContext from '@/presentation/contexts/apiContext'
@@ -28,8 +28,6 @@ const makeSut = (account: Account): Sut => {
 }
 
 describe('Private Route', () => {
-  afterEach(cleanup)
-
   test('Should render passed Page correctly', async () => {
     const { sut } = makeSut(mockAccount())
     await waitFor(() => {

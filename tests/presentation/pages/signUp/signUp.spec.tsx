@@ -1,6 +1,6 @@
 import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import SignUp from '@/presentation/pages/signUp/signUp'
 import ApiContext from '@/presentation/contexts/apiContext'
 import { EmailInUseError } from '@/domain/errors'
@@ -44,8 +44,6 @@ const makeSut = (mockMessage?: string): Sut => {
 }
 
 describe('Sign page', () => {
-  afterEach(cleanup)
-
   test('Should render correctly on initial state', () => {
     const error = 'Campo obrigatório'
     const { sut } = makeSut(error)

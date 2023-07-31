@@ -2,7 +2,7 @@ import React from 'react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Login from '@/presentation/pages/login/login'
 import ApiContext from '@/presentation/contexts/apiContext'
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import { InvalidCredentialsError } from '@/domain/errors'
 import { testHelper, mockAuthentication, mockValidation, mockValidateCall } from '../../mocks'
 import { mockAccount, mockAuthParams } from '@/../tests/domain/mocks'
@@ -44,8 +44,6 @@ const makeSut = (mockMessage?: string): Sut => {
 }
 
 describe('Login page', () => {
-  afterEach(cleanup)
-
   test('Should render correctly on initial state', () => {
     const error = 'Campo obrigatório'
     const { sut } = makeSut(error)
