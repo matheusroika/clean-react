@@ -13,11 +13,17 @@ type Props = {
 
 const Surveys: React.FC<Props> = ({ loadSurveys }) => {
   const [surveys, setSurveys] = useState<Survey[]>([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const loadAndSetSurveys = async (): Promise<void> => {
-      const loadedSurveys = await loadSurveys.loadAll()
-      setSurveys(loadedSurveys)
+      try {
+        const loadedSurveys = await loadSurveys.loadAll()
+        setSurveys(loadedSurveys)
+      } catch (error) {
+        const typedError = error as Error
+        setError(typedError.message)
+      }
     }
     void loadAndSetSurveys()
   }, [])
@@ -26,7 +32,15 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       <Header />
       <main>
         <h1>Enquetes</h1>
-        <ul data-testid="surveyList">
+        {error
+          ? (
+          <div>
+            <span data-testid='error'>{error}</span>
+            <button>Tentar novamente</button>
+          </div>
+            )
+          : (
+          <ul data-testid="surveyList">
           {surveys.length
             ? surveys.map(survey => (
               <SurveyItem survey={survey} key={survey.id} />
@@ -39,7 +53,8 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
               <EmptySurveyItem />
               </>
               )}
-        </ul>
+          </ul>
+            )}
       </main>
       <Footer />
     </div>
