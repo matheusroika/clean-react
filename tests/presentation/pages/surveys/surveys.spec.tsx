@@ -4,6 +4,7 @@ import Surveys from '@/presentation/pages/surveys/surveys'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
 import { mockSurvey, mockSurveys } from '@/../tests/domain/mocks'
+import { UnexpectedError } from '@/domain/errors'
 
 type Sut = {
   sut: RenderResult
@@ -19,9 +20,10 @@ const mockLoadSurveys = (amount = 1): LoadSurveys => {
   return new LoadSurveyStub()
 }
 
-const makeSut = (amount = 1): Sut => {
+const makeSut = (amount = 1, error?: boolean): Sut => {
   const loadSurveysStub = mockLoadSurveys(amount)
   const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll')
+  if (error) loadAllSpy.mockRejectedValueOnce(new UnexpectedError())
   const sut = render(<Surveys loadSurveys={loadSurveysStub} />)
   return {
     sut,
@@ -35,6 +37,7 @@ describe('Surveys Page', () => {
     const surveyList = sut.getByTestId('surveyList')
     expect(surveyList.querySelectorAll('li').length).toBe(4)
     expect(surveyList.querySelectorAll('li:empty').length).toBe(4)
+    expect(sut.queryByTestId('error')).toBeNull()
   })
 
   test('Should call LoadSurveys and load a Survey item correctly', async () => {
@@ -42,6 +45,7 @@ describe('Surveys Page', () => {
     const surveyItem = await sut.findByText(mockSurvey().question)
     expect(loadAllSpy).toHaveBeenCalledTimes(1)
     expect(surveyItem).toBeTruthy()
+    expect(sut.queryByTestId('error')).toBeNull()
   })
 
   test('Should load multiple Survey items correctly', async () => {
@@ -50,5 +54,15 @@ describe('Surveys Page', () => {
     const surveyList = sut.getByTestId('surveyList')
     expect(surveyList.querySelectorAll('li').length).toBe(3)
     expect(surveyList.querySelectorAll('li:not(:empty)').length).toBe(3)
+    expect(sut.queryByTestId('error')).toBeNull()
+  })
+
+  test('Should show error on LoadSurvey failure', async () => {
+    const { sut, loadAllSpy } = makeSut(1, true)
+    const error = await sut.findByText(new UnexpectedError().message)
+    expect(loadAllSpy).toHaveBeenCalledTimes(1)
+    expect(sut.queryByTestId('surveyList')).toBeNull()
+    expect(sut.queryByTestId('error')).toBeTruthy()
+    expect(error).toBeTruthy()
   })
 })
