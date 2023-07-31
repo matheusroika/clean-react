@@ -27,10 +27,10 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       <main>
         <h1>Enquetes</h1>
         <ul data-testid="surveyList">
-          {surveys.length !== 0
-            ? (
-              <SurveyItem survey={surveys[0]} />
-              )
+          {surveys.length
+            ? surveys.map(survey => (
+              <SurveyItem survey={survey} key={survey.id} />
+            ))
             : (
               <>
               <EmptySurveyItem />
