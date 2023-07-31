@@ -46,4 +46,10 @@ describe('Local Storage Adapter', () => {
     const result = sut.get('any_key')
     expect(result).toEqual(account)
   })
+
+  test('Should throw if localStorage.getItem throws', () => {
+    const { sut } = makeSut()
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementationOnce(() => { throw new Error() })
+    expect(() => { sut.get('any_key') }).toThrow(new Error())
+  })
 })
