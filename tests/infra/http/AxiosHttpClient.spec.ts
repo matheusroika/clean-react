@@ -62,7 +62,7 @@ describe('Axios Http Client', () => {
       const getSpy = jest.spyOn(axios, 'get')
       const httpGetParams = mockHttpGetParams()
       await sut.get(httpGetParams)
-      expect(getSpy).toHaveBeenCalledWith(httpGetParams.url)
+      expect(getSpy).toHaveBeenCalledWith(httpGetParams.url, { headers: httpGetParams.headers })
     })
 
     test('Should return correct response on axios.get success', async () => {
