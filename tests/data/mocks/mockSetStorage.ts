@@ -1,4 +1,4 @@
-import type { SetStorage } from '@/data/protocols/cache/setStorage'
+import type { SetStorage } from '@/data/protocols/cache'
 
 export const mockSetStorage = (): SetStorage => {
   class SetStorageStub implements SetStorage {

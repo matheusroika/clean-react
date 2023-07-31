@@ -1,4 +1,4 @@
-import type { SetStorage } from '@/data/protocols/cache/setStorage'
+import type { SetStorage } from '@/data/protocols/cache'
 
 export class LocalStorageAdapter implements SetStorage {
   set (key: string, value: any): void {
