@@ -38,7 +38,7 @@ describe('Surveys Page', () => {
 
   test('Should load a Survey item correctly', async () => {
     const { sut } = makeSut()
-    const surveyItem = await sut.findByText('Qual é seu framework web favorito?')
+    const surveyItem = await sut.findByText(mockSurvey().question)
     expect(surveyItem).toBeTruthy()
   })
 })

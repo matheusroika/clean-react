@@ -29,7 +29,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
         <ul data-testid="surveyList">
           {surveys.length !== 0
             ? (
-              <SurveyItem />
+              <SurveyItem survey={surveys[0]} />
               )
             : (
               <>
