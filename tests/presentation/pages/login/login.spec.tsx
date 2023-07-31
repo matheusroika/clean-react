@@ -24,7 +24,7 @@ const makeSut = (mockMessage?: string): Sut => {
   const authenticationStub = mockAuthentication()
   const setCurrentAccountStub = jest.fn()
   const sut = render(
-    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountStub }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountStub, getCurrentAccount: jest.fn() }}>
       <MemoryRouter initialEntries={['/login']}>
         <Routes>
           <Route path='/login' element={<Login validation={validationStub} authentication={authenticationStub} />} />
