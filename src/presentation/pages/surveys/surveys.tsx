@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import styles from './surveysStyles.scss'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
-import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
-import { type Survey } from '@/domain/models/Survey'
 import SurveyList from './components/surveyList/surveyList'
 import SurveysError from './components/surveysError/surveysError'
+import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
+import { type Survey } from '@/domain/models/Survey'
 
 type Props = {
   loadSurveys: LoadSurveys
 }
 
 const Surveys: React.FC<Props> = ({ loadSurveys }) => {
-  const [surveys, setSurveys] = useState<Survey[]>([])
+  const [surveys, setSurveys] = useState<Survey[]>(null)
   const [error, setError] = useState('')
 
   const loadAndSetSurveys = async (): Promise<void> => {
