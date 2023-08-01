@@ -5,7 +5,7 @@ import styles from './headerStyles.scss'
 import Logo from '../logo/logo'
 
 const Header: React.FC = () => {
-  const { setCurrentAccount } = useContext(apiContext)
+  const { setCurrentAccount, getCurrentAccount } = useContext(apiContext)
   const navigate = useNavigate()
 
   const logout = (): void => {
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
       <div>
         <Logo />
         <div className={styles.profile}>
-          <span>Nome do usuário</span>
+          <span data-testid='userName'>{getCurrentAccount().name}</span>
           <button data-testid='logout' onClick={logout}>Sair</button>
         </div>
       </div>
