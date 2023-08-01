@@ -1,32 +1,37 @@
 import { RemoteLoadSurveys } from '@/data/useCases/loadSurveys/remoteLoadSurveys'
 import { HttpStatusCode } from '@/data/protocols/http'
 import { UnexpectedError } from '@/domain/errors'
-import { mockHttpGetClient } from '../../mocks'
+import { mockGetStorage, mockHttpGetClient } from '../../mocks'
 import { mockSurvey } from '@/../tests/domain/mocks'
-import type { HttpGetClient } from '@/data/protocols/http'
+import { mockHeaders } from '@/../tests/infra/mocks/mockAxios'
 import type { Survey } from '@/domain/models/Survey'
+import type { HttpGetClient } from '@/data/protocols/http'
+import type { GetStorage } from '@/data/protocols/cache'
 
 type Sut = {
   sut: RemoteLoadSurveys
   httpGetClient: HttpGetClient<any, Survey[]>
+  getStorage: GetStorage
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
   const httpGetClient = mockHttpGetClient<any, Survey[]>()
-  const sut = new RemoteLoadSurveys(url, httpGetClient)
+  const getStorage = mockGetStorage()
+  const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage)
   return {
     sut,
-    httpGetClient
+    httpGetClient,
+    getStorage
   }
 }
 
 describe('Remote Load Surveys', () => {
-  test('Should call HttpGetClient with correct url', async () => {
+  test('Should call HttpGetClient with correct values', async () => {
     const { sut, httpGetClient } = makeSut()
     const getSpy = jest.spyOn(httpGetClient, 'get')
     await sut.loadAll()
-    expect(getSpy).toBeCalledWith({ url })
+    expect(getSpy).toBeCalledWith({ url, headers: mockHeaders() })
   })
 
   test('Should throw UnexpectedError if HttpGetClient returns 403', async () => {
@@ -44,6 +49,13 @@ describe('Remote Load Surveys', () => {
   })
 
   test('Should throw UnexpectedError if HttpGetClient returns 500', async () => {
+    const { sut, httpGetClient } = makeSut()
+    jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+    const promise = sut.loadAll()
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('Should throw UnexpectedError if LocalStorageAdapter returns 500', async () => {
     const { sut, httpGetClient } = makeSut()
     jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.loadAll()

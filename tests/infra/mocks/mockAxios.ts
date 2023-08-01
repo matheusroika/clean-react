@@ -13,3 +13,11 @@ export const mockGetAxiosResponse = (): PostAxiosResponse => ({
   status: HttpStatusCode.ok,
   data: {}
 })
+
+type Headers = {
+  'x-access-token': string
+}
+
+export const mockHeaders = (): Headers => ({
+  'x-access-token': 'any_token'
+})
