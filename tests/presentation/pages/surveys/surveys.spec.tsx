@@ -1,32 +1,39 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { type RenderResult, render, fireEvent } from '@testing-library/react'
 import Surveys from '@/presentation/pages/surveys/surveys'
 import ApiContext from '@/presentation/contexts/apiContext'
-import { type Survey } from '@/domain/models/Survey'
-import { UnexpectedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 import { mockAccount, mockSurvey } from '@/../tests/domain/mocks'
 import { mockLoadSurveys } from '@/../tests/data/mocks'
+import { type Survey } from '@/domain/models/Survey'
+import { type Account } from '@/domain/models/Account'
 
 type Sut = {
   sut: RenderResult
   loadAllSpy: jest.SpyInstance<Promise<Survey[]>, [], any>
+  setCurrentAccountStub: (account: Account) => void
 }
 
-const makeSut = (amount = 1, error?: boolean): Sut => {
+const makeSut = (amount = 1, error?: Error): Sut => {
   const loadSurveysStub = mockLoadSurveys(amount)
   const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll')
-  if (error) loadAllSpy.mockRejectedValueOnce(new UnexpectedError())
+  if (error) loadAllSpy.mockRejectedValueOnce(error)
+  const setCurrentAccountStub = jest.fn()
   const sut = render(
-    <ApiContext.Provider value={{ getCurrentAccount: () => mockAccount(), setCurrentAccount: jest.fn() }}>
-      <BrowserRouter>
-        <Surveys loadSurveys={loadSurveysStub} />
-      </BrowserRouter>
+    <ApiContext.Provider value={{ getCurrentAccount: () => mockAccount(), setCurrentAccount: setCurrentAccountStub }}>
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path='/' element={<Surveys loadSurveys={loadSurveysStub} />}/>
+          <Route path='/login' element={<h1>Test Pass Login</h1>} />
+        </Routes>
+      </MemoryRouter>
     </ApiContext.Provider>
   )
   return {
     sut,
-    loadAllSpy
+    loadAllSpy,
+    setCurrentAccountStub
   }
 }
 
@@ -65,20 +72,30 @@ describe('Surveys Page', () => {
     expect(sut.queryByTestId('error')).toBeNull()
   })
 
-  test('Should show error on LoadSurvey failure', async () => {
-    const { sut, loadAllSpy } = makeSut(1, true)
-    const error = await sut.findByText(new UnexpectedError().message)
+  test('Should show error on LoadSurvey UnexpectedError', async () => {
+    const error = new UnexpectedError()
+    const { sut, loadAllSpy } = makeSut(1, error)
+    const errorMessage = await sut.findByText(error.message)
     expect(loadAllSpy).toHaveBeenCalledTimes(1)
     expect(sut.queryByTestId('surveyList')).toBeNull()
     expect(sut.queryByTestId('error')).toBeTruthy()
-    expect(error).toBeTruthy()
+    expect(errorMessage).toBeTruthy()
+  })
+
+  test('Should logout and redirect to /login on AccessDeniedError', async () => {
+    const { sut, loadAllSpy, setCurrentAccountStub } = makeSut(1, new AccessDeniedError())
+    const login = await sut.findByText('Test Pass Login')
+    expect(loadAllSpy).toHaveBeenCalledTimes(1)
+    expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
+    expect(login).toBeTruthy()
   })
 
   test('Should call LoadSurvey on retry button click', async () => {
-    const { sut, loadAllSpy } = makeSut(1, true)
-    const error = await sut.findByText(new UnexpectedError().message)
+    const error = new UnexpectedError()
+    const { sut, loadAllSpy } = makeSut(1, error)
+    const errorMessage = await sut.findByText(error.message)
     expect(loadAllSpy).toHaveBeenCalledTimes(1)
-    expect(error).toBeTruthy()
+    expect(errorMessage).toBeTruthy()
     fireEvent.click(sut.getByTestId('retry'))
     const surveyItem = await sut.findByText(mockSurvey().question)
     expect(loadAllSpy).toHaveBeenCalledTimes(2)
