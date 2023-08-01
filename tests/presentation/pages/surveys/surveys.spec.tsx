@@ -1,30 +1,29 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { type RenderResult, render, fireEvent } from '@testing-library/react'
 import Surveys from '@/presentation/pages/surveys/surveys'
-import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
+import ApiContext from '@/presentation/contexts/apiContext'
 import { type Survey } from '@/domain/models/Survey'
-import { mockSurvey, mockSurveys } from '@/../tests/domain/mocks'
 import { UnexpectedError } from '@/domain/errors'
+import { mockSurvey } from '@/../tests/domain/mocks'
+import { mockLoadSurveys } from '../../mocks'
 
 type Sut = {
   sut: RenderResult
   loadAllSpy: jest.SpyInstance<Promise<Survey[]>, [], any>
 }
 
-const mockLoadSurveys = (amount = 1): LoadSurveys => {
-  class LoadSurveyStub implements LoadSurveys {
-    async loadAll (): Promise<Survey[]> {
-      return mockSurveys(amount)
-    }
-  }
-  return new LoadSurveyStub()
-}
-
 const makeSut = (amount = 1, error?: boolean): Sut => {
   const loadSurveysStub = mockLoadSurveys(amount)
   const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll')
   if (error) loadAllSpy.mockRejectedValueOnce(new UnexpectedError())
-  const sut = render(<Surveys loadSurveys={loadSurveysStub} />)
+  const sut = render(
+    <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: jest.fn() }}>
+      <BrowserRouter>
+        <Surveys loadSurveys={loadSurveysStub} />
+      </BrowserRouter>
+    </ApiContext.Provider>
+  )
   return {
     sut,
     loadAllSpy
