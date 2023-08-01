@@ -1,18 +1,14 @@
-import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import apiContext from '../contexts/apiContext'
 import { AccessDeniedError } from '@/domain/errors'
+import { useLogout } from './useLogout'
 
 type Callback = (error: Error) => void
 type ErrorHandler = (error: Error) => void
 export const useErrorHandler = (callback: Callback): ErrorHandler => {
-  const { setCurrentAccount } = useContext(apiContext)
-  const navigate = useNavigate()
+  const logout = useLogout()
 
   const errorHandler = (error: Error): void => {
     if (error instanceof AccessDeniedError) {
-      setCurrentAccount(null)
-      navigate('/login')
+      logout()
     } else {
       callback(error)
     }
