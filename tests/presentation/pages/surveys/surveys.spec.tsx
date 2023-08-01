@@ -57,6 +57,15 @@ describe('Surveys Page', () => {
     expect(sut.queryByTestId('error')).toBeNull()
   })
 
+  test('Should show message if there are no Survey items', async () => {
+    const { sut, loadAllSpy } = makeSut(0)
+    const message = await sut.findByText('Não existem enquetes no momento')
+    expect(loadAllSpy).toHaveBeenCalledTimes(1)
+    expect(message).toBeTruthy()
+    expect(sut.queryByTestId('message')).toBeTruthy()
+    expect(sut.queryByTestId('error')).toBeNull()
+  })
+
   test('Should show error on LoadSurvey failure', async () => {
     const { sut, loadAllSpy } = makeSut(1, true)
     const error = await sut.findByText(new UnexpectedError().message)
