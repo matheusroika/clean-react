@@ -25,6 +25,14 @@ describe('Local Storage Adapter', () => {
     expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(value))
   })
 
+  test('Should call localStorage.removeItem if second value is null', () => {
+    const { sut } = makeSut()
+    const removeItemSpy = jest.spyOn(Storage.prototype, 'removeItem')
+    const key = 'any_key'
+    sut.set(key, null)
+    expect(removeItemSpy).toHaveBeenCalledWith(key)
+  })
+
   test('Should throw if localStorage.setItem throws', () => {
     const { sut } = makeSut()
     jest.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => { throw new Error() })
