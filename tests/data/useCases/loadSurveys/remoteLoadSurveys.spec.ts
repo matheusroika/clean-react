@@ -58,13 +58,6 @@ describe('Remote Load Surveys', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should throw UnexpectedError if LocalStorageAdapter returns 500', async () => {
-    const { sut, httpGetClient } = makeSut()
-    jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
-    const promise = sut.loadAll()
-    await expect(promise).rejects.toThrow(new UnexpectedError())
-  })
-
   test('Should return a Survey list if HttpGetClient returns 200', async () => {
     const { sut, httpGetClient } = makeSut()
     const body = [mockSurvey()]
