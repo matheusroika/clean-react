@@ -1,17 +1,12 @@
 import React, { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 import apiContext from '@/presentation/contexts/apiContext'
 import styles from './headerStyles.scss'
 import Logo from '../logo/logo'
+import { useLogout } from '@/presentation/hooks/useLogout'
 
 const Header: React.FC = () => {
-  const { setCurrentAccount, getCurrentAccount } = useContext(apiContext)
-  const navigate = useNavigate()
-
-  const logout = (): void => {
-    setCurrentAccount(null)
-    navigate('/login')
-  }
+  const logout = useLogout()
+  const { getCurrentAccount } = useContext(apiContext)
 
   return (
     <header>
