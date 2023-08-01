@@ -1,6 +1,6 @@
 import { RemoteLoadSurveys } from '@/data/useCases/loadSurveys/remoteLoadSurveys'
 import { HttpStatusCode } from '@/data/protocols/http'
-import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 import { mockGetStorage, mockHttpGetClient } from '../../mocks'
 import { mockSurvey } from '@/../tests/domain/mocks'
 import { mockHeaders } from '@/../tests/infra/mocks/mockAxios'
@@ -37,11 +37,12 @@ describe('Remote Load Surveys', () => {
     expect(getSpy).toBeCalledWith({ url, headers: mockHeaders() })
   })
 
-  test('Should throw UnexpectedError if HttpGetClient returns 403', async () => {
-    const { sut, httpGetClient } = makeSut()
+  test('Should throw AccessDeniedError and redirect to /login if HttpGetClient returns 403', async () => {
+    const { sut, httpGetClient, redirectAdapter } = makeSut()
     jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
     const promise = sut.loadAll()
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
+    expect(redirectAdapter).toHaveBeenCalledWith('/login')
   })
 
   test('Should throw UnexpectedError if HttpGetClient returns 404', async () => {
@@ -85,11 +86,11 @@ describe('Remote Load Surveys', () => {
     expect(getSpy).toHaveBeenCalledWith('account')
   })
 
-  test('Should throw InvalidCredentialsError and redirect to /login if GetStorage returns invalid account', async () => {
+  test('Should throw AccessDeniedError and redirect to /login if GetStorage returns invalid account', async () => {
     const { sut, getStorage, redirectAdapter } = makeSut()
     jest.spyOn(getStorage, 'get').mockReturnValueOnce(null)
     const promise = sut.loadAll()
-    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
     expect(redirectAdapter).toHaveBeenCalledWith('/login')
   })
 })
