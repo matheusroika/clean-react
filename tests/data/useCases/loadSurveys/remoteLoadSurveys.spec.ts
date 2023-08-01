@@ -26,6 +26,12 @@ const makeSut = (): Sut => {
   }
 }
 
+const testGetStorageReturn = async (sut: RemoteLoadSurveys, getStorage: GetStorage, returnValue: any): Promise<void> => {
+  jest.spyOn(getStorage, 'get').mockReturnValueOnce(returnValue)
+  const promise = sut.loadAll()
+  await expect(promise).rejects.toThrow(new AccessDeniedError())
+}
+
 describe('Remote Load Surveys', () => {
   test('Should call HttpGetClient with correct values', async () => {
     const { sut, httpGetClient } = makeSut()
@@ -80,5 +86,17 @@ describe('Remote Load Surveys', () => {
     const getSpy = jest.spyOn(getStorage, 'get')
     await sut.loadAll()
     expect(getSpy).toHaveBeenCalledWith('account')
+  })
+
+  test('Should throw AccessDeniedError if GetStorage returns invalid account', async () => {
+    const { sut, httpGetClient, getStorage } = makeSut()
+    jest.spyOn(httpGetClient, 'get').mockImplementation(async (params) => {
+      if (!params.headers) return { statusCode: HttpStatusCode.forbidden }
+      return { statusCode: HttpStatusCode.ok }
+    })
+    await testGetStorageReturn(sut, getStorage, { accessToken: 'A', email: 'A' })
+    await testGetStorageReturn(sut, getStorage, { accessToken: 'A', name: 'A' })
+    await testGetStorageReturn(sut, getStorage, { name: 'A', email: 'A' })
+    await testGetStorageReturn(sut, getStorage, undefined)
   })
 })
