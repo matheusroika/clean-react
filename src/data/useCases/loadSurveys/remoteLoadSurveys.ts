@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@/data/protocols/http'
-import { UnexpectedError } from '@/domain/errors'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import type { LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import type { Survey } from '@/domain/models/Survey'
 import type { HttpGetClient } from '@/data/protocols/http'
@@ -16,7 +16,10 @@ export class RemoteLoadSurveys implements LoadSurveys {
 
   async loadAll (): Promise<Survey[]> {
     const account: Account = this.getStorage.get('account')
-    if (!account?.accessToken || !account?.name || !account?.email) await this.redirect('/login')
+    if (!account?.accessToken || !account?.name || !account?.email) {
+      await this.redirect('/login')
+      throw new InvalidCredentialsError()
+    }
     const httpResponse = await this.httpGetClient.get({
       url: this.url,
       headers: {
