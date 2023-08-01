@@ -5,7 +5,7 @@ import Surveys from '@/presentation/pages/surveys/surveys'
 import ApiContext from '@/presentation/contexts/apiContext'
 import { type Survey } from '@/domain/models/Survey'
 import { UnexpectedError } from '@/domain/errors'
-import { mockSurvey } from '@/../tests/domain/mocks'
+import { mockAccount, mockSurvey } from '@/../tests/domain/mocks'
 import { mockLoadSurveys } from '@/../tests/data/mocks'
 
 type Sut = {
@@ -18,7 +18,7 @@ const makeSut = (amount = 1, error?: boolean): Sut => {
   const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll')
   if (error) loadAllSpy.mockRejectedValueOnce(new UnexpectedError())
   const sut = render(
-    <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: jest.fn() }}>
+    <ApiContext.Provider value={{ getCurrentAccount: () => mockAccount(), setCurrentAccount: jest.fn() }}>
       <BrowserRouter>
         <Surveys loadSurveys={loadSurveysStub} />
       </BrowserRouter>

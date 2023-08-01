@@ -3,6 +3,7 @@ import { type RenderResult, render, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import Header from '@/presentation/components/header/header'
 import ApiContext from '@/presentation/contexts/apiContext'
+import { mockAccount } from '../../domain/mocks'
 import { type Account } from '@/domain/models/Account'
 
 type Sut = {
@@ -13,7 +14,7 @@ type Sut = {
 const makeSut = (): Sut => {
   const setCurrentAccountStub = jest.fn()
   const sut = render(
-    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountStub, getCurrentAccount: jest.fn() }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountStub, getCurrentAccount: (): Account => mockAccount() }}>
       <MemoryRouter initialEntries={['/']}>
         <Routes>
           <Route path='/' element={<Header />}/>
@@ -35,5 +36,10 @@ describe('Header Component', () => {
     expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
     const login = await sut.findByText('Test Pass Login')
     expect(login).toBeTruthy()
+  })
+
+  test('Should render user name correctly', () => {
+    const { sut } = makeSut()
+    expect(sut.getByTestId('userName').textContent).toBe(mockAccount().name)
   })
 })
