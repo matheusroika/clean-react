@@ -18,7 +18,8 @@ const url = 'any_url'
 const makeSut = (): Sut => {
   const httpGetClient = mockHttpGetClient<any, Survey[]>()
   const getStorage = mockGetStorage()
-  const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage)
+  const redirectAdapter = async (path: string): Promise<void> => {}
+  const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage, redirectAdapter)
   return {
     sut,
     httpGetClient,

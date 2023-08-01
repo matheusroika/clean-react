@@ -10,12 +10,14 @@ export class RemoteLoadSurveys implements LoadSurveys {
   constructor (
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient<any, Survey[]>,
-    private readonly getStorage: GetStorage
+    private readonly getStorage: GetStorage,
+    private readonly redirect: (path: string) => Promise<void>
   ) {}
 
   async loadAll (): Promise<Survey[]> {
     const account: Account = this.getStorage.get('account')
-    if (!account?.accessToken || !account?.name || !account?.email) throw new UnexpectedError()
+    console.log(account)
+    if (!account?.accessToken || !account?.name || !account?.email) await this.redirect('/login')
     const httpResponse = await this.httpGetClient.get({
       url: this.url,
       headers: {
