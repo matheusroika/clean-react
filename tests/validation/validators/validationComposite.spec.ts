@@ -1,5 +1,5 @@
 import { ValidationComposite } from '@/validation/validators'
-import { mockValidation } from '../mocks/mockValidation'
+import { mockFieldValidation } from '../mocks/mockValidation'
 import type { FieldValidation } from '../protocols/fieldValidation'
 
 type Sut = {
@@ -8,7 +8,7 @@ type Sut = {
 }
 
 const makeSut = (): Sut => {
-  const validationStubs = [mockValidation('any_field'), mockValidation('other_field')]
+  const validationStubs = [mockFieldValidation('any_field'), mockFieldValidation('other_field')]
   const sut = new ValidationComposite(validationStubs)
   return {
     sut,

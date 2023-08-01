@@ -6,7 +6,7 @@ import ApiContext from '@/presentation/contexts/apiContext'
 import { type Survey } from '@/domain/models/Survey'
 import { UnexpectedError } from '@/domain/errors'
 import { mockSurvey } from '@/../tests/domain/mocks'
-import { mockLoadSurveys } from '../../mocks'
+import { mockLoadSurveys } from '@/../tests/data/mocks'
 
 type Sut = {
   sut: RenderResult
