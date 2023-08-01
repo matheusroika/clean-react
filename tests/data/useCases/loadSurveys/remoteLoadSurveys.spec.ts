@@ -12,6 +12,7 @@ type Sut = {
   sut: RemoteLoadSurveys
   httpGetClient: HttpGetClient<any, Survey[]>
   getStorage: GetStorage
+  redirectAdapter: (path: string) => Promise<void>
 }
 
 const url = 'any_url'
@@ -23,7 +24,8 @@ const makeSut = (): Sut => {
   return {
     sut,
     httpGetClient,
-    getStorage
+    getStorage,
+    redirectAdapter
   }
 }
 
@@ -81,5 +83,12 @@ describe('Remote Load Surveys', () => {
     })
     const account = await sut.loadAll()
     expect(account).toEqual([])
+  })
+
+  test('Should call GetStorage with correct key', async () => {
+    const { sut, getStorage } = makeSut()
+    const getSpy = jest.spyOn(getStorage, 'get')
+    await sut.loadAll()
+    expect(getSpy).toHaveBeenCalledWith('account')
   })
 })
