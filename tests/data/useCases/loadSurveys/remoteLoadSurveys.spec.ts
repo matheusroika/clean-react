@@ -12,20 +12,17 @@ type Sut = {
   sut: RemoteLoadSurveys
   httpGetClient: HttpGetClient<any, Survey[]>
   getStorage: GetStorage
-  redirectAdapter: (path: string) => Promise<void>
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
   const httpGetClient = mockHttpGetClient<any, Survey[]>()
   const getStorage = mockGetStorage()
-  const redirectAdapter = jest.fn()
-  const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage, redirectAdapter)
+  const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage)
   return {
     sut,
     httpGetClient,
-    getStorage,
-    redirectAdapter
+    getStorage
   }
 }
 
@@ -37,12 +34,11 @@ describe('Remote Load Surveys', () => {
     expect(getSpy).toBeCalledWith({ url, headers: mockHeaders() })
   })
 
-  test('Should throw AccessDeniedError and redirect to /login if HttpGetClient returns 403', async () => {
-    const { sut, httpGetClient, redirectAdapter } = makeSut()
+  test('Should throw AccessDeniedError if HttpGetClient returns 403', async () => {
+    const { sut, httpGetClient } = makeSut()
     jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
     const promise = sut.loadAll()
     await expect(promise).rejects.toThrow(new AccessDeniedError())
-    expect(redirectAdapter).toHaveBeenCalledWith('/login')
   })
 
   test('Should throw UnexpectedError if HttpGetClient returns 404', async () => {
@@ -84,13 +80,5 @@ describe('Remote Load Surveys', () => {
     const getSpy = jest.spyOn(getStorage, 'get')
     await sut.loadAll()
     expect(getSpy).toHaveBeenCalledWith('account')
-  })
-
-  test('Should throw AccessDeniedError and redirect to /login if GetStorage returns invalid account', async () => {
-    const { sut, getStorage, redirectAdapter } = makeSut()
-    jest.spyOn(getStorage, 'get').mockReturnValueOnce(null)
-    const promise = sut.loadAll()
-    await expect(promise).rejects.toThrow(new AccessDeniedError())
-    expect(redirectAdapter).toHaveBeenCalledWith('/login')
   })
 })
