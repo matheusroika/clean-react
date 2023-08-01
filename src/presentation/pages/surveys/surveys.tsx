@@ -29,6 +29,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
   useEffect(() => {
     void loadAndSetSurveys()
   }, [])
+
   return (
     <div className={styles.surveys}>
       <Header />
