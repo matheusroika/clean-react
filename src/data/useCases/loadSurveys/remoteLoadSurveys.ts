@@ -16,7 +16,6 @@ export class RemoteLoadSurveys implements LoadSurveys {
 
   async loadAll (): Promise<Survey[]> {
     const account: Account = this.getStorage.get('account')
-    console.log(account)
     if (!account?.accessToken || !account?.name || !account?.email) await this.redirect('/login')
     const httpResponse = await this.httpGetClient.get({
       url: this.url,
