@@ -1,6 +1,6 @@
 import { RemoteLoadSurveys } from '@/data/useCases/loadSurveys/remoteLoadSurveys'
 import { HttpStatusCode } from '@/data/protocols/http'
-import { UnexpectedError } from '@/domain/errors'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import { mockGetStorage, mockHttpGetClient } from '../../mocks'
 import { mockSurvey } from '@/../tests/domain/mocks'
 import { mockHeaders } from '@/../tests/infra/mocks/mockAxios'
@@ -19,7 +19,7 @@ const url = 'any_url'
 const makeSut = (): Sut => {
   const httpGetClient = mockHttpGetClient<any, Survey[]>()
   const getStorage = mockGetStorage()
-  const redirectAdapter = async (path: string): Promise<void> => {}
+  const redirectAdapter = jest.fn()
   const sut = new RemoteLoadSurveys(url, httpGetClient, getStorage, redirectAdapter)
   return {
     sut,
@@ -72,8 +72,8 @@ describe('Remote Load Surveys', () => {
       statusCode: HttpStatusCode.ok,
       body
     })
-    const account = await sut.loadAll()
-    expect(account).toEqual(body)
+    const surveys = await sut.loadAll()
+    expect(surveys).toEqual(body)
   })
 
   test('Should return an empty Survey list if HttpGetClient returns 204', async () => {
@@ -81,8 +81,8 @@ describe('Remote Load Surveys', () => {
     jest.spyOn(httpGetClient, 'get').mockResolvedValueOnce({
       statusCode: HttpStatusCode.noContent
     })
-    const account = await sut.loadAll()
-    expect(account).toEqual([])
+    const surveys = await sut.loadAll()
+    expect(surveys).toEqual([])
   })
 
   test('Should call GetStorage with correct key', async () => {
@@ -90,5 +90,13 @@ describe('Remote Load Surveys', () => {
     const getSpy = jest.spyOn(getStorage, 'get')
     await sut.loadAll()
     expect(getSpy).toHaveBeenCalledWith('account')
+  })
+
+  test('Should throw InvalidCredentialsError and redirect to /login if GetStorage returns invalid account', async () => {
+    const { sut, getStorage, redirectAdapter } = makeSut()
+    jest.spyOn(getStorage, 'get').mockReturnValueOnce(null)
+    const promise = sut.loadAll()
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+    expect(redirectAdapter).toHaveBeenCalledWith('/login')
   })
 })
