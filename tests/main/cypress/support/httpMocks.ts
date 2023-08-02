@@ -1,6 +1,6 @@
 import type { Method } from 'cypress/types/net-stubbing'
 
-export const mockInvalidCredentialsError = (url: string | RegExp, alias?: string): void => {
+export const mockUnauthorizedError = (url: string | RegExp, alias?: string): void => {
   cy.intercept('POST', url, {
     statusCode: 401,
     body: {
@@ -9,7 +9,7 @@ export const mockInvalidCredentialsError = (url: string | RegExp, alias?: string
   }).as(alias || 'request')
 }
 
-export const mockEmailInUseError = (url: string | RegExp, alias?: string): void => {
+export const mockForbiddenError = (url: string | RegExp, alias?: string): void => {
   cy.intercept('POST', url, {
     statusCode: 403,
     body: {
@@ -18,7 +18,7 @@ export const mockEmailInUseError = (url: string | RegExp, alias?: string): void 
   }).as(alias || 'request')
 }
 
-export const mockUnexpectedError = (url: string | RegExp, method: Method, alias?: string): void => {
+export const mockServerError = (url: string | RegExp, method: Method, alias?: string): void => {
   cy.intercept(method, url, {
     statusCode: 500,
     body: {

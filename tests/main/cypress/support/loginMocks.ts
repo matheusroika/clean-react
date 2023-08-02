@@ -1,7 +1,7 @@
 import * as httpMocks from './httpMocks'
 
-export const mockInvalidCredentialsError = (): void => { httpMocks.mockInvalidCredentialsError(/login/, 'login') }
-export const mockUnexpectedError = (): void => { httpMocks.mockUnexpectedError(/login/, 'POST', 'login') }
+export const mockInvalidCredentialsError = (): void => { httpMocks.mockUnauthorizedError(/login/, 'login') }
+export const mockUnexpectedError = (): void => { httpMocks.mockServerError(/login/, 'POST', 'login') }
 export const mockOkResponse = (): void => {
   httpMocks.mockOk(/login/, 'POST', {
     name: 'Test Name',
@@ -9,4 +9,3 @@ export const mockOkResponse = (): void => {
     email: 'test@email.com'
   }, 'login')
 }
-export const mockOkWithInvalidResponse = (): void => { httpMocks.mockOk(/login/, 'POST', { invalid: 'invalid' }, 'login') }
