@@ -4,16 +4,16 @@ export const mockUnauthorizedError = (url: string | RegExp, alias?: string): voi
   cy.intercept('POST', url, {
     statusCode: 401,
     body: {
-      error: 'Invalid credentials'
+      error: 'Unauthorized'
     }
   }).as(alias || 'request')
 }
 
-export const mockForbiddenError = (url: string | RegExp, alias?: string): void => {
-  cy.intercept('POST', url, {
+export const mockForbiddenError = (url: string | RegExp, method: Method, alias?: string): void => {
+  cy.intercept(method, url, {
     statusCode: 403,
     body: {
-      error: 'Email in use'
+      error: 'Forbidden'
     }
   }).as(alias || 'request')
 }
@@ -22,7 +22,7 @@ export const mockServerError = (url: string | RegExp, method: Method, alias?: st
   cy.intercept(method, url, {
     statusCode: 500,
     body: {
-      error: 'Unexpected error'
+      error: 'Server error'
     }
   }).as(alias || 'request')
 }
