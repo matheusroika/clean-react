@@ -21,6 +21,15 @@ describe('Surveys', () => {
     cy.dataTestId('userName').should('contain.text', mockAccount().name)
   })
 
+  it('Should logout on header logout click', () => {
+    http.mockUnexpectedError()
+    cy.visit('')
+    cy.dataTestId('logout').click()
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('account')).to.be.a('null')
+    })
+  })
+
   it('Should show error message on UnexpectedError', () => {
     http.mockUnexpectedError()
     cy.visit('')
@@ -30,6 +39,8 @@ describe('Surveys', () => {
   it('Should logout on AccessDeniedError', () => {
     http.mockAccessDeniedError()
     cy.visit('')
-    cy.url().should('equal', `${baseUrl}/login`)
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('account')).to.be.a('null')
+    })
   })
 })
