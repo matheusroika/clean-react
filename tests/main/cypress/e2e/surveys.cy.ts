@@ -1,7 +1,12 @@
-import * as http from '../support/surveysMocks'
+import * as httpMocks from '../utils/httpMocks'
 import { mockAccount } from '../../../domain/mocks'
 
 const baseUrl: string = Cypress.config().baseUrl
+
+const http = {
+  mockUnexpectedError: (): void => { httpMocks.mockServerError(/surveys/, 'GET', 'surveys') },
+  mockAccessDeniedError: (): void => { httpMocks.mockForbiddenError(/surveys/, 'GET', 'surveys') }
+}
 
 describe('Surveys', () => {
   beforeEach(() => {

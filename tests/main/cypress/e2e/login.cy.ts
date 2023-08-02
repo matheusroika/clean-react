@@ -1,7 +1,19 @@
-import * as http from '../support/loginMocks'
-import * as helper from '../support/authHelpers'
+import * as httpMocks from '../utils/httpMocks'
+import * as helper from '../utils/authHelpers'
 
 const baseUrl: string = Cypress.config().baseUrl
+
+const http = {
+  mockInvalidCredentialsError: (): void => { httpMocks.mockUnauthorizedError(/login/, 'login') },
+  mockUnexpectedError: (): void => { httpMocks.mockServerError(/login/, 'POST', 'login') },
+  mockOkResponse: (): void => {
+    httpMocks.mockOk(/login/, 'POST', {
+      name: 'Test Name',
+      accessToken: 'test_token',
+      email: 'test@email.com'
+    }, 'login')
+  }
+}
 
 describe('Login', () => {
   beforeEach(() => {
