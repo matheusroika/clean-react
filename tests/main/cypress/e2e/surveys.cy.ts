@@ -1,6 +1,8 @@
 import * as http from '../support/surveysMocks'
 import { mockAccount } from '../../../domain/mocks'
 
+const baseUrl: string = Cypress.config().baseUrl
+
 describe('Surveys', () => {
   beforeEach(() => {
     cy.intercept({
@@ -17,5 +19,11 @@ describe('Surveys', () => {
     http.mockUnexpectedError()
     cy.visit('')
     cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
+  })
+
+  it('Should logout on AccessDeniedError', () => {
+    http.mockAccessDeniedError()
+    cy.visit('')
+    cy.url().should('equal', `${baseUrl}/login`)
   })
 })
