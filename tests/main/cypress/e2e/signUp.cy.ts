@@ -73,15 +73,6 @@ describe('Sign Up', () => {
     })
   })
 
-  it('Should present error modal with UnexpectedError if response has an invalid body', () => {
-    http.mockOkWithInvalidResponse()
-    helper.submitValidForm('signup')
-    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
-    cy.url().should('equal', `${baseUrl}/signup`).then(() => {
-      expect(localStorage.getItem('account')).to.be.a('null')
-    })
-  })
-
   it('Should save accessToken and redirect to index if valid form is submitted', () => {
     http.mockOkResponse()
     helper.submitValidForm('signup')

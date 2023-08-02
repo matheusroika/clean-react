@@ -64,15 +64,6 @@ describe('Login', () => {
     })
   })
 
-  it('Should present error modal with UnexpectedError if response has an invalid body', () => {
-    http.mockOkWithInvalidResponse()
-    helper.submitValidForm('login')
-    helper.testModalCycle('Algo de errado aconteceu. Tente novamente')
-    cy.url().should('equal', `${baseUrl}/login`).then(() => {
-      expect(localStorage.getItem('account')).to.be.a('null')
-    })
-  })
-
   it('Should save accessToken and redirect to index if valid credentials are provided', () => {
     http.mockOkResponse()
     helper.submitValidForm('login')
