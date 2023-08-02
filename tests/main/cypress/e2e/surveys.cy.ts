@@ -15,6 +15,12 @@ describe('Surveys', () => {
     cy.visit('')
   })
 
+  it('Should show correct username on header', () => {
+    http.mockUnexpectedError()
+    cy.visit('')
+    cy.dataTestId('userName').should('contain.text', mockAccount().name)
+  })
+
   it('Should show error message on UnexpectedError', () => {
     http.mockUnexpectedError()
     cy.visit('')
