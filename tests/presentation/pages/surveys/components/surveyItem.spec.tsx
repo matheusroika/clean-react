@@ -2,7 +2,7 @@ import React from 'react'
 import { type RenderResult, render } from '@testing-library/react'
 import SurveyItem from '@/presentation/pages/surveys/components/surveyItem/surveyItem'
 import { mockSurvey } from '@/../tests/domain/mocks'
-import { IconName } from '@/presentation/components/answeredIcon/answeredIcon'
+import { IconName } from '@/presentation/pages/surveys/components/answeredIcon/answeredIcon'
 import { type Survey } from '@/domain/models/Survey'
 
 type Sut = {

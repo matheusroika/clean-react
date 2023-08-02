@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './surveyItemStyles.scss'
-import AnsweredIcon from '@/presentation/components/answeredIcon/answeredIcon'
+import AnsweredIcon from '@/presentation/pages/surveys/components/answeredIcon/answeredIcon'
 import { type Survey } from '@/domain/models/Survey'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const SurveyItem: React.FC<Props> = ({ survey }) => {
-  const [formattedDay, formattedMonth, formattedYear] = format(survey.date, 'dd-LLL-y', { locale: ptBR }).split('-')
+  const [formattedDay, formattedMonth, formattedYear] = format(new Date(survey.date), 'dd-LLL-y', { locale: ptBR }).split('-')
   return (
     <li>
       <div>
