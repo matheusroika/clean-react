@@ -7,6 +7,13 @@ export const mockAnswer = (): Answer => ({
   isCurrentAccountAnswer: false
 })
 
+export const mockOtherAnswer = (): Answer => ({
+  answer: 'other_answer',
+  count: 5,
+  percent: 100,
+  isCurrentAccountAnswer: true
+})
+
 export const mockSurvey = (): Survey => ({
   id: 'any_id',
   question: 'any_question',
@@ -16,10 +23,20 @@ export const mockSurvey = (): Survey => ({
   answered: false
 })
 
+export const mockOtherSurvey = (): Survey => ({
+  id: 'other_id',
+  question: 'other_question',
+  answers: [mockOtherAnswer()],
+  totalResponses: 5,
+  date: new Date('2022-12-25T05:52:28.514Z'),
+  answered: true
+})
+
 export const mockSurveys = (amount = 1): Survey[] => {
   const surveys: Survey[] = []
   for (let i = 0; i < amount; i++) {
-    surveys.push(mockSurvey())
+    if (i % 2 === 0) surveys.push(mockSurvey())
+    else surveys.push(mockOtherSurvey())
   }
   return surveys
 }
