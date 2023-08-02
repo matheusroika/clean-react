@@ -59,6 +59,15 @@ describe('Surveys', () => {
     })
   })
 
+  it('Should retry to load Surveys on button click', () => {
+    http.mockUnexpectedError()
+    cy.visit('')
+    cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
+    http.mockOk()
+    cy.dataTestId('retry').click()
+    cy.get('li:not(:empty)').should('have.length', 2)
+  })
+
   it('Should show error message on UnexpectedError', () => {
     http.mockUnexpectedError()
     cy.visit('')
