@@ -8,6 +8,7 @@ export default defineConfig({
     screenshotOnRunFailure: false,
     supportFile: 'tests/main/cypress/support/e2e.ts',
     downloadsFolder: 'tests/main/cypress/downloads',
-    specPattern: "tests/main/cypress/e2e/*.cy.ts"
+    specPattern: "tests/main/cypress/e2e/*.cy.ts",
+    experimentalRunAllSpecs: true
   }
 })
