@@ -17,13 +17,11 @@ describe('Surveys', () => {
 
   it('Should show correct username on header', () => {
     http.mockUnexpectedError()
-    cy.visit('')
     cy.dataTestId('userName').should('contain.text', mockAccount().name)
   })
 
   it('Should logout on header logout click', () => {
     http.mockUnexpectedError()
-    cy.visit('')
     cy.dataTestId('logout').click()
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('account')).to.be.a('null')
