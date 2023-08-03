@@ -1,20 +1,9 @@
 const path = require('path')
+const webpackMerge = require('webpack-merge')
+const common = require('./webpack.common')
 
-module.exports = {
+module.exports = webpackMerge(common, {
   mode: 'development',
-  entry: './src/main/index.tsx',
-  output: {
-    path: path.resolve(__dirname, 'public/js'),
-    publicPath: '/public/js',
-    filename: 'bundle.js',
-    clean: true
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.scss'],
-    alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
-  },
   module: {
     rules: [{
       test: /\.ts(x?)$/,
@@ -35,12 +24,8 @@ module.exports = {
     }]
   },
   devServer: {
-    static: { directory: path.resolve(__dirname, 'public') },
+    static: { directory: path.resolve(__dirname, 'dist') },
     historyApiFallback: true,
     devMiddleware: { writeToDisk: true }
-  },
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM'
   }
-}
+})
