@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const { ContextReplacementPlugin } = require('webpack')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
@@ -38,6 +39,7 @@ module.exports = merge(common, {
   plugins: [
     new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'template.prod.html') }),
     new MiniCssExtractPlugin({ filename: 'main-bundle-[fullhash].css' }),
+    new FaviconsWebpackPlugin(path.resolve(__dirname, '../public/favicon.png')),
     new ContextReplacementPlugin(
       /^date-fns[/\\]locale$/,
       new RegExp(`\\.[/\\\\](${dateFnsLocales.join('|')})[/\\\\]index\\.js$`)
