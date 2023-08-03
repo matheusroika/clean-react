@@ -61,7 +61,6 @@ describe('Surveys', () => {
 
   it('Should retry to load Surveys on button click', () => {
     http.mockUnexpectedError()
-    cy.visit('')
     cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
     http.mockOk()
     cy.dataTestId('retry').click()
@@ -70,13 +69,11 @@ describe('Surveys', () => {
 
   it('Should show error message on UnexpectedError', () => {
     http.mockUnexpectedError()
-    cy.visit('')
     cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
   })
 
   it('Should logout on AccessDeniedError', () => {
     http.mockAccessDeniedError()
-    cy.visit('')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('account')).to.be.a('null')
     })
