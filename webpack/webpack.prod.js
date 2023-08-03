@@ -1,10 +1,11 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
 module.exports = merge(common, {
-  mode: 'development',
+  mode: 'production',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
@@ -13,7 +14,7 @@ module.exports = merge(common, {
     }, {
       test: /\.scss$/,
       use: [
-        { loader: 'style-loader' },
+        { loader: MiniCssExtractPlugin.loader },
         {
           loader: 'css-loader',
           options: {
@@ -24,14 +25,12 @@ module.exports = merge(common, {
       ]
     }]
   },
-  devServer: {
-    static: { directory: path.resolve(__dirname, 'dist') },
-    historyApiFallback: true,
-    devMiddleware: { writeToDisk: true }
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM'
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './template.dev.html'
-    })
+    new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'template.prod.html') }),
+    new MiniCssExtractPlugin({ filename: 'main-bundle-[fullhash].css' })
   ]
 })

@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack/webpack.prod.js",
+    "dev": "webpack-dev-server --config webpack/webpack.dev.js",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:all": "yarn test --watch",
     "test:verbose": "jest --passWithNoTests --runInBand --watch",
