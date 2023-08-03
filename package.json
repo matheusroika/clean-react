@@ -8,8 +8,9 @@
     "test:verbose": "jest --passWithNoTests --runInBand --watch",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage",
-    "test:e2e": "cypress run",
-    "cypress": "cypress open --e2e -b chrome"
+    "test:e2e": "start-server-and-test dev http-get://localhost:8080 cypress:run",
+    "cypress": "cypress open --e2e -b chrome",
+    "cypress:run": "cypress run"
   },
   "name": "clean-react",
   "version": "0.5.0",
@@ -46,6 +47,7 @@
     "mini-css-extract-plugin": "^2.7.6",
     "node-sass": "^9.0.0",
     "sass-loader": "^13.3.2",
+    "start-server-and-test": "^2.0.0",
     "style-loader": "^3.3.3",
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.4",
