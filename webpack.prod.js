@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
@@ -12,7 +13,7 @@ module.exports = merge(common, {
     }, {
       test: /\.scss$/,
       use: [
-        { loader: 'style-loader' },
+        { loader: MiniCssExtractPlugin.loader },
         {
           loader: 'css-loader',
           options: {
@@ -28,8 +29,7 @@ module.exports = merge(common, {
     'react-dom': 'ReactDOM'
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './template.dev.html'
-    })
+    new HtmlWebpackPlugin({ template: './template.dev.html' }),
+    new MiniCssExtractPlugin({ filename: 'main-bundle-[fullhash].css' })
   ]
 })
