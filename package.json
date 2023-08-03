@@ -62,5 +62,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
     "validator": "^13.9.0"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
