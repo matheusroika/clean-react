@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist',
-    filename: 'main-bundle-[hash].js',
+    filename: 'main-bundle-[fullhash].js',
     clean: true
   },
   resolve: {

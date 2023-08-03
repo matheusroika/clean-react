@@ -1,7 +1,8 @@
-const webpackMerge = require('webpack-merge')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
-module.exports = webpackMerge(common, {
+module.exports = merge(common, {
   mode: 'production',
   module: {
     rules: [{
@@ -25,5 +26,10 @@ module.exports = webpackMerge(common, {
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './template.dev.html'
+    })
+  ]
 })

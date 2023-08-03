@@ -1,8 +1,9 @@
 const path = require('path')
-const webpackMerge = require('webpack-merge')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
-module.exports = webpackMerge(common, {
+module.exports = merge(common, {
   mode: 'development',
   module: {
     rules: [{
@@ -27,5 +28,10 @@ module.exports = webpackMerge(common, {
     static: { directory: path.resolve(__dirname, 'dist') },
     historyApiFallback: true,
     devMiddleware: { writeToDisk: true }
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './template.dev.html'
+    })
+  ]
 })
