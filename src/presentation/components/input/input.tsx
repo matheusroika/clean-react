@@ -6,12 +6,12 @@ interface Props extends React.ComponentPropsWithoutRef<'input'> {
 }
 
 const Input: React.FC<Props> = (props) => {
-  const { setValue } = props
+  const { setValue, ...rest } = props
 
   return (
     <div className={styles.inputWrapper}>
       <input
-        {...props}
+        {...rest}
         data-testid={props.name}
         id={props.name}
         onChange={(e) => { setValue(e.target.value) }}
