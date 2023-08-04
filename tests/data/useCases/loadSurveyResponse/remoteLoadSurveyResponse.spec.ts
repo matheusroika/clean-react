@@ -1,6 +1,7 @@
 import { RemoteLoadSurveyResponse } from '@/data/useCases/loadSurveyResponse/remoteLoadSurveyResponse'
 import { mockHttpGetClient } from '../../mocks'
-import type { HttpGetClient } from '@/data/protocols/http'
+import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
+import { AccessDeniedError } from '@/domain/errors'
 
 type Sut = {
   sut: RemoteLoadSurveyResponse
@@ -23,5 +24,12 @@ describe('Remote Load Survey Response', () => {
     const getSpy = jest.spyOn(httpGetClientStub, 'get')
     await sut.load()
     expect(getSpy).toHaveBeenCalledWith({ url })
+  })
+
+  test('Should throw AccessDeniedError if HttpGetClient returns 403', async () => {
+    const { sut, httpGetClientStub } = makeSut()
+    jest.spyOn(httpGetClientStub, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+    const promise = sut.load()
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 })
