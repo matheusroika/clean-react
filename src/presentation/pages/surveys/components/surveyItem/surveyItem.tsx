@@ -12,7 +12,7 @@ type Props = {
 const SurveyItem: React.FC<Props> = ({ survey }) => {
   const [formattedDay, formattedMonth, formattedYear] = format(new Date(survey.date), 'dd-LLL-y', { locale: ptBR }).split('-')
   return (
-    <li>
+    <li className={styles.surveyItem}>
       <div>
         <AnsweredIcon iconName={survey.answered ? 'thumbsUp' : 'thumbsDown'} className={styles.icon} />
         <time>

@@ -1,9 +1,9 @@
 import React from 'react'
-import './emptySurveyItemStyles.scss'
+import styles from './emptySurveyItemStyles.scss'
 
 const EmptySurveyItem: React.FC = () => {
   return (
-    <li>
+    <li className={styles.emptySurveyItem}>
     </li>
   )
 }

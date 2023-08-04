@@ -9,7 +9,7 @@ const Header: React.FC = () => {
   const { getCurrentAccount } = useContext(apiContext)
 
   return (
-    <header>
+    <header className={styles.header}>
       <div>
         <Logo />
         <div className={styles.profile}>
