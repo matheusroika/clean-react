@@ -23,6 +23,9 @@ describe('Survey Item Component', () => {
     const iconImg = sut.getByTestId('iconImg') as HTMLImageElement
     expect(iconImg.src).toBe(IconName.thumbsDown)
     expect(sut.getByTestId('question').textContent).toBe(survey.question)
+    expect(sut.getByTestId('day').textContent).toBe('03')
+    expect(sut.getByTestId('month').textContent).toBe('jul')
+    expect(sut.getByTestId('year').textContent).toBe('2023')
     expect(sut.getByTestId('result').textContent).toBe('Ver resultado')
   })
 
@@ -32,6 +35,9 @@ describe('Survey Item Component', () => {
     const iconImg = sut.getByTestId('iconImg') as HTMLImageElement
     expect(iconImg.src).toBe(IconName.thumbsUp)
     expect(sut.getByTestId('question').textContent).toBe(survey.question)
+    expect(sut.getByTestId('day').textContent).toBe('25')
+    expect(sut.getByTestId('month').textContent).toBe('dez')
+    expect(sut.getByTestId('year').textContent).toBe('2022')
     expect(sut.getByTestId('result').textContent).toBe('Ver resultado')
   })
 })
