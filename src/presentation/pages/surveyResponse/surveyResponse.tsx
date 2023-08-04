@@ -3,7 +3,7 @@ import FlipMove from 'react-flip-move'
 import styles from './surveyResponseStyles.scss'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
-import Loader from '@/presentation/components/loader/loader'
+import Loading from '@/presentation/components/loading/loading'
 
 const SurveyResponse: React.FC = () => {
   return (
@@ -31,12 +31,7 @@ const SurveyResponse: React.FC = () => {
           </li>
         </FlipMove>
         <button>Voltar</button>
-        <div className={styles.loadingWrapper}>
-          <div className={styles.loading}>
-            <span>Aguarde...</span>
-            <Loader isWhite />
-          </div>
-        </div>
+        <Loading />
       </main>
       <Footer />
     </div>
