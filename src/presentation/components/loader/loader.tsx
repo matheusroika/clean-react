@@ -1,11 +1,16 @@
 import React from 'react'
 import styles from './loaderStyles.scss'
 
-interface Props extends React.ComponentPropsWithoutRef<'div'> {}
+interface Props extends React.ComponentPropsWithoutRef<'div'> {
+  isWhite?: boolean
+}
 
-const Spinner: React.FC<Props> = (props) => {
+const Loader: React.FC<Props> = (props) => {
+  const { isWhite, ...rest } = props
+  const whiteClass = isWhite ? styles.white : ''
+
   return (
-    <div {...props} className={[styles.loader, props.className].join(' ')}>
+    <div {...rest} className={[styles.loader, whiteClass, props.className].join(' ')}>
       <div />
       <div />
       <div />
@@ -14,4 +19,4 @@ const Spinner: React.FC<Props> = (props) => {
   )
 }
 
-export default Spinner
+export default Loader
