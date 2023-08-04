@@ -1,7 +1,7 @@
 import type { LoadSurveyResponse } from '@/domain/useCases/LoadSurveyResponse'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
 import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
-import { AccessDeniedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 
 export class RemoteLoadSurveyResponse implements LoadSurveyResponse {
   constructor (
@@ -20,7 +20,8 @@ export class RemoteLoadSurveyResponse implements LoadSurveyResponse {
         surveyId: '',
         date: new Date('2023-07-03T05:52:28.514Z')
       }
-      default: throw new AccessDeniedError()
+      case HttpStatusCode.forbidden: throw new AccessDeniedError()
+      default: throw new UnexpectedError()
     }
   }
 }
