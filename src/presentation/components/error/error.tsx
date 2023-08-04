@@ -1,12 +1,12 @@
 import React from 'react'
-import styles from './surveysErrorStyles.scss'
+import styles from './errorStyles.scss'
 
 type Props = {
   error: string
   tryAgainMethod: () => Promise<void>
 }
 
-const SurveysError: React.FC<Props> = ({ error, tryAgainMethod }) => {
+const Error: React.FC<Props> = ({ error, tryAgainMethod }) => {
   return (
     <div className={styles.surveysError}>
       <span data-testid='error'>{error}</span>
@@ -15,4 +15,4 @@ const SurveysError: React.FC<Props> = ({ error, tryAgainMethod }) => {
   )
 }
 
-export default SurveysError
+export default Error

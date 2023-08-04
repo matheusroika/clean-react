@@ -3,7 +3,7 @@ import styles from './surveysStyles.scss'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
 import SurveyList from './components/surveyList/surveyList'
-import SurveysError from './components/surveysError/surveysError'
+import Error from '../../components/error/error'
 import { type LoadSurveys } from '@/domain/useCases/LoadSurveys'
 import { type Survey } from '@/domain/models/Survey'
 import { useErrorHandler } from '@/presentation/hooks/useErrorHandler'
@@ -38,7 +38,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       <main>
         <h1>Enquetes</h1>
         {error
-          ? <SurveysError error={error} tryAgainMethod={loadAndSetSurveys} />
+          ? <Error error={error} tryAgainMethod={loadAndSetSurveys} />
           : <SurveyList surveys={surveys} />
         }
       </main>
