@@ -1,6 +1,7 @@
 import type { LoadSurveyResponse } from '@/domain/useCases/LoadSurveyResponse'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
-import type { HttpGetClient } from '@/data/protocols/http'
+import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
+import { AccessDeniedError } from '@/domain/errors'
 
 export class RemoteLoadSurveyResponse implements LoadSurveyResponse {
   constructor (
@@ -9,14 +10,17 @@ export class RemoteLoadSurveyResponse implements LoadSurveyResponse {
   ) {}
 
   async load (): Promise<SurveyResponse> {
-    await this.httpGetClient.get({ url: this.url })
+    const httpResponse = await this.httpGetClient.get({ url: this.url })
 
-    return {
-      accountId: '',
-      answer: '',
-      id: '',
-      surveyId: '',
-      date: new Date('2023-07-03T05:52:28.514Z')
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: return {
+        accountId: '',
+        answer: '',
+        id: '',
+        surveyId: '',
+        date: new Date('2023-07-03T05:52:28.514Z')
+      }
+      default: throw new AccessDeniedError()
     }
   }
 }
