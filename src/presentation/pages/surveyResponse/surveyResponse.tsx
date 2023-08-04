@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FlipMove from 'react-flip-move'
 import styles from './surveyResponseStyles.scss'
 import Header from '@/presentation/components/header/header'
@@ -6,12 +6,25 @@ import Footer from '@/presentation/components/footer/footer'
 import Loading from '@/presentation/components/loading/loading'
 import Calendar from '@/presentation/components/calendar/calendar'
 import Error from '@/presentation/components/error/error'
-import { type SurveyResponse as SurveyResponseModel } from '@/domain/models/SurveyResponse'
+import type { SurveyResponse as SurveyResponseModel } from '@/domain/models/SurveyResponse'
+import type { LoadSurveyResponse } from '@/domain/useCases/LoadSurveyResponse'
 
-const SurveyResponse: React.FC = () => {
+type Props = {
+  loadSurveyResponse: LoadSurveyResponse
+}
+
+const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
   const [isLoading] = useState(false)
   const [error] = useState('')
   const [surveyResponse] = useState<SurveyResponseModel>(null)
+
+  const loadAndSetSurveyResponse = async (): Promise<void> => {
+    await loadSurveyResponse.load()
+  }
+
+  useEffect(() => {
+    void loadAndSetSurveyResponse()
+  }, [])
 
   return (
     <div className={styles.surveyResponse}>
