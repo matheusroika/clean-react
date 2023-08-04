@@ -16,10 +16,22 @@
     flex-grow: 1;
     padding: 2.5rem;
 
-    h1 {
-      color: $primaryDark;
-      font-size: 2rem;
-      margin-bottom: .5rem;
+    hgroup {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .calendar {
+        width: 5rem;
+        margin-right: 1rem;
+        color: $primaryDark;
+        background-color: $white;
+      }
+
+      h1 {
+        color: $primaryDark;
+        font-size: 2rem;
+      } 
     }
 
     button {
@@ -40,6 +52,7 @@
         border-radius: .5rem;
         color: $primaryDark;
         margin-top: 1rem;
+        box-shadow: 0 1px 3px -1px $black;
 
         &.userAnswer {
           border: 2px solid $primaryLight;
