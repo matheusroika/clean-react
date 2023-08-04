@@ -4,7 +4,7 @@ import Loader from '../loader/loader'
 
 const Loading: React.FC = () => {
   return (
-    <div className={styles.loadingWrapper}>
+    <div data-testid="loading" className={styles.loadingWrapper}>
       <div className={styles.loading}>
         <span>Aguarde...</span>
         <Loader isWhite />
