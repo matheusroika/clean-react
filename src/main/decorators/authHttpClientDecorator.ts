@@ -16,6 +16,7 @@ export class AuthHttpClientDecorator implements HttpClient<any, any, any> {
       httpClientData = {
         ...httpClientData,
         headers: {
+          ...headers,
           'x-access-token': account.accessToken
         }
       }
