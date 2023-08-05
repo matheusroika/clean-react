@@ -8,6 +8,7 @@ export const mockAnswer = (): Answer => ({
 })
 
 export const mockOtherAnswer = (): Answer => ({
+  image: 'image.png',
   answer: 'other_answer',
   count: 5,
   percent: 100,
@@ -17,7 +18,7 @@ export const mockOtherAnswer = (): Answer => ({
 export const mockSurvey = (): Survey => ({
   id: 'any_id',
   question: 'any_question',
-  answers: [mockAnswer()],
+  answers: [mockAnswer(), mockOtherAnswer()],
   totalResponses: 0,
   date: new Date('2023-07-03T05:52:28.514Z'),
   answered: false
