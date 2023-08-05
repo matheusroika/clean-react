@@ -1,0 +1,50 @@
+@import "../../../../styles/colors.scss";
+
+.answerWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $white;
+  padding: 1rem;
+  border-radius: .5rem;
+  color: $primaryDark;
+  margin-top: 1rem;
+  box-shadow: 0 1px 3px -1px $black;
+
+  &.userAnswer {
+    box-shadow: 0 0 3px 2px $primaryLight;
+  }
+
+  img {
+    width: 5rem;
+    height: 5rem;
+    margin-right: 1rem;
+  }
+  .answer {
+    flex-grow: 1;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height:  5rem;
+  }
+  .percent {
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .answerWrapper {
+    img {
+      width: 4rem !important;
+      height: 4rem !important;
+    }
+
+    .answer {
+      font-size: 1rem !important;
+      line-height: 4rem !important;
+    }
+
+    .percent {
+      font-size: 1.75rem !important;
+    }
+  }  
+}

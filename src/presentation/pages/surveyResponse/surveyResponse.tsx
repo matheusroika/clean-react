@@ -3,11 +3,11 @@ import styles from './surveyResponseStyles.scss'
 import { useErrorHandler } from '@/presentation/hooks/useErrorHandler'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
+import Response from './components/response/response'
 import Loading from '@/presentation/components/loading/loading'
 import Error from '@/presentation/components/error/error'
 import type { SurveyResponse as SurveyResponseModel } from '@/domain/models/SurveyResponse'
 import type { LoadSurveyResponse } from '@/domain/useCases/LoadSurveyResponse'
-import Response from './components/response/response'
 
 type Props = {
   loadSurveyResponse: LoadSurveyResponse

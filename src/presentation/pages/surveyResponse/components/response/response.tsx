@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import styles from './responseStyles.scss'
 import FlipMove from 'react-flip-move'
 import Calendar from '@/presentation/components/calendar/calendar'
+import Answer from '../answer/answer'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
 
 type Props = {
@@ -19,11 +20,7 @@ const Response: React.FC<Props> = ({ surveyResponse }) => {
       </hgroup>
       <FlipMove data-testid="answers" className={styles.answers}>
         {surveyResponse.survey.answers.map(answer =>
-          <li data-testid="answerWrapper" key={answer.answer} className={answer.isCurrentAccountAnswer ? styles.userAnswer : undefined}>
-            {answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} />}
-            <span data-testid="answer" className={styles.answer}>{answer.answer}</span>
-            <span data-testid="percent" className={styles.percent}>{`${answer.percent.toString()}%`}</span>
-          </li>
+          <Answer key={answer.answer} answer={answer} />
         )}
       </FlipMove>
       <button data-testid="back" className={styles.backButton} onClick={() => { navigate('/') }}>Voltar</button>

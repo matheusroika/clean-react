@@ -65,8 +65,8 @@ describe('Survey Response Page', () => {
 
     const answerWrappers = sut.getAllByTestId('answerWrapper')
     expect(answerWrappers).toHaveLength(2)
-    expect(answerWrappers[0].className).toBe('')
-    expect(answerWrappers[1].className).toBe('userAnswer')
+    expect(answerWrappers[0].className).toBe('answerWrapper')
+    expect(answerWrappers[1].className).toBe('answerWrapper userAnswer')
 
     const images = sut.getAllByTestId('image') as HTMLImageElement[]
     expect(images).toHaveLength(1)
