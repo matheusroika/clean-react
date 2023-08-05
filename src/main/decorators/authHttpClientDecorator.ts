@@ -21,10 +21,7 @@ export class AuthHttpClientDecorator implements HttpClient<any, any, any> {
         }
       }
     }
-    await this.httpClient.request(httpClientData)
-
-    return {
-      statusCode: 200
-    }
+    const httpResponse = await this.httpClient.request(httpClientData)
+    return httpResponse
   }
 }
