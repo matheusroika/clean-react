@@ -33,6 +33,7 @@ describe('SurveyResponse', () => {
       assert.equal(li.find('[data-testid="percent"]').text(), '0%')
     })
     cy.get('li:last-child').then(li => {
+      cy.wrap(li).should('have.css', 'box-shadow', 'rgb(188, 71, 120) 0px 0px 3px 2px')
       assert.equal(li.find('[data-testid="image"]').attr('src'), 'image.png')
       assert.equal(li.find('[data-testid="answer"]').text(), 'other_answer')
       assert.equal(li.find('[data-testid="percent"]').text(), '100%')
@@ -50,6 +51,12 @@ describe('SurveyResponse', () => {
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('account')).to.be.a('null')
     })
+  })
+
+  it('Should go to Surveys page on back button click', () => {
+    http.mockOk()
+    cy.dataTestId('back').click()
+    cy.url().should('equal', `${baseUrl}/`)
   })
 
   it('Should retry to load SurveyResponse on button click', () => {
