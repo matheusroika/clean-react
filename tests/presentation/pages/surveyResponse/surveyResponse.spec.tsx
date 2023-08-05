@@ -18,13 +18,19 @@ type Sut = {
   setCurrentAccountStub: (account: Account) => void
 }
 
-const makeSut = (error?: Error): Sut => {
+type SutParams = {
+  loadError?: Error
+  saveError?: Error
+}
+
+const makeSut = (params?: SutParams): Sut => {
   const loadSurveyResponseStub = mockLoadSurveyResponse()
   const saveSurveyResponseStub = mockSaveSurveyResponse()
   const setCurrentAccountStub = jest.fn()
   const loadSpy = jest.spyOn(loadSurveyResponseStub, 'load')
-  if (error) loadSpy.mockRejectedValueOnce(error)
+  if (params?.loadError) loadSpy.mockRejectedValueOnce(params?.loadError)
   const saveSpy = jest.spyOn(saveSurveyResponseStub, 'save')
+  if (params?.saveError) saveSpy.mockRejectedValueOnce(params?.saveError)
   const sut = render(
     <ApiContext.Provider value={{ getCurrentAccount: () => mockAccount(), setCurrentAccount: setCurrentAccountStub }}>
       <MemoryRouter initialEntries={['/survey']}>
@@ -96,7 +102,7 @@ describe('Survey Response Page', () => {
 
   test('Should show error on LoadSurveyResponse UnexpectedError', async () => {
     const error = new UnexpectedError()
-    const { sut } = makeSut(error)
+    const { sut } = makeSut({ loadError: error })
     await waitFor(() => sut.getByTestId('surveyResponse'))
     expect(sut.queryByTestId('title')).toBeNull()
     expect(sut.queryByTestId('answers')).toBeNull()
@@ -104,8 +110,8 @@ describe('Survey Response Page', () => {
     expect(sut.queryByTestId('error').textContent).toBe(error.message)
   })
 
-  test('Should logout and redirect to /login on AccessDeniedError', async () => {
-    const { sut, setCurrentAccountStub } = makeSut(new AccessDeniedError())
+  test('Should logout and redirect to /login on LoadSurveyResponse AccessDeniedError', async () => {
+    const { sut, setCurrentAccountStub } = makeSut({ loadError: new AccessDeniedError() })
     const login = await sut.findByText('Test Pass Login')
     expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
     expect(login).toBeTruthy()
@@ -113,7 +119,7 @@ describe('Survey Response Page', () => {
 
   test('Should call LoadSurveyResponse on retry button click', async () => {
     const error = new UnexpectedError()
-    const { sut, loadSpy } = makeSut(error)
+    const { sut, loadSpy } = makeSut({ loadError: error })
     await waitFor(() => sut.getByTestId('surveyResponse'))
     expect(loadSpy).toHaveBeenCalledTimes(1)
     expect(sut.queryByTestId('error').textContent).toBe(error.message)
@@ -151,5 +157,18 @@ describe('Survey Response Page', () => {
     expect(sut.queryByTestId('loading')).toBeNull()
     expect(saveSpy).toHaveBeenCalledTimes(1)
     expect(saveSpy).toHaveBeenCalledWith({ answer: 'any_answer' })
+  })
+
+  test('Should show error on SaveSurveyResponse UnexpectedError', async () => {
+    const error = new UnexpectedError()
+    const { sut } = makeSut({ saveError: error })
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(sut.queryByTestId('title')).toBeNull()
+    expect(sut.queryByTestId('answers')).toBeNull()
+    expect(sut.queryByTestId('loading')).toBeNull()
+    expect(sut.queryByTestId('error').textContent).toBe(error.message)
   })
 })
