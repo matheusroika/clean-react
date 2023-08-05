@@ -250,4 +250,18 @@ describe('Survey Response Page', () => {
       expect(sut.queryByTestId('loading')).toBeNull()
     })
   })
+
+  test('Should call SaveSurveyResponse only once on multiple retry button clicks', async () => {
+    const error = new UnexpectedError()
+    const { sut, saveSpy } = makeSut({ saveError: error })
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(saveSpy).toHaveBeenCalledTimes(1)
+    fireEvent.click(sut.getByTestId('retry'))
+    fireEvent.click(sut.getByTestId('retry'))
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(saveSpy).toHaveBeenCalledTimes(2)
+  })
 })
