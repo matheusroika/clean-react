@@ -19,7 +19,7 @@ export const mockSurvey = (): Survey => ({
   id: 'any_id',
   question: 'any_question',
   answers: [mockAnswer(), mockOtherAnswer()],
-  totalResponses: 0,
+  totalResponses: 5,
   date: new Date('2023-07-03T05:52:28.514Z'),
   answered: false
 })
