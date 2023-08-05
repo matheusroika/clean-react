@@ -147,6 +147,17 @@ describe('Survey Response Page', () => {
       expect(sut.queryByTestId('error')).toBeNull()
       expect(sut.queryByTestId('loading')).toBeNull()
     })
+
+    test('Should call LoadSurveyResponse only once on multiple retry button clicks', async () => {
+      const error = new UnexpectedError()
+      const { sut, loadSpy } = makeSut({ loadError: error })
+      await waitFor(() => sut.getByTestId('surveyResponse'))
+      expect(loadSpy).toHaveBeenCalledTimes(1)
+      fireEvent.click(sut.getByTestId('retry'))
+      fireEvent.click(sut.getByTestId('retry'))
+      await waitFor(() => sut.getByTestId('surveyResponse'))
+      expect(loadSpy).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('Load Survey Response Use Case', () => {
