@@ -57,7 +57,7 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
           <button data-testid="back">Voltar</button>
         </>}
         {isLoading && <Loading />}
-        {error && <Error error={error} tryAgainMethod={async () => {}} />}
+        {error && <Error error={error} tryAgainMethod={loadAndSetSurveyResponse} />}
       </main>
       <Footer />
     </div>
