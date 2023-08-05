@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import FlipMove from 'react-flip-move'
 import styles from './surveyResponseStyles.scss'
 import { useErrorHandler } from '@/presentation/hooks/useErrorHandler'
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
+  const navigate = useNavigate()
   const handleError = useErrorHandler((error: Error) => { setError(error.message) })
   const [isLoading] = useState(false)
   const [error, setError] = useState('')
@@ -54,7 +56,7 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
               </li>
             )}
           </FlipMove>
-          <button data-testid="back">Voltar</button>
+          <button data-testid="back" onClick={() => { navigate('/') }}>Voltar</button>
         </>}
         {isLoading && <Loading />}
         {error && <Error error={error} tryAgainMethod={loadAndSetSurveyResponse} />}
