@@ -1,5 +1,6 @@
 import { AuthHttpClientDecorator } from '@/main/decorators/authHttpClientDecorator'
 import { mockGetStorage, mockHttpClient, mockHttpRequest } from '../../data/mocks'
+import { mockHeaders } from '../../infra/mocks/mockAxios'
 import type { GetStorage } from '@/data/protocols/cache'
 import type { HttpClient } from '@/data/protocols/http'
 
@@ -43,5 +44,19 @@ describe('Auth Http Client Decorator', () => {
     const { headers, ...httpRequest } = mockHttpRequest()
     await sut.request(httpRequest)
     expect(requestSpy).toHaveBeenCalledWith({ ...httpRequest, headers })
+  })
+
+  test('Should merge auth headers and headers from request if GetStorage returns a valid value', async () => {
+    const { sut, httpClientStub } = makeSut()
+    const requestSpy = jest.spyOn(httpClientStub, 'request')
+    const httpRequest = mockHttpRequest({ header: 'any_header' })
+    await sut.request(httpRequest)
+    expect(requestSpy).toHaveBeenCalledWith({
+      ...httpRequest,
+      headers: {
+        header: 'any_header',
+        ...mockHeaders()
+      }
+    })
   })
 })
