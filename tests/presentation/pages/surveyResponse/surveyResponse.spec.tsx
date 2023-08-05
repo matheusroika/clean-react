@@ -171,4 +171,14 @@ describe('Survey Response Page', () => {
     expect(sut.queryByTestId('loading')).toBeNull()
     expect(sut.queryByTestId('error').textContent).toBe(error.message)
   })
+
+  test('Should logout and redirect to /login on SaveSurveyResponse AccessDeniedError', async () => {
+    const { sut, setCurrentAccountStub } = makeSut({ saveError: new AccessDeniedError() })
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    const login = await sut.findByText('Test Pass Login')
+    expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
+    expect(login).toBeTruthy()
+  })
 })
