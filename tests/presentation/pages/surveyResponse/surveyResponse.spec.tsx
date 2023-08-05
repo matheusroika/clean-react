@@ -65,7 +65,7 @@ describe('Survey Response Page', () => {
     expect(loadSpy).toHaveBeenCalledTimes(1)
   })
 
-  test('Should show a SurveyResponse on success', async () => {
+  test('Should show a SurveyResponse on LoadSurveyResponse success', async () => {
     const { sut } = makeSut()
     const surveyResponse = mockSurveyResponse()
     await waitFor(() => sut.getByTestId('surveyResponse'))
@@ -180,5 +180,22 @@ describe('Survey Response Page', () => {
     const login = await sut.findByText('Test Pass Login')
     expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
     expect(login).toBeTruthy()
+  })
+
+  test('Should call SaveSurveyResponse on retry button click', async () => {
+    const error = new UnexpectedError()
+    const { sut, saveSpy } = makeSut({ saveError: error })
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(saveSpy).toHaveBeenCalledTimes(1)
+    expect(sut.queryByTestId('error').textContent).toBe(error.message)
+    fireEvent.click(sut.getByTestId('retry'))
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(saveSpy).toHaveBeenCalledTimes(2)
+    expect(sut.getByTestId('answers').childElementCount).toBe(2)
+    expect(sut.queryByTestId('error')).toBeNull()
+    expect(sut.queryByTestId('loading')).toBeNull()
   })
 })
