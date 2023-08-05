@@ -7,13 +7,14 @@ import { useLogout } from '@/presentation/hooks/useLogout'
 const Header: React.FC = () => {
   const logout = useLogout()
   const { getCurrentAccount } = useContext(apiContext)
+  const name = getCurrentAccount()?.name || ''
 
   return (
     <header className={styles.header}>
       <div>
         <Logo />
         <div className={styles.profile}>
-          <span data-testid='userName'>{getCurrentAccount().name}</span>
+          <span data-testid='userName'>{name}</span>
           <button data-testid='logout' onClick={logout}>Sair</button>
         </div>
       </div>
