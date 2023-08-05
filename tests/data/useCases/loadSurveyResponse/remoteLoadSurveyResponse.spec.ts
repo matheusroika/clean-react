@@ -1,21 +1,28 @@
 import { RemoteLoadSurveyResponse } from '@/data/useCases/loadSurveyResponse/remoteLoadSurveyResponse'
-import { mockHttpGetClient } from '../../mocks'
-import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
+import { mockGetStorage, mockHttpGetClient } from '../../mocks'
 import { mockSurveyResponse } from '@/../tests/domain/mocks'
+import { mockHeaders } from '@/../tests/infra/mocks/mockAxios'
+import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
+import type { GetStorage } from '@/data/protocols/cache'
+import type { Headers } from '@/data/helpers/getHttpGetClientParams'
+import type { SurveyResponse } from '@/domain/models/SurveyResponse'
 
 type Sut = {
   sut: RemoteLoadSurveyResponse
-  httpGetClientStub: HttpGetClient<any, any>
+  httpGetClientStub: HttpGetClient<Headers, SurveyResponse>
+  getStorageStub: GetStorage
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpGetClientStub = mockHttpGetClient()
-  const sut = new RemoteLoadSurveyResponse(url, httpGetClientStub)
+  const httpGetClientStub = mockHttpGetClient<Headers, SurveyResponse>()
+  const getStorageStub = mockGetStorage()
+  const sut = new RemoteLoadSurveyResponse(url, httpGetClientStub, getStorageStub)
   return {
     sut,
-    httpGetClientStub
+    httpGetClientStub,
+    getStorageStub
   }
 }
 
@@ -24,7 +31,7 @@ describe('Remote Load Survey Response', () => {
     const { sut, httpGetClientStub } = makeSut()
     const getSpy = jest.spyOn(httpGetClientStub, 'get')
     await sut.load()
-    expect(getSpy).toHaveBeenCalledWith({ url })
+    expect(getSpy).toHaveBeenCalledWith({ url, headers: mockHeaders() })
   })
 
   test('Should throw AccessDeniedError if HttpGetClient returns 403', async () => {
@@ -57,5 +64,12 @@ describe('Remote Load Survey Response', () => {
     })
     const surveyResponse = await sut.load()
     expect(surveyResponse).toEqual(body)
+  })
+
+  test('Should call GetStorage with correct key', async () => {
+    const { sut, getStorageStub } = makeSut()
+    const getSpy = jest.spyOn(getStorageStub, 'get')
+    await sut.load()
+    expect(getSpy).toHaveBeenCalledWith('account')
   })
 })
