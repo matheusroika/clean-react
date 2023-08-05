@@ -63,10 +63,10 @@ describe('Survey Response Page', () => {
     expect(sut.getByTestId('question').textContent).toBe(surveyResponse.survey.question)
     expect(sut.getByTestId('answers').childElementCount).toBe(2)
 
-    const answerWrappers = sut.getAllByTestId('answerWrapper')
-    expect(answerWrappers).toHaveLength(2)
-    expect(answerWrappers[0].className).toBe('answerWrapper')
-    expect(answerWrappers[1].className).toBe('answerWrapper userAnswer')
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    expect(answerWrapper).toHaveLength(2)
+    expect(answerWrapper[0].className).toBe('answerWrapper')
+    expect(answerWrapper[1].className).toBe('answerWrapper userAnswer')
 
     const images = sut.getAllByTestId('image') as HTMLImageElement[]
     expect(images).toHaveLength(1)
@@ -125,5 +125,13 @@ describe('Survey Response Page', () => {
     fireEvent.click(sut.getByTestId('back'))
     const surveys = await sut.findByText('Test Pass Surveys')
     expect(surveys).toBeTruthy()
+  })
+
+  test('Should not show loading on current answer click', async () => {
+    const { sut } = makeSut()
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[1])
+    expect(sut.queryByTestId('loading')).toBeNull()
   })
 })
