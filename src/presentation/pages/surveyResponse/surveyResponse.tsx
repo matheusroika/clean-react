@@ -19,37 +19,43 @@ type Props = {
 const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyResponse }) => {
   const { answer } = useContext(SurveyResponseContext)
   const handleError = useErrorHandler((error: Error) => { setError(error.message) })
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadLoading, setIsLoadLoading] = useState(false)
+  const [isSaveLoading, setIsSaveLoading] = useState(false)
   const [error, setError] = useState('')
   const [useCaseError, setUseCaseError] = useState<'save' | 'load'>(null)
   const [surveyResponse, setSurveyResponse] = useState<SurveyResponseModel>(null)
 
   const saveAndSetSurveyResponse = async (params: SaveSurveyResponseParams): Promise<void> => {
+    if (isSaveLoading) return
+    setIsSaveLoading(true)
     try {
-      setIsLoading(true)
       const surveyResponse = await saveSurveyResponse.save(params)
       setSurveyResponse(surveyResponse)
       setUseCaseError(null)
       setError('')
-      setIsLoading(false)
+      setIsSaveLoading(false)
     } catch (error) {
       const typedError = error as Error
       setSurveyResponse(null)
-      setIsLoading(false)
+      setIsSaveLoading(false)
       setUseCaseError('save')
       handleError(typedError)
     }
   }
 
   const loadAndSetSurveyResponse = async (): Promise<void> => {
+    if (isLoadLoading) return
+    setIsLoadLoading(true)
     try {
       const surveyResponse = await loadSurveyResponse.load()
       setSurveyResponse(surveyResponse)
       setUseCaseError(null)
       setError('')
+      setIsLoadLoading(false)
     } catch (error) {
       const typedError = error as Error
       setSurveyResponse(null)
+      setIsLoadLoading(false)
       setUseCaseError('load')
       handleError(typedError)
     }
@@ -70,7 +76,7 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
       <SurveyResponseContext.Provider value={{ answer: '' }}>
         <main data-testid="surveyResponse">
           {surveyResponse && <Response surveyResponse={surveyResponse} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />}
-          {isLoading && <Loading />}
+          {isSaveLoading && <Loading />}
           {error && <Error error={error} tryAgainMethod={tryAgainHandler} />}
         </main>
       </SurveyResponseContext.Provider>
