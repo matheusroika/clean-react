@@ -26,6 +26,7 @@ const makeSut = (error?: Error): Sut => {
         <Routes>
           <Route path='/survey' element={<SurveyResponse loadSurveyResponse={loadSurveyResponseStub} />} />
           <Route path='/login' element={<h1>Test Pass Login</h1>} />
+          <Route path='/' element={<h1>Test Pass Surveys</h1>} />
         </Routes>
       </MemoryRouter>
     </ApiContext.Provider>
@@ -116,5 +117,13 @@ describe('Survey Response Page', () => {
     expect(sut.getByTestId('answers').childElementCount).toBe(2)
     expect(sut.queryByTestId('error')).toBeNull()
     expect(sut.queryByTestId('loading')).toBeNull()
+  })
+
+  test('Should go to Surveys page on back button click', async () => {
+    const { sut } = makeSut()
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    fireEvent.click(sut.getByTestId('back'))
+    const surveys = await sut.findByText('Test Pass Surveys')
+    expect(surveys).toBeTruthy()
   })
 })
