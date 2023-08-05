@@ -24,6 +24,7 @@ const Surveys: React.FC<Props> = ({ loadSurveys }) => {
       setError('')
     } catch (error) {
       const typedError = error as Error
+      setSurveys(null)
       handleError(typedError)
     }
   }
