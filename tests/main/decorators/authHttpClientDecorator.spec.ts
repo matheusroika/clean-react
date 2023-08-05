@@ -36,4 +36,12 @@ describe('Auth Http Client Decorator', () => {
     await sut.request(httpRequest)
     expect(requestSpy).toHaveBeenCalledWith(httpRequest)
   })
+
+  test('Should add auth headers if GetStorage returns a valid value', async () => {
+    const { sut, httpClientStub } = makeSut()
+    const requestSpy = jest.spyOn(httpClientStub, 'request')
+    const { headers, ...httpRequest } = mockHttpRequest()
+    await sut.request(httpRequest)
+    expect(requestSpy).toHaveBeenCalledWith({ ...httpRequest, headers })
+  })
 })
