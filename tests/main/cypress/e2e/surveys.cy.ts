@@ -23,11 +23,24 @@ describe('Surveys', () => {
       req.on('response', res => { res.setDelay(100) })
     })
     localStorage.setItem('account', JSON.stringify(mockAccount()))
+    httpMocks.mockOk(/surveys/, 'GET', mockSurveys(2), 'surveys', 2)
     cy.visit('')
+  })
+
+  it('Should show correct username on header', () => {
+    cy.dataTestId('userName').should('contain.text', mockAccount().name)
+  })
+
+  it('Should logout on header logout click', () => {
+    cy.dataTestId('logout').click()
+    cy.url().should('equal', `${baseUrl}/login`).then(() => {
+      expect(localStorage.getItem('account')).to.be.a('null')
+    })
   })
 
   it('Should show surveyItems correctly', () => {
     http.mockOk()
+    cy.visit('')
     cy.get('li:empty').should('have.length', 4)
     cy.get('li:not(:empty)').should('have.length', 2)
     cy.get('li:first-child').then(li => {
@@ -46,21 +59,9 @@ describe('Surveys', () => {
     })
   })
 
-  it('Should show correct username on header', () => {
-    http.mockUnexpectedError()
-    cy.dataTestId('userName').should('contain.text', mockAccount().name)
-  })
-
-  it('Should logout on header logout click', () => {
-    http.mockUnexpectedError()
-    cy.dataTestId('logout').click()
-    cy.url().should('equal', `${baseUrl}/login`).then(() => {
-      expect(localStorage.getItem('account')).to.be.a('null')
-    })
-  })
-
   it('Should retry to load Surveys on button click', () => {
     http.mockUnexpectedError()
+    cy.visit('')
     cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
     http.mockOk()
     cy.dataTestId('retry').click()
@@ -69,11 +70,13 @@ describe('Surveys', () => {
 
   it('Should show error message on UnexpectedError', () => {
     http.mockUnexpectedError()
+    cy.visit('')
     cy.dataTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente')
   })
 
   it('Should logout on AccessDeniedError', () => {
     http.mockAccessDeniedError()
+    cy.visit('')
     cy.url().should('equal', `${baseUrl}/login`).then(() => {
       expect(localStorage.getItem('account')).to.be.a('null')
     })

@@ -41,6 +41,7 @@ describe('SurveyResponse', () => {
 
     it('Should show surveyResponse correctly', () => {
       http.mockOk()
+      cy.visit('/surveys/any_id')
       cy.dataTestId('day').should('have.text', '03')
       cy.dataTestId('month').should('have.text', 'jul')
       cy.dataTestId('year').should('have.text', '2023')
