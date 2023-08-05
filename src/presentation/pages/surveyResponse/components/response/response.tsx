@@ -21,9 +21,11 @@ const Response: React.FC<Props> = ({ surveyResponse, saveAndSetSurveyResponse })
         <h1 data-testid="question">{surveyResponse.survey.question}</h1>
       </hgroup>
       <FlipMove data-testid="answers" className={styles.answers}>
+        <>
         {surveyResponse.survey.answers.map(answer =>
           <Answer key={answer.answer} answer={answer} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />
         )}
+        </>
       </FlipMove>
       <button data-testid="back" className={styles.backButton} onClick={() => { navigate('/') }}>Voltar</button>
     </>
