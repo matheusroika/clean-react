@@ -2,7 +2,7 @@ import { mockAuthParams } from '../../domain/mocks'
 import { mockHeaders } from '../../infra/mocks/mockAxios'
 import { type HttpMethod, HttpStatusCode, type HttpClient, type HttpRequest, type HttpResponse } from '@/data/protocols/http'
 
-export const mockHttpRequest = (): HttpRequest<any, any> => {
+export const mockHttpRequest = (headers?: object): HttpRequest<any, any> => {
   const methods: HttpMethod[] = ['get', 'post', 'put', 'delete']
   const method = methods[Math.floor(Math.random() * methods.length)]
 
@@ -10,7 +10,7 @@ export const mockHttpRequest = (): HttpRequest<any, any> => {
     url: 'any_url',
     method,
     body: mockAuthParams(),
-    headers: mockHeaders()
+    headers: headers || mockHeaders()
   }
 }
 
