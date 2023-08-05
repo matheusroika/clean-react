@@ -62,8 +62,7 @@ describe('Auth Http Client Decorator', () => {
 
   test('Should return the same result as HttpGetClient', async () => {
     const { sut } = makeSut()
-    const httpRequest = mockHttpRequest({ header: 'any_header' })
-    const httpResponse = await sut.request(httpRequest)
+    const httpResponse = await sut.request(mockHttpRequest({ header: 'any_header' }))
     expect(httpResponse).toEqual({ statusCode: 200 })
   })
 })
