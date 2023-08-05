@@ -1,15 +1,12 @@
 import axios from 'axios'
 import { AxiosHttpClient } from '@/infra/http/AxiosHttpClient'
-import { mockHttpGetParams, mockHttpPostParams } from '../../data/mocks'
-import { mockGetAxiosResponse, mockPostAxiosResponse } from '../mocks/mockAxios'
-import type { GetAxiosResponse, PostAxiosResponse } from '../mocks/mockAxios'
+import { mockHttpRequest } from '../../data/mocks'
+import { mockAxiosResponse } from '../mocks/mockAxios'
+import type { MyAxiosResponse } from '../mocks/mockAxios'
 
 jest.mock('axios', () => ({
-  async post (): Promise<PostAxiosResponse> {
-    return mockPostAxiosResponse()
-  },
-  async get (): Promise<GetAxiosResponse> {
-    return mockGetAxiosResponse()
+  async request (): Promise<MyAxiosResponse> {
+    return mockAxiosResponse()
   }
 }))
 
@@ -25,65 +22,32 @@ const makeSut = (): Sut => {
 }
 
 describe('Axios Http Client', () => {
-  describe('POST', () => {
-    test('Should call axios.post with correct values', async () => {
-      const { sut } = makeSut()
-      const postSpy = jest.spyOn(axios, 'post')
-      const httpPostParams = mockHttpPostParams()
-      await sut.post(httpPostParams)
-      expect(postSpy).toHaveBeenCalledWith(httpPostParams.url, httpPostParams.body)
-    })
+  test('Should call axios.request with correct values', async () => {
+    const { sut } = makeSut()
+    const requestSpy = jest.spyOn(axios, 'request')
+    const { body, ...httpRequest } = mockHttpRequest()
+    await sut.request({ ...httpRequest, body })
+    expect(requestSpy).toHaveBeenCalledWith({ ...httpRequest, data: body })
+  })
 
-    test('Should return correct response on axios.post success', async () => {
-      const { sut } = makeSut()
-      const httpResponse = await sut.post(mockHttpPostParams())
-      expect(httpResponse).toEqual({
-        statusCode: mockPostAxiosResponse().status,
-        body: mockPostAxiosResponse().data
-      })
-    })
-
-    test('Should return correct response on axios.post failure', async () => {
-      const { sut } = makeSut()
-      jest.spyOn(axios, 'post').mockRejectedValueOnce({
-        response: mockPostAxiosResponse()
-      })
-      const httpResponse = await sut.post(mockHttpPostParams())
-      expect(httpResponse).toEqual({
-        statusCode: mockPostAxiosResponse().status,
-        body: mockPostAxiosResponse().data
-      })
+  test('Should return correct response on axios.request success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.request(mockHttpRequest())
+    expect(httpResponse).toEqual({
+      statusCode: mockAxiosResponse().status,
+      body: mockAxiosResponse().data
     })
   })
 
-  describe('GET', () => {
-    test('Should call axios.get with correct values', async () => {
-      const { sut } = makeSut()
-      const getSpy = jest.spyOn(axios, 'get')
-      const httpGetParams = mockHttpGetParams()
-      await sut.get(httpGetParams)
-      expect(getSpy).toHaveBeenCalledWith(httpGetParams.url, { headers: httpGetParams.headers })
+  test('Should return correct response on axios.request failure', async () => {
+    const { sut } = makeSut()
+    jest.spyOn(axios, 'request').mockRejectedValueOnce({
+      response: mockAxiosResponse()
     })
-
-    test('Should return correct response on axios.get success', async () => {
-      const { sut } = makeSut()
-      const httpResponse = await sut.get(mockHttpGetParams())
-      expect(httpResponse).toEqual({
-        statusCode: mockGetAxiosResponse().status,
-        body: mockGetAxiosResponse().data
-      })
-    })
-
-    test('Should return correct response on axios.get failure', async () => {
-      const { sut } = makeSut()
-      jest.spyOn(axios, 'get').mockRejectedValueOnce({
-        response: mockGetAxiosResponse()
-      })
-      const httpResponse = await sut.get(mockHttpGetParams())
-      expect(httpResponse).toEqual({
-        statusCode: mockGetAxiosResponse().status,
-        body: mockGetAxiosResponse().data
-      })
+    const httpResponse = await sut.request(mockHttpRequest())
+    expect(httpResponse).toEqual({
+      statusCode: mockAxiosResponse().status,
+      body: mockAxiosResponse().data
     })
   })
 })

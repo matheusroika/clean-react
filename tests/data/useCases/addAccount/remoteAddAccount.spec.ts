@@ -1,71 +1,72 @@
 import { RemoteAddAccount } from '@/data/useCases/addAccount/remoteAddAccount'
 import { HttpStatusCode } from '@/data/protocols/http'
 import { EmailInUseError, UnexpectedError } from '@/domain/errors'
-import { mockHttpPostClient } from '@/../tests/data/mocks'
+import { mockHttpClient } from '@/../tests/data/mocks'
 import { mockAccount, mockAddAccountParams } from '@/../tests/domain/mocks'
-import type { HttpPostClient } from '@/data/protocols/http'
+import type { HttpClient } from '@/data/protocols/http'
 import type { Account } from '@/domain/models/Account'
 import type { AddAccountParams } from '@/domain/useCases/AddAccount'
 
 type Sut = {
   sut: RemoteAddAccount
-  httpPostClient: HttpPostClient<AddAccountParams, any, Account>
+  httpClientStub: HttpClient<AddAccountParams, any, Account>
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpPostClient = mockHttpPostClient<AddAccountParams, any, Account>()
-  const sut = new RemoteAddAccount(url, httpPostClient)
+  const httpClientStub = mockHttpClient<AddAccountParams, any, Account>()
+  const sut = new RemoteAddAccount(url, httpClientStub)
   return {
     sut,
-    httpPostClient
+    httpClientStub
   }
 }
 
 describe('Remote Add Account', () => {
-  test('Should call HttpPostClient with correct values', async () => {
-    const { sut, httpPostClient } = makeSut()
-    const postSpy = jest.spyOn(httpPostClient, 'post')
+  test('Should call HttpClient with correct data', async () => {
+    const { sut, httpClientStub } = makeSut()
+    const postSpy = jest.spyOn(httpClientStub, 'request')
     const addAccountParams = mockAddAccountParams()
     await sut.add(addAccountParams)
     expect(postSpy).toBeCalledWith({
       url,
+      method: 'post',
       body: addAccountParams
     })
   })
 
-  test('Should throw EmailInUseError if HttpPostClient returns 403', async () => {
-    const { sut, httpPostClient } = makeSut()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+  test('Should throw EmailInUseError if HttpClient returns 403', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
     const promise = sut.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow(new EmailInUseError())
   })
 
-  test('Should throw UnexpectedError if HttpPostClient returns 400', async () => {
-    const { sut, httpPostClient } = makeSut()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.badRequest })
+  test('Should throw UnexpectedError if HttpClient returns 400', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.badRequest })
     const promise = sut.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should throw UnexpectedError if HttpPostClient returns 404', async () => {
-    const { sut, httpPostClient } = makeSut()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
+  test('Should throw UnexpectedError if HttpClient returns 404', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
     const promise = sut.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should throw UnexpectedError if HttpPostClient returns 500', async () => {
-    const { sut, httpPostClient } = makeSut()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+  test('Should throw UnexpectedError if HttpClient returns 500', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should return an Account if HttpPostClient returns 200', async () => {
-    const { sut, httpPostClient } = makeSut()
+  test('Should return an Account if HttpClient returns 200', async () => {
+    const { sut, httpClientStub } = makeSut()
     const body = mockAccount()
-    jest.spyOn(httpPostClient, 'post').mockResolvedValueOnce({
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({
       statusCode: HttpStatusCode.ok,
       body
     })

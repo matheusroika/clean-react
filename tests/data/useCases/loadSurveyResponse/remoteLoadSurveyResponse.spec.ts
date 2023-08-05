@@ -1,27 +1,27 @@
 import { RemoteLoadSurveyResponse } from '@/data/useCases/loadSurveyResponse/remoteLoadSurveyResponse'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { mockGetStorage, mockHttpGetClient } from '../../mocks'
+import { mockGetStorage, mockHttpClient } from '../../mocks'
 import { mockSurveyResponse } from '@/../tests/domain/mocks'
 import { mockHeaders } from '@/../tests/infra/mocks/mockAxios'
-import { type HttpGetClient, HttpStatusCode } from '@/data/protocols/http'
+import { type HttpClient, HttpStatusCode } from '@/data/protocols/http'
 import type { GetStorage } from '@/data/protocols/cache'
-import type { Headers } from '@/data/helpers/getHttpGetClientParams'
+import type { Headers } from '@/data/helpers/getHttpClientData'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
 
 type Sut = {
   sut: RemoteLoadSurveyResponse
-  httpGetClientStub: HttpGetClient<Headers, SurveyResponse>
+  httpClientStub: HttpClient<undefined, Headers, SurveyResponse>
   getStorageStub: GetStorage
 }
 
 const url = 'any_url'
 const makeSut = (): Sut => {
-  const httpGetClientStub = mockHttpGetClient<Headers, SurveyResponse>()
+  const httpClientStub = mockHttpClient<undefined, Headers, SurveyResponse>()
   const getStorageStub = mockGetStorage()
-  const sut = new RemoteLoadSurveyResponse(url, httpGetClientStub, getStorageStub)
+  const sut = new RemoteLoadSurveyResponse(url, httpClientStub, getStorageStub)
   return {
     sut,
-    httpGetClientStub,
+    httpClientStub,
     getStorageStub
   }
 }
@@ -33,38 +33,38 @@ const testGetStorageReturn = async (sut: RemoteLoadSurveyResponse, getStorage: G
 }
 
 describe('Remote Load Survey Response', () => {
-  test('Should call HttpGetClient with correct URL', async () => {
-    const { sut, httpGetClientStub } = makeSut()
-    const getSpy = jest.spyOn(httpGetClientStub, 'get')
+  test('Should call HttpClient with correct data', async () => {
+    const { sut, httpClientStub } = makeSut()
+    const requestSpy = jest.spyOn(httpClientStub, 'request')
     await sut.load()
-    expect(getSpy).toHaveBeenCalledWith({ url, headers: mockHeaders() })
+    expect(requestSpy).toHaveBeenCalledWith({ url, method: 'get', headers: mockHeaders() })
   })
 
-  test('Should throw AccessDeniedError if HttpGetClient returns 403', async () => {
-    const { sut, httpGetClientStub } = makeSut()
-    jest.spyOn(httpGetClientStub, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+  test('Should throw AccessDeniedError if HttpClient returns 403', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
     const promise = sut.load()
     await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 
-  test('Should throw UnexpectedError if HttpGetClient returns 404', async () => {
-    const { sut, httpGetClientStub } = makeSut()
-    jest.spyOn(httpGetClientStub, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
+  test('Should throw UnexpectedError if HttpClient returns 404', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
     const promise = sut.load()
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should throw UnexpectedError if HttpGetClient returns 500', async () => {
-    const { sut, httpGetClientStub } = makeSut()
-    jest.spyOn(httpGetClientStub, 'get').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+  test('Should throw UnexpectedError if HttpClient returns 500', async () => {
+    const { sut, httpClientStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.load()
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should return a SurveyResponse if HttpGetClient returns 200', async () => {
-    const { sut, httpGetClientStub } = makeSut()
+  test('Should return a SurveyResponse if HttpClient returns 200', async () => {
+    const { sut, httpClientStub } = makeSut()
     const body = mockSurveyResponse()
-    jest.spyOn(httpGetClientStub, 'get').mockResolvedValueOnce({
+    jest.spyOn(httpClientStub, 'request').mockResolvedValueOnce({
       statusCode: HttpStatusCode.ok,
       body
     })
@@ -80,9 +80,9 @@ describe('Remote Load Survey Response', () => {
   })
 
   test('Should throw AccessDeniedError if GetStorage returns invalid account', async () => {
-    const { sut, httpGetClientStub, getStorageStub } = makeSut()
-    jest.spyOn(httpGetClientStub, 'get').mockImplementation(async (params) => {
-      if (!params.headers) return { statusCode: HttpStatusCode.forbidden }
+    const { sut, httpClientStub, getStorageStub } = makeSut()
+    jest.spyOn(httpClientStub, 'request').mockImplementation(async (data) => {
+      if (!data.headers) return { statusCode: HttpStatusCode.forbidden }
       return { statusCode: HttpStatusCode.ok }
     })
     await testGetStorageReturn(sut, getStorageStub, { accessToken: 'A', email: 'A' })
