@@ -6,25 +6,30 @@ import ApiContext from '@/presentation/contexts/apiContext'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 import { mockAccount, mockSurveyResponse } from '@/../tests/domain/mocks'
 import { mockLoadSurveyResponse } from '@/../tests/data/mocks/mockLoadSurveyResponse'
+import { mockSaveSurveyResponse } from '@/../tests/data/mocks/mockSaveSurveyResponse'
 import type { SurveyResponse as SurveyResponseModel } from '@/domain/models/SurveyResponse'
 import type { Account } from '@/domain/models/Account'
+import type { SaveSurveyResponseParams } from '@/domain/useCases/SaveSurveyResponse'
 
 type Sut = {
   sut: RenderResult
   loadSpy: jest.SpyInstance<Promise<SurveyResponseModel>, [], any>
+  saveSpy: jest.SpyInstance<Promise<SurveyResponseModel>, [params: SaveSurveyResponseParams], any>
   setCurrentAccountStub: (account: Account) => void
 }
 
 const makeSut = (error?: Error): Sut => {
   const loadSurveyResponseStub = mockLoadSurveyResponse()
-  const loadSpy = jest.spyOn(loadSurveyResponseStub, 'load')
+  const saveSurveyResponseStub = mockSaveSurveyResponse()
   const setCurrentAccountStub = jest.fn()
+  const loadSpy = jest.spyOn(loadSurveyResponseStub, 'load')
   if (error) loadSpy.mockRejectedValueOnce(error)
+  const saveSpy = jest.spyOn(saveSurveyResponseStub, 'save')
   const sut = render(
     <ApiContext.Provider value={{ getCurrentAccount: () => mockAccount(), setCurrentAccount: setCurrentAccountStub }}>
       <MemoryRouter initialEntries={['/survey']}>
         <Routes>
-          <Route path='/survey' element={<SurveyResponse loadSurveyResponse={loadSurveyResponseStub} />} />
+          <Route path='/survey' element={<SurveyResponse loadSurveyResponse={loadSurveyResponseStub} saveSurveyResponse={saveSurveyResponseStub} />} />
           <Route path='/login' element={<h1>Test Pass Login</h1>} />
           <Route path='/' element={<h1>Test Pass Surveys</h1>} />
         </Routes>
@@ -34,6 +39,7 @@ const makeSut = (error?: Error): Sut => {
   return {
     sut,
     loadSpy,
+    saveSpy,
     setCurrentAccountStub
   }
 }
@@ -133,5 +139,17 @@ describe('Survey Response Page', () => {
     const answerWrapper = sut.getAllByTestId('answerWrapper')
     fireEvent.click(answerWrapper[1])
     expect(sut.queryByTestId('loading')).toBeNull()
+  })
+
+  test('Should show loading and call SaveSurveyResponse on answer click', async () => {
+    const { sut, saveSpy } = makeSut()
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    expect(sut.queryByTestId('loading')).toBeTruthy()
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(sut.queryByTestId('loading')).toBeNull()
+    expect(saveSpy).toHaveBeenCalledTimes(1)
+    expect(saveSpy).toHaveBeenCalledWith({ answer: 'any_answer' })
   })
 })
