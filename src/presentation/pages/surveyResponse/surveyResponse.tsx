@@ -42,12 +42,12 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
       <main data-testid="surveyResponse">
         {surveyResponse && <>
           <hgroup data-testid="title">
-            <Calendar date={surveyResponse.survey.date} className={styles.calendar}/>
+            <Calendar date={new Date(surveyResponse.survey.date)} className={styles.calendar}/>
             <h1 data-testid="question">{surveyResponse.survey.question}</h1>
           </hgroup>
           <FlipMove data-testid="answers" className={styles.answers}>
             {surveyResponse.survey.answers.map(answer =>
-              <li data-testid="answerWrapper" key={answer.answer} className={answer.isCurrentAccountAnswer && styles.userAnswer}>
+              <li data-testid="answerWrapper" key={answer.answer} className={answer.isCurrentAccountAnswer ? styles.userAnswer : undefined}>
                 {answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} />}
                 <span data-testid="answer" className={styles.answer}>{answer.answer}</span>
                 <span data-testid="percent" className={styles.percent}>{`${answer.percent.toString()}%`}</span>
