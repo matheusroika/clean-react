@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from './surveyResponseStyles.scss'
+import SurveyResponseContext from './contexts/context'
 import { useErrorHandler } from '@/presentation/hooks/useErrorHandler'
 import Header from '@/presentation/components/header/header'
 import Footer from '@/presentation/components/footer/footer'
@@ -16,9 +17,11 @@ type Props = {
 }
 
 const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyResponse }) => {
+  const { answer } = useContext(SurveyResponseContext)
   const handleError = useErrorHandler((error: Error) => { setError(error.message) })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [useCaseError, setUseCaseError] = useState<'save' | 'load'>(null)
   const [surveyResponse, setSurveyResponse] = useState<SurveyResponseModel>(null)
 
   const saveAndSetSurveyResponse = async (params: SaveSurveyResponseParams): Promise<void> => {
@@ -26,12 +29,14 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
       setIsLoading(true)
       const surveyResponse = await saveSurveyResponse.save(params)
       setSurveyResponse(surveyResponse)
+      setUseCaseError(null)
       setError('')
       setIsLoading(false)
     } catch (error) {
       const typedError = error as Error
       setSurveyResponse(null)
       setIsLoading(false)
+      setUseCaseError('save')
       handleError(typedError)
     }
   }
@@ -40,12 +45,19 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
     try {
       const surveyResponse = await loadSurveyResponse.load()
       setSurveyResponse(surveyResponse)
+      setUseCaseError(null)
       setError('')
     } catch (error) {
       const typedError = error as Error
       setSurveyResponse(null)
+      setUseCaseError('load')
       handleError(typedError)
     }
+  }
+
+  const tryAgainHandler = async (): Promise<void> => {
+    if (useCaseError === 'load') await loadAndSetSurveyResponse()
+    if (useCaseError === 'save') await saveAndSetSurveyResponse({ answer })
   }
 
   useEffect(() => {
@@ -55,11 +67,13 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
   return (
     <div className={styles.surveyResponse}>
       <Header />
-      <main data-testid="surveyResponse">
-        {surveyResponse && <Response surveyResponse={surveyResponse} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />}
-        {isLoading && <Loading />}
-        {error && <Error error={error} tryAgainMethod={loadAndSetSurveyResponse} />}
-      </main>
+      <SurveyResponseContext.Provider value={{ answer: '' }}>
+        <main data-testid="surveyResponse">
+          {surveyResponse && <Response surveyResponse={surveyResponse} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />}
+          {isLoading && <Loading />}
+          {error && <Error error={error} tryAgainMethod={tryAgainHandler} />}
+        </main>
+      </SurveyResponseContext.Provider>
       <Footer />
     </div>
   )

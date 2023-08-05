@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import styles from './answerStyles.scss'
+import SurveyResponseContext from '../../contexts/context'
 import type { Answer as AnswerModel } from '@/domain/models/Survey'
 import type { SaveSurveyResponseParams } from '@/domain/useCases/SaveSurveyResponse'
 
@@ -9,6 +10,8 @@ type Props = {
 }
 
 const Answer: React.FC<Props> = ({ answer, saveAndSetSurveyResponse }) => {
+  const context = useContext(SurveyResponseContext)
+
   const className = answer.isCurrentAccountAnswer
     ? [styles.answerWrapper, styles.userAnswer].join(' ')
     : styles.answerWrapper
@@ -17,6 +20,10 @@ const Answer: React.FC<Props> = ({ answer, saveAndSetSurveyResponse }) => {
     if (event.currentTarget.classList.contains(styles.userAnswer)) return
     await saveAndSetSurveyResponse({ answer: answer.answer })
   }
+
+  useEffect(() => {
+    context.answer = answer.answer
+  }, [])
 
   return (
     <li
