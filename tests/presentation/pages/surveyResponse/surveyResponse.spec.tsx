@@ -159,6 +159,43 @@ describe('Survey Response Page', () => {
     expect(saveSpy).toHaveBeenCalledWith({ answer: 'any_answer' })
   })
 
+  test('Should show a SurveyResponse on SaveSurveyResponse success', async () => {
+    const { sut } = makeSut()
+    const surveyResponse = mockSurveyResponse()
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    const answerWrapper = sut.getAllByTestId('answerWrapper')
+    fireEvent.click(answerWrapper[0])
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(sut.getByTestId('day').textContent).toBe('03')
+    expect(sut.getByTestId('month').textContent).toBe('jul')
+    expect(sut.getByTestId('year').textContent).toBe('2023')
+    expect(sut.getByTestId('question').textContent).toBe(surveyResponse.survey.question)
+    expect(sut.getByTestId('answers').childElementCount).toBe(2)
+
+    expect(answerWrapper).toHaveLength(2)
+    expect(answerWrapper[0].className).toBe('answerWrapper')
+    expect(answerWrapper[1].className).toBe('answerWrapper userAnswer')
+
+    const images = sut.getAllByTestId('image') as HTMLImageElement[]
+    expect(images).toHaveLength(1)
+    expect(images[0].src).toBe(`http://localhost/${surveyResponse.survey.answers[1].image}`)
+    expect(images[0].alt).toBe(surveyResponse.survey.answers[1].answer)
+
+    const answers = sut.getAllByTestId('answer')
+    expect(answers).toHaveLength(2)
+    expect(answers[0].textContent).toBe(surveyResponse.survey.answers[0].answer)
+    expect(answers[1].textContent).toBe(surveyResponse.survey.answers[1].answer)
+
+    const percents = sut.getAllByTestId('percent')
+    expect(percents).toHaveLength(2)
+    expect(percents[0].textContent).toBe(`${surveyResponse.survey.answers[0].percent}%`)
+    expect(percents[1].textContent).toBe(`${surveyResponse.survey.answers[1].percent}%`)
+
+    expect(sut.queryByTestId('loading')).toBeNull()
+    expect(sut.queryByTestId('error')).toBeNull()
+    expect(sut.queryByTestId('back')).toBeTruthy()
+  })
+
   test('Should show error on SaveSurveyResponse UnexpectedError', async () => {
     const error = new UnexpectedError()
     const { sut } = makeSut({ saveError: error })
