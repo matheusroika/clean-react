@@ -5,12 +5,14 @@ import FlipMove from 'react-flip-move'
 import Calendar from '@/presentation/components/calendar/calendar'
 import Answer from '../answer/answer'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
+import type { SaveSurveyResponseParams } from '@/domain/useCases/SaveSurveyResponse'
 
 type Props = {
   surveyResponse: SurveyResponse
+  saveAndSetSurveyResponse: (params: SaveSurveyResponseParams) => Promise<void>
 }
 
-const Response: React.FC<Props> = ({ surveyResponse }) => {
+const Response: React.FC<Props> = ({ surveyResponse, saveAndSetSurveyResponse }) => {
   const navigate = useNavigate()
   return (
     <>
@@ -20,7 +22,7 @@ const Response: React.FC<Props> = ({ surveyResponse }) => {
       </hgroup>
       <FlipMove data-testid="answers" className={styles.answers}>
         {surveyResponse.survey.answers.map(answer =>
-          <Answer key={answer.answer} answer={answer} />
+          <Answer key={answer.answer} answer={answer} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />
         )}
       </FlipMove>
       <button data-testid="back" className={styles.backButton} onClick={() => { navigate('/') }}>Voltar</button>
