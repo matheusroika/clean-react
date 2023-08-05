@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RenderResult, render, waitFor } from '@testing-library/react'
+import { type RenderResult, render, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import SurveyResponse from '@/presentation/pages/surveyResponse/surveyResponse'
 import ApiContext from '@/presentation/contexts/apiContext'
@@ -102,5 +102,19 @@ describe('Survey Response Page', () => {
     const login = await sut.findByText('Test Pass Login')
     expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
     expect(login).toBeTruthy()
+  })
+
+  test('Should call LoadSurveyResponse on retry button click', async () => {
+    const error = new UnexpectedError()
+    const { sut, loadSpy } = makeSut(error)
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(loadSpy).toHaveBeenCalledTimes(1)
+    expect(sut.queryByTestId('error').textContent).toBe(error.message)
+    fireEvent.click(sut.getByTestId('retry'))
+    await waitFor(() => sut.getByTestId('surveyResponse'))
+    expect(loadSpy).toHaveBeenCalledTimes(2)
+    expect(sut.getByTestId('answers').childElementCount).toBe(2)
+    expect(sut.queryByTestId('error')).toBeNull()
+    expect(sut.queryByTestId('loading')).toBeNull()
   })
 })
