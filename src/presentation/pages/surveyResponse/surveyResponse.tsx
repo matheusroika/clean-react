@@ -16,10 +16,11 @@ type Props = {
 const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
   const [isLoading] = useState(false)
   const [error] = useState('')
-  const [surveyResponse] = useState<SurveyResponseModel>(null)
+  const [surveyResponse, setSurveyResponse] = useState<SurveyResponseModel>(null)
 
   const loadAndSetSurveyResponse = async (): Promise<void> => {
-    await loadSurveyResponse.load()
+    const surveyResponse = await loadSurveyResponse.load()
+    setSurveyResponse(surveyResponse)
   }
 
   useEffect(() => {
@@ -32,29 +33,19 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse }) => {
       <main data-testid="surveyResponse">
         {surveyResponse && <>
           <hgroup>
-            <Calendar date={new Date()} className={styles.calendar}/>
-            <h1>Qual sua plataforma de cursos preferida?</h1>
+            <Calendar date={surveyResponse.survey.date} className={styles.calendar}/>
+            <h1 data-testid="question">{surveyResponse.survey.question}</h1>
           </hgroup>
-          <FlipMove className={styles.answers}>
-            <li>
-              <img src="https://clean-node-api-rlnz.onrender.com/static/img/aws.webp" alt="Amazon Web Services (AWS)" />
-              <span className={styles.answer}>Amazon Web Services (AWS)</span>
-              <span className={styles.percent}>50%</span>
-            </li>
-
-            <li className={styles.userAnswer}>
-              <img src="https://clean-node-api-rlnz.onrender.com/static/img/aws.webp" alt="Amazon Web Services (AWS)" />
-              <span className={styles.answer}>Amazon Web Services (AWS)</span>
-              <span className={styles.percent}>50%</span>
-            </li>
-
-            <li>
-              <img src="https://clean-node-api-rlnz.onrender.com/static/img/aws.webp" alt="Amazon Web Services (AWS)" />
-              <span className={styles.answer}>Amazon Web Services (AWS)</span>
-              <span className={styles.percent}>50%</span>
-            </li>
+          <FlipMove data-testid="answers" className={styles.answers}>
+            {surveyResponse.survey.answers.map(answer =>
+              <li data-testid="answerWrapper" key={answer.answer} className={answer.isCurrentAccountAnswer && styles.userAnswer}>
+                {answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} />}
+                <span data-testid="answer" className={styles.answer}>{answer.answer}</span>
+                <span data-testid="percent" className={styles.percent}>{`${answer.percent.toString()}%`}</span>
+              </li>
+            )}
           </FlipMove>
-          <button>Voltar</button>
+          <button data-testid="back">Voltar</button>
         </>}
         {isLoading && <Loading />}
         {error && <Error error={error} tryAgainMethod={async () => {}} />}
