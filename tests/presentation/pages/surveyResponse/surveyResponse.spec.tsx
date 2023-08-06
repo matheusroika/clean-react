@@ -71,7 +71,7 @@ describe('Survey Response Page', () => {
     const { sut } = makeSut()
     await waitFor(() => sut.getByTestId('surveyResponse'))
     const answerWrapper = sut.getAllByTestId('answerWrapper')
-    fireEvent.click(answerWrapper[1])
+    fireEvent.click(answerWrapper[0])
     expect(sut.queryByTestId('loading')).toBeNull()
   })
 
@@ -94,13 +94,13 @@ describe('Survey Response Page', () => {
 
       const answerWrapper = sut.getAllByTestId('answerWrapper')
       expect(answerWrapper).toHaveLength(2)
-      expect(answerWrapper[0].className).toBe('answerWrapper')
-      expect(answerWrapper[1].className).toBe('answerWrapper userAnswer')
+      expect(answerWrapper[0].className).toBe('answerWrapper userAnswer')
+      expect(answerWrapper[1].className).toBe('answerWrapper')
 
       const images = sut.getAllByTestId('image') as HTMLImageElement[]
       expect(images).toHaveLength(1)
-      expect(images[0].src).toBe(`http://localhost/${surveyResponse.survey.answers[1].image}`)
-      expect(images[0].alt).toBe(surveyResponse.survey.answers[1].answer)
+      expect(images[0].src).toBe(`http://localhost/${surveyResponse.survey.answers[0].image}`)
+      expect(images[0].alt).toBe(surveyResponse.survey.answers[0].answer)
 
       const answers = sut.getAllByTestId('answer')
       expect(answers).toHaveLength(2)
@@ -160,12 +160,12 @@ describe('Survey Response Page', () => {
     })
   })
 
-  describe('Load Survey Response Use Case', () => {
+  describe('Save Survey Response Use Case', () => {
     test('Should show loading and call SaveSurveyResponse on answer click', async () => {
       const { sut, saveSpy } = makeSut()
       await waitFor(() => sut.getByTestId('surveyResponse'))
       const answerWrapper = sut.getAllByTestId('answerWrapper')
-      fireEvent.click(answerWrapper[0])
+      fireEvent.click(answerWrapper[1])
       expect(sut.queryByTestId('loading')).toBeTruthy()
       await waitFor(() => sut.getByTestId('surveyResponse'))
       expect(sut.queryByTestId('loading')).toBeNull()
@@ -178,7 +178,7 @@ describe('Survey Response Page', () => {
       const surveyResponse = mockSurveyResponse()
       await waitFor(() => sut.getByTestId('surveyResponse'))
       const answerWrapper = sut.getAllByTestId('answerWrapper')
-      fireEvent.click(answerWrapper[0])
+      fireEvent.click(answerWrapper[1])
       await waitFor(() => sut.getByTestId('surveyResponse'))
       expect(sut.getByTestId('day').textContent).toBe('03')
       expect(sut.getByTestId('month').textContent).toBe('jul')
@@ -187,13 +187,13 @@ describe('Survey Response Page', () => {
       expect(sut.getByTestId('answers').childElementCount).toBe(2)
 
       expect(answerWrapper).toHaveLength(2)
-      expect(answerWrapper[0].className).toBe('answerWrapper')
-      expect(answerWrapper[1].className).toBe('answerWrapper userAnswer')
+      expect(answerWrapper[0].className).toBe('answerWrapper userAnswer')
+      expect(answerWrapper[1].className).toBe('answerWrapper')
 
       const images = sut.getAllByTestId('image') as HTMLImageElement[]
       expect(images).toHaveLength(1)
-      expect(images[0].src).toBe(`http://localhost/${surveyResponse.survey.answers[1].image}`)
-      expect(images[0].alt).toBe(surveyResponse.survey.answers[1].answer)
+      expect(images[0].src).toBe(`http://localhost/${surveyResponse.survey.answers[0].image}`)
+      expect(images[0].alt).toBe(surveyResponse.survey.answers[0].answer)
 
       const answers = sut.getAllByTestId('answer')
       expect(answers).toHaveLength(2)
@@ -215,7 +215,7 @@ describe('Survey Response Page', () => {
       const { sut } = makeSut({ saveError: error })
       await waitFor(() => sut.getByTestId('surveyResponse'))
       const answerWrapper = sut.getAllByTestId('answerWrapper')
-      fireEvent.click(answerWrapper[0])
+      fireEvent.click(answerWrapper[1])
       await waitFor(() => sut.getByTestId('surveyResponse'))
       expect(sut.queryByTestId('title')).toBeNull()
       expect(sut.queryByTestId('answers')).toBeNull()
@@ -227,7 +227,7 @@ describe('Survey Response Page', () => {
       const { sut, setCurrentAccountStub } = makeSut({ saveError: new AccessDeniedError() })
       await waitFor(() => sut.getByTestId('surveyResponse'))
       const answerWrapper = sut.getAllByTestId('answerWrapper')
-      fireEvent.click(answerWrapper[0])
+      fireEvent.click(answerWrapper[1])
       const login = await sut.findByText('Test Pass Login')
       expect(setCurrentAccountStub).toHaveBeenCalledWith(null)
       expect(login).toBeTruthy()
@@ -238,7 +238,7 @@ describe('Survey Response Page', () => {
       const { sut, saveSpy } = makeSut({ saveError: error })
       await waitFor(() => sut.getByTestId('surveyResponse'))
       const answerWrapper = sut.getAllByTestId('answerWrapper')
-      fireEvent.click(answerWrapper[0])
+      fireEvent.click(answerWrapper[1])
       await waitFor(() => sut.getByTestId('surveyResponse'))
       expect(saveSpy).toHaveBeenCalledTimes(1)
       expect(sut.queryByTestId('error').textContent).toBe(error.message)
@@ -249,19 +249,19 @@ describe('Survey Response Page', () => {
       expect(sut.queryByTestId('error')).toBeNull()
       expect(sut.queryByTestId('loading')).toBeNull()
     })
-  })
 
-  test('Should call SaveSurveyResponse only once on multiple retry button clicks', async () => {
-    const error = new UnexpectedError()
-    const { sut, saveSpy } = makeSut({ saveError: error })
-    await waitFor(() => sut.getByTestId('surveyResponse'))
-    const answerWrapper = sut.getAllByTestId('answerWrapper')
-    fireEvent.click(answerWrapper[0])
-    await waitFor(() => sut.getByTestId('surveyResponse'))
-    expect(saveSpy).toHaveBeenCalledTimes(1)
-    fireEvent.click(sut.getByTestId('retry'))
-    fireEvent.click(sut.getByTestId('retry'))
-    await waitFor(() => sut.getByTestId('surveyResponse'))
-    expect(saveSpy).toHaveBeenCalledTimes(2)
+    test('Should call SaveSurveyResponse only once on multiple retry button clicks', async () => {
+      const error = new UnexpectedError()
+      const { sut, saveSpy } = makeSut({ saveError: error })
+      await waitFor(() => sut.getByTestId('surveyResponse'))
+      const answerWrapper = sut.getAllByTestId('answerWrapper')
+      fireEvent.click(answerWrapper[1])
+      await waitFor(() => sut.getByTestId('surveyResponse'))
+      expect(saveSpy).toHaveBeenCalledTimes(1)
+      fireEvent.click(sut.getByTestId('retry'))
+      fireEvent.click(sut.getByTestId('retry'))
+      await waitFor(() => sut.getByTestId('surveyResponse'))
+      expect(saveSpy).toHaveBeenCalledTimes(2)
+    })
   })
 })

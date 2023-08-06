@@ -30,7 +30,7 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
     setIsSaveLoading(true)
     try {
       const surveyResponse = await saveSurveyResponse.save(params)
-      setSurveyResponse(surveyResponse)
+      setSurveyResponseWithAnswersOrderedByPercent(surveyResponse)
       setUseCaseError(null)
       setError('')
       setIsSaveLoading(false)
@@ -48,7 +48,7 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
     setIsLoadLoading(true)
     try {
       const surveyResponse = await loadSurveyResponse.load()
-      setSurveyResponse(surveyResponse)
+      setSurveyResponseWithAnswersOrderedByPercent(surveyResponse)
       setUseCaseError(null)
       setError('')
       setIsLoadLoading(false)
@@ -59,6 +59,12 @@ const SurveyResponse: React.FC<Props> = ({ loadSurveyResponse, saveSurveyRespons
       setUseCaseError('load')
       handleError(typedError)
     }
+  }
+
+  const setSurveyResponseWithAnswersOrderedByPercent = (surveyResponse: SurveyResponseModel): void => {
+    const orderedAnswers = surveyResponse.survey.answers.sort((a, b) => b.percent - a.percent)
+    surveyResponse.survey.answers = orderedAnswers
+    setSurveyResponse(surveyResponse)
   }
 
   const tryAgainHandler = async (): Promise<void> => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './responseStyles.scss'
-import FlipMove from 'react-flip-move'
+import { Flipper, Flipped } from 'react-flip-toolkit'
 import Calendar from '@/presentation/components/calendar/calendar'
 import Answer from '../answer/answer'
 import type { SurveyResponse } from '@/domain/models/SurveyResponse'
@@ -14,19 +14,22 @@ type Props = {
 
 const Response: React.FC<Props> = ({ surveyResponse, saveAndSetSurveyResponse }) => {
   const navigate = useNavigate()
+
   return (
     <>
       <hgroup data-testid="title" className={styles.title}>
         <Calendar date={new Date(surveyResponse.survey.date)} className={styles.calendar}/>
         <h1 data-testid="question">{surveyResponse.survey.question}</h1>
       </hgroup>
-      <FlipMove data-testid="answers" className={styles.answers}>
-        <>
+      <Flipper className={styles.answers} flipKey={surveyResponse.survey.answers.map(answer => answer.answer).join('')}>
+        <ul data-testid="answers">
         {surveyResponse.survey.answers.map(answer =>
-          <Answer key={answer.answer} answer={answer} saveAndSetSurveyResponse={saveAndSetSurveyResponse} />
+          <Flipped key={answer.answer} flipId={answer.answer}>
+            {flippedProps => <Answer answer={answer} saveAndSetSurveyResponse={saveAndSetSurveyResponse} flippedProps={flippedProps} />}
+          </Flipped>
         )}
-        </>
-      </FlipMove>
+        </ul>
+      </Flipper>
       <button data-testid="back" className={styles.backButton} onClick={() => { navigate('/') }}>Voltar</button>
     </>
   )

@@ -7,9 +7,10 @@ import type { SaveSurveyResponseParams } from '@/domain/useCases/SaveSurveyRespo
 type Props = {
   answer: AnswerModel
   saveAndSetSurveyResponse: (params: SaveSurveyResponseParams) => Promise<void>
+  flippedProps: object
 }
 
-const Answer: React.FC<Props> = ({ answer, saveAndSetSurveyResponse }) => {
+const Answer: React.FC<Props> = ({ answer, saveAndSetSurveyResponse, flippedProps }) => {
   const context = useContext(SurveyResponseContext)
 
   const className = answer.isCurrentAccountAnswer
@@ -31,6 +32,7 @@ const Answer: React.FC<Props> = ({ answer, saveAndSetSurveyResponse }) => {
       key={answer.answer}
       className={className}
       onClick={handleClick}
+      {...flippedProps}
     >
       {answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} />}
       <span data-testid="answer" className={styles.answer}>{answer.answer}</span>
