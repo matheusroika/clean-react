@@ -78,11 +78,11 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }) => {
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
           <Input type="password" name="passwordConfirmation" placeholder="Repita sua senha" title={passwordConfirmationError} value={passwordConfirmation} setValue={setPasswordConfirmation} />
-          <button data-testid="submit" type="submit" disabled={haveError} onClick={handleSubmit}>Cadastrar</button>
+          <button data-testid="submit" className={styles.submitButton} type="submit" disabled={haveError} onClick={handleSubmit}>Cadastrar</button>
           <span className={styles.link}>
             <Link data-testid="login" to="/login">Fazer login</Link>
           </span>
-          <FormStatus isLoading={isLoading} message={message} />
+          <FormStatus isLoading={isLoading} message={message} setMessage={setMessage} />
         </form>
       </main>
       <Footer />

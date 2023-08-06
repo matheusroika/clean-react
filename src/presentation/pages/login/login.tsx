@@ -62,11 +62,11 @@ const Login: React.FC<Props> = ({ validation, authentication }) => {
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" title={emailError} value={email} setValue={setEmail} />
           <Input type="password" name="password" placeholder="Digite sua senha" title={passwordError} value={password} setValue={setPassword} />
-          <button data-testid="submit" type="submit" disabled={haveError} onClick={handleSubmit}>Entrar</button>
+          <button data-testid="submit" className={styles.submitButton} type="submit" disabled={haveError} onClick={handleSubmit}>Entrar</button>
           <span className={styles.link}>
             <Link data-testid="signup" to="/signup">Criar conta</Link>
           </span>
-          <FormStatus isLoading={isLoading} message={message} />
+          <FormStatus isLoading={isLoading} message={message} setMessage={setMessage} />
         </form>
       </main>
       <Footer />

@@ -13,6 +13,26 @@
   border-radius: .5rem;
   box-shadow: 0 1px 3px -1px $black;
 
+  .closeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: .5rem;
+    line-height: 0;
+    background-color: transparent;
+    
+    &:hover {
+      opacity: .7;
+    }
+
+    img {
+      width: .75rem;
+      height: .75rem;
+      color: $primaryDark;
+    }
+  }
+
   .message {
     text-align: center;
     font-weight: bold;
