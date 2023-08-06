@@ -144,6 +144,16 @@ describe('Login page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
+  test('Should hide loader and message on close modal button click', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
+    await testHelper.submitFormAndWait(sut)
+    fireEvent.click(sut.getByTestId('closeButton'))
+    testHelper.expectElementToNotExist(sut, 'loader')
+    testHelper.expectElementToNotExist(sut, 'message')
+  })
+
   test('Should call SaveCurrentAccount and go to index on Authentication success', async () => {
     const { sut, setCurrentAccountStub } = makeSut()
     await testHelper.submitFormAndWait(sut)

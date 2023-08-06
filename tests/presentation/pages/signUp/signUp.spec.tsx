@@ -204,6 +204,16 @@ describe('Sign page', () => {
     expect(errorMessage.textContent).toBe(error.message)
   })
 
+  test('Should hide loader and message on close modal button click', async () => {
+    const { sut, addAccountStub } = makeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(addAccountStub, 'add').mockRejectedValueOnce(error)
+    await testHelper.submitFormAndWait(sut, true)
+    fireEvent.click(sut.getByTestId('closeButton'))
+    testHelper.expectElementToNotExist(sut, 'loader')
+    testHelper.expectElementToNotExist(sut, 'message')
+  })
+
   test('Should call SaveCurrentAccount and go to index on AddAccount success', async () => {
     const { sut, setCurrentAccountStub } = makeSut()
     await testHelper.submitFormAndWait(sut, true)
