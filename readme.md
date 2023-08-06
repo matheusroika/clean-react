@@ -1,4 +1,4 @@
-[![Build Status](https://app.buddy.works/matheusroika/clean-react/pipelines/pipeline/460636/badge.svg?token=d403b2b439944f9651f55b8e2e1898c150ce17f477ce90c24855167acb09e7b9 "Build Status")](https://app.buddy.works/matheusroika/clean-react/pipelines/pipeline/460636)[![Coverage Status](https://codecov.io/gh/matheusroika/clean-react/branch/main/graph/badge.svg?token=GZAW4FDTBB)](https://codecov.io/gh/matheusroika/clean-react)
+[![CI/CD](https://github.com/matheusroika/clean-react/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/matheusroika/clean-react/actions/workflows/ci-cd.yml "CI/CD Status") [![Coverage Status](https://codecov.io/gh/matheusroika/clean-react/branch/main/graph/badge.svg?token=GZAW4FDTBB)](https://codecov.io/gh/matheusroika/clean-react "Coverage Status")
 
 # **Clean React**
 
