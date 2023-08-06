@@ -85,6 +85,15 @@ describe('Sign Up', () => {
     })
   })
 
+  it('Should close error modal with click on close modal button', () => {
+    http.mockEmailInUseError()
+    helper.submitValidForm('signup')
+    helper.testModalCycle('Esse email já está em uso')
+    cy.dataTestId('closeButton').click()
+    cy.dataTestId('loader').should('not.exist')
+    cy.dataTestId('message').should('not.exist')
+  })
+
   it('Should save accessToken and redirect to index if valid form is submitted', () => {
     http.mockOkResponse()
     helper.submitValidForm('signup')

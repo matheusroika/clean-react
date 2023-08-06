@@ -76,6 +76,15 @@ describe('Login', () => {
     })
   })
 
+  it('Should close error modal with click on close modal button', () => {
+    http.mockInvalidCredentialsError()
+    helper.submitValidForm('login')
+    helper.testModalCycle('Credenciais inválidas')
+    cy.dataTestId('closeButton').click()
+    cy.dataTestId('loader').should('not.exist')
+    cy.dataTestId('message').should('not.exist')
+  })
+
   it('Should save accessToken and redirect to index if valid credentials are provided', () => {
     http.mockOkResponse()
     helper.submitValidForm('login')
