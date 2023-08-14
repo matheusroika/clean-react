@@ -2,6 +2,7 @@
 
 # **Clean React**
 
+Esse sistema faz parte do [treinamento do professor Rodrigo Manguinho (Mango) na Udemy](https://www.udemy.com/course/react-com-mango/?referralCode=552F88858EAE76346C8B). <br/>
 Essa é uma aplicação de estudo de um serviço de enquetes. Ela conta com páginas de autenticação (registro e login de usuários) e de criação, listagem, resposta e visualização de enquetes.
 
 
